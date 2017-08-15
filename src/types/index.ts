@@ -1,1 +1,1 @@
-export { Scopes } from './Scopes'
+export { Scopes } from './scopes'
