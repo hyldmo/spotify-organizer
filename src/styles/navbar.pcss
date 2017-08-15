@@ -9,7 +9,9 @@ header {
 
     & nav {
         grid-column: 2 / 3;
-
+        display: flex;
+        flex-flow: row nowrap;
+        justify-content: space-between;
         & ul {
             list-style: none;
             margin: calc(var(--header-height) / 3) 0;

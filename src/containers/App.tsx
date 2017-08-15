@@ -11,6 +11,7 @@ import { State } from '../reducers'
 import Auth from './Auth'
 
 const mapStateToProps = (state: State) => ({
+	user: state.user,
 	pathname: state.routing.location.pathname
 })
 
@@ -20,9 +21,9 @@ const dispatchToProps = {
 const stateProps = returntypeof(mapStateToProps)
 type Props = typeof stateProps & typeof dispatchToProps
 
-const App: React.StatelessComponent<Props> = () => (
+const App: React.StatelessComponent<Props> = (props) => (
 	<div>
-		<Navbar/>
+		<Navbar user={props.user}/>
 		<main>
 			<Switch>
 				<Route exact path="/" component={Home} />

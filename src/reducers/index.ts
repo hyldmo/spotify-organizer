@@ -1,15 +1,15 @@
 import { routerReducer as routing, RouterState } from 'react-router-redux'
 import { combineReducers } from 'redux'
-import version from './version'
+import user, { User } from './user'
 
 export type State = Readonly<{
-	version: string
+	user: User
 	routing: RouterState
 }>
 
 const reducers = combineReducers<State>({
 	routing,
-	version
+	user
 })
 
 export default reducers

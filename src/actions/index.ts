@@ -1,7 +1,7 @@
-import DemoActions from './version'
+import user from './user'
 
 export const Actions = {
-	...DemoActions
+	...user
 }
 
 export type Action = typeof Actions[keyof typeof Actions]

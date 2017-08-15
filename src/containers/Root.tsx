@@ -2,6 +2,7 @@ import * as React from 'react'
 import { AppContainer } from 'react-hot-loader'
 import { Provider } from 'react-redux'
 import { ConnectedRouter } from 'react-router-redux'
+import { Actions } from '../actions'
 import configureStore, { history } from '../configureStore'
 import { State } from '../reducers'
 
@@ -10,6 +11,8 @@ const initialState: Partial<State> = {
 }
 
 const store = configureStore(initialState as State)
+
+store.dispatch(Actions.loadUser())
 
 const Root: React.StatelessComponent<any> = (props) => (
 	<Provider store={store}>
