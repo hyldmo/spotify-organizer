@@ -8,7 +8,7 @@ import Navbar from '../components/Navbar'
 import NotFound from '../components/NotFound'
 import { State } from '../reducers'
 
-import Login from './Login'
+import Auth from './Auth'
 
 const mapStateToProps = (state: State) => ({
 	pathname: state.routing.location.pathname
@@ -26,7 +26,7 @@ const App: React.StatelessComponent<Props> = () => (
 		<main>
 			<Switch>
 				<Route exact path="/" component={Home} />
-				<Route exact path="/login" component={Login} />
+				<Route exact path="/auth" component={Auth} />
 				<Route component={NotFound}/>
 			</Switch>
 		</main>

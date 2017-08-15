@@ -17,16 +17,26 @@ type Props = typeof stateProps & typeof dispatchToProps
 
 class Login extends React.Component<Props> {
 	componentDidMount () {
-		this.props.login('')
+		this.props.login(getUrlParams(location.href).toString())
 	}
 
 	render () {
 		return (
-			<h1>
+			<p>
 				Version: {this.props.version}
-			</h1>
+			</p>
 		)
 	}
+}
+
+
+function getUrlParams (search) {
+	const hashes = search.slice(search.indexOf('?') + 1).split('&')
+	
+	return hashes.map(hash => {
+		const [key, val] = hash.split('=')
+		return decodeURIComponent(val)
+	})
 }
 
 export default connect(
