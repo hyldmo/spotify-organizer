@@ -63,6 +63,7 @@
         "@types/react-test-renderer": "^15.5.1",
         "@types/redux-actions": "^1.2.2",
         "@types/redux-form": "^6.6.7",
+        "@types/spotify-api": "0.0.0",
         "@types/webpack": "^2.0.0",
         "@types/webpack-env": "^1.12.1",
         "awesome-typescript-loader": "^3.2.1",

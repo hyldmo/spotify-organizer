@@ -11,7 +11,8 @@ const mapStateToProps = (state: State) => ({
 })
 
 const dispatchToProps = {
-	tokenAquired: Actions.tokenAquired
+	tokenAquired: Actions.tokenAquired,
+	replace
 }
 
 const stateProps = returntypeof(mapStateToProps)
@@ -19,8 +20,8 @@ type Props = typeof stateProps & typeof dispatchToProps
 
 class Login extends React.Component<Props> {
 	componentDidMount () {
-		this.props.tokenAquired(getUrlParams(location.href).toString())
-		replace('/')
+		this.props.tokenAquired(getToken(location.href))
+		this.props.replace('/')
 	}
 
 	render () {
@@ -29,13 +30,11 @@ class Login extends React.Component<Props> {
 }
 
 
-function getUrlParams (search) {
-	const hashes = search.slice(search.indexOf('?') + 1).split('&')
-
-	return hashes.map(hash => {
-		const [_, val] = hash.split('=')
-		return decodeURIComponent(val)
-	})
+function getToken (url: string) {
+	const search = '#access_token='
+	const start = url.indexOf(search) + search.length
+	const end = url.indexOf('&')
+	return url.slice(start, end)
 }
 
 export default connect(
