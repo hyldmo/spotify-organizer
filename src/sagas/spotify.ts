@@ -1,7 +1,5 @@
-import { takeEvery } from 'redux-saga'
-import { call, put, select } from 'redux-saga/effects'
+import { call, select } from 'redux-saga/effects'
 
-import { Actions } from '../actions'
 import { State } from '../reducers'
 
 export default function* spotifyFetch (url: string, options: RequestInit = {}, apiToken: string | undefined) {

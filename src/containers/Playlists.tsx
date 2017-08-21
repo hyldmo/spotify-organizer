@@ -1,14 +1,9 @@
 import * as React from 'react'
 import { connect } from 'react-redux'
 import { returntypeof } from 'react-redux-typescript'
-import { Route, Switch } from 'react-router'
-import Footer from '../components/Footer'
-import Home from '../components/Home'
-import Navbar from '../components/Navbar'
-import NotFound from '../components/NotFound'
+import { Link } from 'react-router-dom'
 import { State } from '../reducers'
 
-import Auth from './Auth'
 
 import '../styles/playlists.pcss'
 
@@ -38,7 +33,7 @@ const Playlists: React.StatelessComponent<Props> = ({ playlists }) => (
 					{playlists.map(p =>
 						<tr key={p.id}>
 							<td className="images">{p.images.length > 0 ? <img src={p.images[p.images.length - 1].url} /> : null}</td>
-							<td>{p.name}</td>
+							<td><Link to={`playlists/${p.id}`}>{p.name}</Link></td>
 							<td>{p.owner.display_name}</td>
 							<td>{p.tracks.total}</td>
 						</tr>
