@@ -1,10 +1,10 @@
 {
     "name": " spotify-organizer",
     "repository": "https://github.com/eivhyl/spotify-organizer",
-    "version": "0.1.0",
+    "version": "0.1.1",
     "scripts": {
         "dev": "cross-env NODE_ENV=development webpack-dev-server --config webpack.development.config.js --progress --colors",
-        "production": "webpack -p --config webpack.production.config.js --progress --colors",
+        "production": "cross-env NODE_ENV=production webpack -p --config webpack.production.config.js --progress --colors",
         "test": "jest",
         "lint": "tslint {__tests__,src}/**/*.{ts,tsx} --type-check -p ./",
         "lint:fix": "npm run lint -- --fix"
