@@ -1,2 +1,2 @@
 export * from './sort'
-export * from './urlEscape'
+export * from './urlescape'

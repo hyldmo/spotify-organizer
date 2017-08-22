@@ -5,6 +5,7 @@
 		"allowJs": true,
 		"checkJs": true,
 		"noStrictGenericChecks": false,
+		"forceConsistentCasingInFileNames": true,
 		"module": "commonjs",
 		"target": "es5",
 		"lib": [
