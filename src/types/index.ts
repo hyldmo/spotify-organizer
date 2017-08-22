@@ -1,1 +1,2 @@
-export { Scopes } from './scopes'
+export * from './scopes'
+export * from './spotify'

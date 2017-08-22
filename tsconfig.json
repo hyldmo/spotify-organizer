@@ -5,6 +5,7 @@
 		"allowJs": true,
 		"checkJs": true,
 		"noStrictGenericChecks": false,
+		"forceConsistentCasingInFileNames": true,
 		"module": "commonjs",
 		"target": "es5",
 		"lib": [
@@ -16,6 +17,8 @@
 	},
 	"include": [
 		"./src/*",
-		"./__tests__/*"
+		"./__tests__/*",
+		"./node_modules/@types/spotify-api/index.d.ts",
+		"./src/types/spotify.d.ts"
 	]
 }

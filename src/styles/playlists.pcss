@@ -1,0 +1,31 @@
+@import "./variables.pcss";
+
+table.playlists {
+    width: 100%;
+    border-collapse: collapse;
+
+    & th, & td {
+        text-align: left;
+        padding: 0.5rem;
+        line-height: 0.7;
+        border: none;
+    }
+
+    & .images img {
+        height: 2rem;
+        width: 2rem;
+    }
+
+    & tr, & td {
+        height: 2rem;
+    }
+
+    & tbody {
+        & tr {
+            border-top: 1px solid var(--background-highlight);
+            &:hover {
+                background-color: var(--background-highlight);
+            }
+        }
+    }
+}

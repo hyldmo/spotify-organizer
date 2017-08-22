@@ -1,8 +1,9 @@
 import * as React from 'react'
+import Playlists from '../containers/Playlists'
 
 const App: React.StatelessComponent = (props) =>  (
 	<div>
-		<h1>Hello world</h1>
+		<Playlists />
 	</div>
 )
 
