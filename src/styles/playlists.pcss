@@ -1,4 +1,7 @@
+@import "./variables.pcss";
+
 table.playlists {
+    width: 100%;
     border-collapse: collapse;
 
     & th, & td {
@@ -17,7 +20,12 @@ table.playlists {
         height: 2rem;
     }
 
-    & tbody tr:hover {
-        background-color:  gray(0, 10%);
+    & tbody {
+        & tr {
+            border-top: 1px solid var(--background-highlight);
+            &:hover {
+                background-color: var(--background-highlight);
+            }
+        }
     }
 }

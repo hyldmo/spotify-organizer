@@ -1,13 +1,25 @@
 @import "normalize.css";
 @import "./variables.pcss";
+@import "./checkbox.pcss";
 
 * {
     box-sizing: border-box;
 }
 
+a {
+    color: var(--text-color);
+    text-decoration: none;
+
+    &:hover {
+        text-decoration: underline;
+    }
+}
+
 html, body, #root {
     height: 100%;
     overflow-y: overlay;
+    background-color: var(--background);
+    color: var(--text-color);
 }
 
 #root > div {

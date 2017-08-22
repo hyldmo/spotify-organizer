@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { Link } from 'react-router-dom'
 import { Scopes } from '../types'
-import urlEscape from '../utils/urlescape'
+import { urlEscape } from '../utils'
 
 import { REDIRECT_URI } from '../constants'
 import { User } from '../reducers/user'
