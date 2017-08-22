@@ -22,7 +22,8 @@ function* getUserDetails (action: typeof Actions.tokenAquired) {
 
 function* loadUser (action: typeof Actions.loadUser) {
 	const token = localStorage.getItem('token')
-	yield put(Actions.tokenAquired(token))
+	if (token)
+		yield put(Actions.tokenAquired(token))
 }
 
 function* getPlaylists (action: typeof Actions.fetchPlaylists) {
