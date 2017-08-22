@@ -1,6 +1,6 @@
 {
-    "name": "typescript-react-starter-kit",
-    "repository": "https://github.com/eivhyl/typescript-react-starter-kit",
+    "name": " spotify-organizer",
+    "repository": "https://github.com/eivhyl/spotify-organizer",
     "version": "0.1.0",
     "scripts": {
         "dev": "cross-env NODE_ENV=development webpack-dev-server --config webpack.development.config.js --progress --colors",
@@ -31,7 +31,8 @@
     "keywords": [
         "Typescript",
         "React",
-        "Redux"
+        "Redux",
+        "Spotify"
     ],
     "license": "MIT",
     "dependencies": {
