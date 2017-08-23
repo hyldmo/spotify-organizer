@@ -28,7 +28,6 @@ const App: React.StatelessComponent<Props> = (props) => (
 		<main>
 			<Switch>
 				<Route exact path={BASE_URL} component={Home} />
-				<Route exact path={BASE_URL + 'auth'} component={Auth} />
 				<Route component={NotFound}/>
 			</Switch>
 		</main>
