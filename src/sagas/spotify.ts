@@ -7,7 +7,7 @@ export default function* spotifyFetch (url: string, options: RequestInit = {}, a
 
 	const headers = new Headers()
 	headers.append('Authorization', `Bearer ${token}`)
-	const response: Response = yield call<RequestInfo, RequestInit>(fetch, 'https://api.spotify.com/v1/' + url, { headers, ...options })
+	const response: Response = yield call<RequestInfo, RequestInit>(fetch, `https://api.spotify.com/v1/${url}`, { headers, ...options })
 	const body = yield response.json()
 	if (!response.ok)
 		throw new Error(body.error.message)
