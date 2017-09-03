@@ -36,6 +36,7 @@
             "check-open-brace",
             "check-whitespace"
         ],
+        "prefer-template": true,
         "quotemark": [
             true,
             "single",

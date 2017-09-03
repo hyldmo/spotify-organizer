@@ -10,7 +10,8 @@ const UserActions = {
 	playlistsFetched: createAction<'FETCH_PLAYLISTS_SUCCESS', SpotifyApi.ListOfCurrentUsersPlaylistsResponse['items']>('FETCH_PLAYLISTS_SUCCESS'),
 	selectPlaylist: createAction<'PLAYLISTS_SELECT', boolean, string>('PLAYLISTS_SELECT'),
 	selectPlaylists: createAction<'PLAYLISTS_SELECT_ALL', boolean>('PLAYLISTS_SELECT_ALL'),
-	updatePlaylistsSort: createAction<'PLAYLISTS_SORT_MODE_CHANGE', boolean, keyof Playlist | string>('PLAYLISTS_SORT_MODE_CHANGE')
+	updatePlaylistsSort: createAction<'PLAYLISTS_SORT_MODE_CHANGE', boolean, keyof Playlist | string>('PLAYLISTS_SORT_MODE_CHANGE'),
+	updateFilterText: createAction<'PLAYLISTS_FILTER_TEXT_CHANGE', string>('PLAYLISTS_FILTER_TEXT_CHANGE')
 }
 
 export default UserActions

@@ -3,7 +3,11 @@ import { connect } from 'react-redux'
 import { returntypeof } from 'react-redux-typescript'
 import { Link } from 'react-router-dom'
 
+import * as _ from 'lodash'
+
 import { Actions } from '../actions'
+import Button from '../components/Button'
+import Input from '../components/Input'
 import { State } from '../reducers'
 import { compareByKey } from '../utils'
 
@@ -17,7 +21,8 @@ const mapStateToProps = (state: State) => ({
 const dispatchToProps = {
 	selectAll: Actions.selectPlaylists,
 	select: Actions.selectPlaylist,
-	changeSortMode: Actions.updatePlaylistsSort
+	changeSortMode: Actions.updatePlaylistsSort,
+	updateFilterText: Actions.updateFilterText
 }
 
 const headers = [
@@ -30,14 +35,25 @@ const stateProps = returntypeof(mapStateToProps)
 type Props = typeof stateProps & typeof dispatchToProps
 
 const Playlists: React.StatelessComponent<Props> = (props) => {
-	const { filters, select, selectAll, changeSortMode } = props
+	const { filters, select, selectAll, changeSortMode, updateFilterText } = props
 	const { order } = filters
 	const playlists = filters.order !== null
-		? props.playlists.slice().sort((a, b) => compareByKey(a, b, order.key, !order.asc))
+		? props.playlists
+			.slice()
+			.filter(p => _.includes(p.name, filters.text) || _.includes(p.owner.display_name, filters.text))
+			.sort((a, b) => compareByKey(a, b, order.key, !order.asc))
 		: props.playlists
 	return (
-		<div>
-			<h1>Playlists</h1>
+		<div className="playlists">
+			<div className="header">
+				<h1>Playlists</h1>
+				<Input type="text" placeholder="&#xF002; Filter" onChange={(e: any) => updateFilterText(e.target.value)} />
+				<div className="right-menu">
+					<Button icon="cog" />
+				</div>
+			</div>
+			<Button primary>Remove duplicates</Button>
+			<hr />
 			{playlists.length > 0 ? (
 				<table className="playlists">
 					<thead>

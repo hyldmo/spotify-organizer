@@ -35,8 +35,8 @@ html, body, #root {
 }
 
 @media (--medium) {
-    #root > div, header {
-        grid-template-columns: 0 auto 0;
+    #root > div, #root > div > header {
+        grid-template-columns: 0 100% 0;
     }
 }
 
@@ -50,5 +50,5 @@ footer {
 
 
 nav, main, footer {
-    padding: 0 20px;
+    padding: 0 40px 0 20px;
 }

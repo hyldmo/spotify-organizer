@@ -20,8 +20,10 @@ type Props = typeof stateProps & typeof dispatchToProps
 
 class Login extends React.Component<Props> {
 	componentDidMount () {
-		this.props.tokenAquired(getToken(location.href))
-		this.props.replace('/')
+		if (location.href.indexOf('#access_token=') !== -1) {
+			this.props.tokenAquired(getToken(location.href))
+			this.props.replace('/')
+		}
 	}
 
 	render () {
