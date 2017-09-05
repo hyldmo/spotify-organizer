@@ -53,13 +53,17 @@ const Playlists: React.StatelessComponent<Props> = (props) => {
 				</div>
 			</div>
 			<Button primary>Remove duplicates</Button>
+			<ul className="stats right-menu">
+				<li>{playlists.length} Playlists</li>
+				<li>{playlists.reduce((a, b) => a + b.tracks.total, 0)} Tracks</li>
+			</ul>
 			<hr />
 			{playlists.length > 0 ? (
 				<table className="playlists">
 					<thead>
 						<tr>
-							<th><input type="checkbox" onChange={e => selectAll(e.target.checked)}/></th>
-							<th></th>
+							<th className="select"><input type="checkbox" onChange={e => selectAll(e.target.checked)}/></th>
+							<th className="image"></th>
 							{headers.map(([name, key]) => (
 								<th key={name} >
 									<a onClick={e => changeSortMode(order.key === key && !order.asc, key)}>

@@ -3,14 +3,23 @@
 
 
 .playlists {
+
+    & .right-menu {
+        float: right;
+    }
+
+    & .stats {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        text-align: right;
+    }
+
     & .header {
         margin: 1rem 0;
         & h1 {
             display: inline-block;
             margin: 0;
-        }
-        & .right-menu {
-            float: right;
         }
 
         & input {
@@ -24,6 +33,10 @@
     & table.playlists {
         width: 100%;
         border-collapse: collapse;
+        
+        & th.select, & th.image {
+            width: 2rem;
+        }
 
         & th, & td {
             text-align: left;
