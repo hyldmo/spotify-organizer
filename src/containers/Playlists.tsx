@@ -2,12 +2,14 @@ import * as React from 'react'
 import { connect } from 'react-redux'
 import { returntypeof } from 'react-redux-typescript'
 import { Link } from 'react-router-dom'
+import Highlight from '../components/Highlight'
 
 import * as _ from 'lodash'
 
 import { Actions } from '../actions'
 import Button from '../components/Button'
 import Input from '../components/Input'
+import Modal from '../components/Modal'
 import { State } from '../reducers'
 import { compareByKey } from '../utils'
 
@@ -50,6 +52,7 @@ const Playlists: React.StatelessComponent<Props> = (props) => {
 				<Input type="text" placeholder="&#xF002; Filter" onChange={(e: any) => updateFilterText(e.target.value)} />
 				<div className="right-menu">
 					<Button icon="cog" />
+					<Modal initialOpen />
 				</div>
 			</div>
 			<Button primary>Remove duplicates</Button>
@@ -76,11 +79,23 @@ const Playlists: React.StatelessComponent<Props> = (props) => {
 					<tbody>
 						{playlists.map(p =>
 							<tr key={p.id}>
-								<td><input type="checkbox" checked={p.selected} onChange={e => select(e.target.checked, p.id)} /></td>
-								<td className="images">{p.images.length > 0 ? <img src={p.images[p.images.length - 1].url} /> : null}</td>
-								<td><Link to={`playlists/${p.id}`}>{p.name}</Link></td>
-								<td>{p.owner.display_name}</td>
-								<td>{p.tracks.total}</td>
+								<td>
+									<input type="checkbox" checked={p.selected} onChange={e => select(e.target.checked, p.id)} />
+								</td>
+								<td className="images">
+									{p.images.length > 0 ? <img src={p.images[p.images.length - 1].url} /> : null}
+								</td>
+								<td>
+									<Link to={`playlists/${p.id}`}>
+										<Highlight text={p.name} term={filters.text} />
+									</Link>
+								</td>
+								<td>
+									<Highlight text={p.owner.display_name} term={filters.text} />
+								</td>
+								<td>
+									{p.tracks.total}
+								</td>
 							</tr>
 						)}
 					</tbody>
