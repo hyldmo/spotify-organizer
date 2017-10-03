@@ -7,3 +7,14 @@ window.matchMedia = window.matchMedia || function () {
 		removeListener: () => undefined
 	}
 }
+
+const storageMock: Storage = {
+	key: null,
+	getItem: () => undefined,
+	setItem: () => undefined,
+	removeItem: () => undefined,
+	length: null,
+	clear: () => undefined
+};
+
+(window as any).localStorage = window.localStorage || storageMock

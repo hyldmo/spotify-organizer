@@ -9,7 +9,6 @@ import NotFound from '../components/NotFound'
 import { State } from '../reducers'
 
 import { BASE_URL } from '../constants'
-import Auth from './Auth'
 
 const mapStateToProps = (state: State) => ({
 	user: state.user,

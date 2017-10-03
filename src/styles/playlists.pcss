@@ -1,31 +1,66 @@
 @import "./variables.pcss";
 
-table.playlists {
-    width: 100%;
-    border-collapse: collapse;
 
-    & th, & td {
-        text-align: left;
-        padding: 0.5rem;
-        line-height: 0.7;
-        border: none;
+
+.playlists {
+
+    & .right-menu {
+        float: right;
     }
 
-    & .images img {
-        height: 2rem;
-        width: 2rem;
+    & .stats {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        text-align: right;
     }
 
-    & tr, & td {
-        height: 2rem;
-    }
+    & .header {
+        margin: 1rem 0;
+        & h1 {
+            display: inline-block;
+            margin: 0;
+        }
 
-    & tbody {
-        & tr {
-            border-top: 1px solid var(--background-highlight);
-            &:hover {
-                background-color: var(--background-highlight);
-            }
+        & input {
+            margin-top: 0.1rem;
+            vertical-align: top;
+            margin-left: 1rem;
+            width: 50%;
         }
     }
+
+    & table.playlists {
+        width: 100%;
+        border-collapse: collapse;
+        
+        & th.select, & th.image {
+            width: 2rem;
+        }
+
+        & th, & td {
+            text-align: left;
+            padding: 0.5rem;
+            line-height: 0.7;
+            border: none;
+        }
+
+        & .images img {
+            height: 2rem;
+            width: 2rem;
+        }
+
+        & tr, & td {
+            height: 2rem;
+        }
+
+        & tbody {
+            & tr {
+                border-top: 1px solid var(--background-highlight);
+                &:hover {
+                    background-color: var(--background-highlight);
+                }
+            }
+        }
+    }   
 }
