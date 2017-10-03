@@ -9,7 +9,6 @@ import * as _ from 'lodash'
 import { Actions } from '../actions'
 import Button from '../components/Button'
 import Input from '../components/Input'
-import Modal from '../components/Modal'
 import { State } from '../reducers'
 import { compareByKey } from '../utils'
 
