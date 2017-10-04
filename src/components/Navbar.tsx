@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import { Scopes } from '../types'
 import { urlEscape } from '../utils'
 
-import { REDIRECT_URI } from '../constants'
+import { BASE_URL, REDIRECT_URI } from '../constants'
 import { User } from '../reducers/user'
 import '../styles/navbar.pcss'
 
@@ -19,7 +19,7 @@ const Navbar: React.StatelessComponent<Props> = ({ user }) => {
 		<header>
 			<nav>
 				<ul>
-					<li><Link to="/">Home</Link></li>
+					<li><Link to={BASE_URL}>Home</Link></li>
 					{!user && <li><a href={loginLink} target="blank">Login</a></li>}
 				</ul>
 				{user && (
