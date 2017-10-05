@@ -7,6 +7,7 @@ module.exports = Object.assign(CONFIG, {
     entry: {
         hmr: 'react-hot-loader/patch',
         app: CONFIG.entry,
+        vendor: ['react', 'react-dom'],
     },
 
     output: Object.assign(CONFIG.output, {
@@ -18,7 +19,7 @@ module.exports = Object.assign(CONFIG, {
     devServer: {
         historyApiFallback: true,
         port: CONFIG.devServer.port,
-        hotOnly: true,
+        hot: true,
         overlay: true
     },
 
@@ -47,6 +48,9 @@ module.exports = Object.assign(CONFIG, {
 
     plugins: [
         ...CONFIG.plugins,
+        new webpack.optimize.CommonsChunkPlugin({
+            name: 'vendor',
+        }),
         new webpack.NamedModulesPlugin(),
         new webpack.HotModuleReplacementPlugin()
     ]
