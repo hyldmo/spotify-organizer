@@ -6,6 +6,7 @@
 		"checkJs": true,
 		"noStrictGenericChecks": false,
 		"forceConsistentCasingInFileNames": true,
+		"noUnusedLocals": true,
 		"module": "commonjs",
 		"target": "es5",
 		"lib": [

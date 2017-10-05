@@ -1,9 +1,9 @@
 import * as React from 'react'
 import { Link } from 'react-router-dom'
+
 import { Actions } from '../actions'
 import Highlight from '../components/Highlight'
-import { Filters } from '../reducers/filters'
-import { Playlist } from '../types'
+import { Filters, Playlist } from '../types'
 
 const headers = [
 	['Name', 'name'],

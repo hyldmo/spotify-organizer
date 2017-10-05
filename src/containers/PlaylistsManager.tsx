@@ -1,22 +1,21 @@
 import * as React from 'react'
 import { connect } from 'react-redux'
 import { returntypeof } from 'react-redux-typescript'
-import Playlists from '../components/Playlists'
-import Settings from './Settings'
-
-import * as _ from 'lodash'
 
 import { Actions } from '../actions'
 import Button from '../components/Button'
 import Input from '../components/Input'
+import Playlists from '../components/Playlists'
 import { State } from '../reducers'
-import { compareByKey } from '../utils'
+import { applyPlaylistsFilters } from '../utils'
+import Settings from './Settings'
 
 import '../styles/playlists.pcss'
 
 const mapStateToProps = (state: State) => ({
 	playlists: state.playlists,
-	filters: state.filters.playlists
+	filters: state.filters.playlists,
+	user: state.user
 })
 
 const dispatchToProps = {
@@ -31,14 +30,8 @@ const stateProps = returntypeof(mapStateToProps)
 type Props = typeof stateProps & typeof dispatchToProps
 
 const PlaylistsManager: React.StatelessComponent<Props> = (props) => {
-	const { filters, select, selectAll, changeSortMode, updateFilterText } = props
-	const { order } = filters
-	const playlists = filters.order !== null
-		? props.playlists
-			.slice()
-			.filter(p => _.includes(p.name, filters.text) || _.includes(p.owner.display_name, filters.text))
-			.sort((a, b) => compareByKey(a, b, order.key, !order.asc))
-		: props.playlists
+	const { filters, select, selectAll, changeSortMode, updateFilterText, user } = props
+	const playlists = applyPlaylistsFilters(props.playlists, filters, user)
 	return (
 		<div className="playlists">
 			<div className="header">
