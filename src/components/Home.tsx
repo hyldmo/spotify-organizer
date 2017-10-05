@@ -1,12 +1,12 @@
 import * as React from 'react'
 import Auth from '../containers/Auth'
-import Playlists from '../containers/Playlists'
+import PlaylistsManager from '../containers/PlaylistsManager'
 
 
 const App: React.StatelessComponent = (props) =>  (
 	<div>
 		<Auth />
-		<Playlists />
+		<PlaylistsManager />
 	</div>
 )
 

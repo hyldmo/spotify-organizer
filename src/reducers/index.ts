@@ -1,10 +1,11 @@
 import { routerReducer as routing, RouterState } from 'react-router-redux'
 import { combineReducers } from 'redux'
-import { Playlist } from '../types'
 
-import filters, { Filters } from './filters'
+import { Playlist } from '../types'
+import { Filters, User } from '../types'
+import filters from './filters'
 import playlists from './playlists'
-import user, { User } from './user'
+import user from './user'
 
 export type State = Readonly<{
 	user: User

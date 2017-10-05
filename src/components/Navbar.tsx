@@ -1,11 +1,13 @@
 import * as React from 'react'
 import { Link } from 'react-router-dom'
-import { Scopes } from '../types'
-import { urlEscape } from '../utils'
 
 import { BASE_URL, REDIRECT_URI } from '../constants'
-import { User } from '../reducers/user'
+import { Scopes } from '../types'
+import { User } from '../types'
+import { urlEscape } from '../utils'
+
 import '../styles/navbar.pcss'
+
 
 type Props = {
 	user: User

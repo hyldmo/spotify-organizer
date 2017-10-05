@@ -1,10 +1,5 @@
 import { Action } from '../actions'
-
-export type User = {
-	name: string
-	image: string
-	token: string
-}
+import { User } from '../types'
 
 export default function user (state: User = null, action: Action): User {
 	switch (action.type) {
