@@ -1,5 +1,4 @@
-import { takeEvery, takeLatest } from 'redux-saga'
-import { call, put } from 'redux-saga/effects'
+import { call, put, takeEvery, takeLatest } from 'redux-saga/effects'
 import spotifyApi from './spotify'
 
 import { Actions } from '../actions'
@@ -13,11 +12,15 @@ export default function * watchUser () {
 function* getUserDetails (action: typeof Actions.tokenAquired) {
 	const token = action.payload
 
-	const body: SpotifyApi.UserObjectPublic = yield call(spotifyApi, 'me', {}, token)
-	const user = { name: body.id, image: body.images[0].url, token }
-	yield put(Actions.userLoaded(user))
-	localStorage.setItem('token', token)
-	yield put(Actions.fetchPlaylists(token))
+	try {
+		const body: SpotifyApi.UserObjectPublic = yield call(spotifyApi, 'me', {}, token)
+		const user = { name: body.id, image: body.images[0].url, token }
+		yield put(Actions.userLoaded(user))
+		localStorage.setItem('token', token)
+		yield put(Actions.fetchPlaylists(token))
+	} catch (e) {
+		// tslint:disable-next-line:no-empty
+	}
 }
 
 function* loadUser (action: typeof Actions.loadUser) {

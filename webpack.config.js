@@ -49,6 +49,16 @@ module.exports = {
         new HtmlWebpackPlugin({
             title: packageJSON.name,
             template: 'static/index.ejs',
+            chunksSortMode: module => { 
+                switch (module.names[0]) {
+                    case 'hmr':
+                        return 0
+                    case 'vendor':
+                        return 1
+                    case 'app':
+                        return 2
+                }
+            }
         }),
         new webpack.DefinePlugin({
             'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),

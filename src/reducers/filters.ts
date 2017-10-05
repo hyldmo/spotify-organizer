@@ -1,17 +1,5 @@
 import { Action } from '../actions'
-import { Playlist } from '../types'
-
-type PlaylistKey = keyof Playlist | null | string
-
-export type Filters = {
-	playlists: {
-		order: {
-			key: PlaylistKey
-			asc: boolean
-		}
-		text: string
-	}
-}
+import { Filters } from '../types'
 
 const initialState: Filters = {
  	playlists: {
@@ -19,32 +7,54 @@ const initialState: Filters = {
 			key: 'name',
 			asc: true
 		},
-		text: ''
+		text: '',
+		ownedOnly: false,
+		hideEmpty: false
 	}
 }
 
-export default function user (state: Filters = initialState, action: Action): Filters {
-
+type PlaylistFilters = Filters['playlists']
+function playlists (state: PlaylistFilters, action: Action): PlaylistFilters {
 	switch (action.type) {
 		case 'PLAYLISTS_SORT_MODE_CHANGE':
+		return {
+			...state,
+			order: {
+				key: action.meta,
+				asc: action.payload
+			}
+		}
+
+		case 'PLAYLISTS_FILTER_OWNED_CHANGE':
 			return {
 				...state,
-				playlists: {
-					...state.playlists,
-					order: {
-						key: action.meta,
-						asc: action.payload
-					}
-				}
+				ownedOnly: action.payload
 			}
-
+		case 'PLAYLISTS_FILTER_EMPTY_CHANGE':
+			return {
+				...state,
+				hideEmpty: action.payload
+			}
 		case 'PLAYLISTS_FILTER_TEXT_CHANGE':
 			return {
 				...state,
-				playlists: {
-					...state.playlists,
-					text:  action.payload
-				}
+				text:  action.payload
+			}
+
+		default:
+			return state
+	}
+}
+
+export default function filters (state: Filters = initialState, action: Action): Filters {
+	switch (action.type) {
+		case 'PLAYLISTS_FILTER_OWNED_CHANGE':
+		case 'PLAYLISTS_FILTER_EMPTY_CHANGE':
+		case 'PLAYLISTS_FILTER_TEXT_CHANGE':
+		case 'PLAYLISTS_SORT_MODE_CHANGE':
+			return {
+				...state,
+				playlists: playlists(state.playlists, action)
 			}
 
 		default:
