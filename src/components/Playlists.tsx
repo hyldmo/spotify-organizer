@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 
 import { Actions } from '../actions'
 import Highlight from '../components/Highlight'
+import { BASE_URL } from '../constants'
 import { Filters, Playlist } from '../types'
 
 const headers = [
@@ -44,7 +45,7 @@ const Playlists: React.StatelessComponent<Props> = ({ playlists, select, selectA
 							{p.images.length > 0 ? <img src={p.images[p.images.length - 1].url} /> : null}
 						</td>
 						<td>
-							<Link to={`playlists/${p.id}`}>
+							<Link to={`${BASE_URL}playlists/${p.id}`}>
 								<Highlight text={p.name} term={filters.text} />
 							</Link>
 						</td>
