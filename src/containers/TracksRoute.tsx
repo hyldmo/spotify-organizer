@@ -8,7 +8,7 @@ import { Actions } from '../actions'
 import ErrorBoundary from '../components/ErrorBoundary'
 import Tracks from '../components/Tracks'
 import { State as ReduxState } from '../reducers'
-import { durationString } from '../utils/duration'
+import { Duration } from '../utils'
 
 import '../styles/playlists.pcss'
 
@@ -36,7 +36,7 @@ class TracksRoute extends React.Component<Props> {
 		const { match, playlists } = this.props
 		const playlist = playlists.find(p => p.id === match.params.id)
 		const tracks = playlist === undefined || playlist.tracks.items === undefined ? [] : playlist.tracks.items
-		const duration = durationString(tracks.reduce((a, b) => a + b.duration_ms, 0))
+		const duration = tracks.reduce((a, b) => a + b.duration_ms, 0)
 
 		return (
 			<ErrorBoundary>
@@ -46,7 +46,7 @@ class TracksRoute extends React.Component<Props> {
 					</div>
 					<ul className="stats right-menu">
 						<li>{tracks.length} Tracks</li>
-						<li>{duration}</li>
+						<li>{new Duration(duration).toString()}</li>
 					</ul>
 					<hr />
 					<Tracks tracks={tracks} />
