@@ -2,7 +2,7 @@ import * as React from 'react'
 import { connect } from 'react-redux'
 import { returntypeof } from 'react-redux-typescript'
 import { Actions } from '../actions'
-import { BASE_URL } from '../constants'
+import { BASE_URL, loginLink } from '../constants'
 import { State } from '../reducers'
 
 import { replace } from 'react-router-redux'
@@ -23,12 +23,16 @@ class Login extends React.Component<Props> {
 	componentDidMount () {
 		if (location.href.indexOf('#access_token=') !== -1) {
 			this.props.tokenAquired(getToken(location.href))
-			this.props.replace(BASE_URL)
 		}
 	}
 
+	componentDidUpdate () {
+		if (this.props.user)
+			this.props.replace(BASE_URL)
+	}
+
 	render () {
-		return null
+		return <a href={loginLink}>LOGIN</a>
 	}
 }
 

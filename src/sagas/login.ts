@@ -1,5 +1,5 @@
 import { call, put, takeEvery, takeLatest } from 'redux-saga/effects'
-import spotifyApi from './spotify'
+import spotifyApi from './spotifyFetch'
 
 import { Actions } from '../actions'
 import { Track } from '../types'

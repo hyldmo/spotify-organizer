@@ -1,11 +1,11 @@
 import * as React from 'react'
 import { connect } from 'react-redux'
 import { returntypeof } from 'react-redux-typescript'
-import { RouteComponentProps } from 'react-router'
+import { RouteComponentProps, withRouter } from 'react-router'
 import { replace } from 'react-router-redux'
 
 import { Actions } from '../actions'
-import ErrorBoundary from '../components/ErrorBoundary'
+import Loading from '../components/Loading'
 import Tracks from '../components/Tracks'
 import { State as ReduxState } from '../reducers'
 import { Duration } from '../utils'
@@ -13,9 +13,7 @@ import { Duration } from '../utils'
 import '../styles/playlists.pcss'
 
 const mapStateToProps = (state: ReduxState) => ({
-	playlists: state.playlists,
-	filters: state.filters.playlists,
-	user: state.user
+	playlists: state.playlists
 })
 const stateProps = returntypeof(mapStateToProps)
 
@@ -24,40 +22,40 @@ const dispatchToProps = {
 	replace
 }
 
-type Props = typeof stateProps & typeof dispatchToProps & RouteComponentProps<{ id: string }>
+type Props = typeof stateProps & typeof dispatchToProps & RouteComponentProps<{ id: string, user: string }>
 
 class TracksRoute extends React.Component<Props> {
-	componentDidMount () {
-		const { fetchTracks, match, user } = this.props
-		fetchTracks({ id: match.params.id, owner: user.name })
+	componentWillMount () {
+		const { fetchTracks, match } = this.props
+		fetchTracks({ id: match.params.id, owner: match.params.user })
 	}
 
 	render () {
 		const { match, playlists } = this.props
 		const playlist = playlists.find(p => p.id === match.params.id)
-		const tracks = playlist === undefined || playlist.tracks.items === undefined ? [] : playlist.tracks.items
-		const duration = tracks.reduce((a, b) => a + b.duration_ms, 0)
+		if (playlist === undefined || playlist.tracks.items === undefined)
+			return <Loading />
 
+		const tracks = playlist.tracks.items
+		const duration = tracks.reduce((a, b) => a + b.duration_ms, 0)
 		return (
-			<ErrorBoundary>
-				<div className="tracks">
-					<div className="header">
-						<h1>{playlist.name}</h1>
-					</div>
-					<ul className="stats right-menu">
-						<li>{tracks.length} Tracks</li>
-						<li>{new Duration(duration).toString()}</li>
-					</ul>
-					<hr />
-					<Tracks tracks={tracks} />
+			<div className="tracks">
+				<div className="header">
+					<h1>{playlist.name}</h1>
 				</div>
-			</ErrorBoundary>
+				<ul className="stats right-menu">
+					<li>{tracks.length} Tracks</li>
+					<li>{new Duration(duration).toString()}</li>
+				</ul>
+				<hr />
+				<Tracks tracks={tracks} />
+			</div>
 		)
 	}
 }
 
 
-export default connect(
+export default withRouter(connect(
 	mapStateToProps,
 	dispatchToProps
-)(TracksRoute)
+)(TracksRoute) as any)

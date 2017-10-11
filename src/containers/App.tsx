@@ -1,43 +1,48 @@
+
 import * as React from 'react'
 import { connect } from 'react-redux'
 import { returntypeof } from 'react-redux-typescript'
 import { Route, Switch } from 'react-router'
 
+import ErrorBoundary from '../components/ErrorBoundary'
 import Footer from '../components/Footer'
 import Home from '../components/Home'
 import Navbar from '../components/Navbar'
 import NotFound from '../components/NotFound'
+import { BASE_URL } from '../constants'
 import { State } from '../reducers'
+import Auth from './Auth'
 import TracksRoute from './TracksRoute'
 
-import { BASE_URL } from '../constants'
 
 const mapStateToProps = (state: State) => ({
 	user: state.user,
-	pathname: state.routing.location.pathname
+	pathname: state.routing.location.pathname // TODO: Make rerender work without this
 })
-
-const dispatchToProps = {
-}
-
 const stateProps = returntypeof(mapStateToProps)
-type Props = typeof stateProps & typeof dispatchToProps
 
-const App: React.StatelessComponent<Props> = (props) => (
+type Props = typeof stateProps
+
+const App: React.StatelessComponent<Props> = ({ user }) => (
 	<div>
-		<Navbar user={props.user}/>
+		<Navbar user={user}/>
 		<main>
-			<Switch>
-				<Route exact path={BASE_URL} component={Home} />
-				<Route exact path={`/playlists/:id`} component={TracksRoute} />
-				<Route component={NotFound}/>
-			</Switch>
+			<ErrorBoundary>
+				{user ? (
+					<Switch>
+						<Route exact path={BASE_URL} component={Home} />
+						<Route exact path={`${BASE_URL}users/:user/playlists/:id`} component={TracksRoute} />
+						<Route component={NotFound}/>
+					</Switch>
+				) : (
+					<Auth />
+				)}
+			</ErrorBoundary>
 		</main>
 		<Footer />
 	</div>
 )
 
 export default connect(
-	mapStateToProps,
-	dispatchToProps
+	mapStateToProps
 )(App)

@@ -45,7 +45,7 @@ const Playlists: React.StatelessComponent<Props> = ({ playlists, select, selectA
 							{p.images.length > 0 ? <img src={p.images[p.images.length - 1].url} /> : null}
 						</td>
 						<td>
-							<Link to={`${BASE_URL}playlists/${p.id}`}>
+							<Link to={`${BASE_URL}users/${p.owner.id}/playlists/${p.id}`}>
 								<Highlight text={p.name} term={filters.text} />
 							</Link>
 						</td>

@@ -1,9 +1,20 @@
 import * as React from 'react'
+import { connect } from 'react-redux'
 import { replace } from 'react-router-redux'
 
 import { BASE_URL } from '../constants'
+import { State } from '../reducers'
 
-export default class ErrorBoundary extends React.Component<any, any> {
+
+const mapStateToProps = (state: State) => ({})
+
+const dispatchToProps = {
+	replace
+}
+
+type Props = typeof dispatchToProps
+
+class ErrorBoundary extends React.Component<Props> {
 	state = {
 		hasError: false
 	}
@@ -15,9 +26,16 @@ export default class ErrorBoundary extends React.Component<any, any> {
 	render () {
 		const { hasError } = this.state
 		if (hasError) {
-			replace(BASE_URL)
+			this.props.replace(BASE_URL)
 			return false
 		}
-		return this.props.children
+		return this.props.children as any
 	}
 }
+
+
+export default connect(
+	mapStateToProps,
+	dispatchToProps
+)(ErrorBoundary)
+
