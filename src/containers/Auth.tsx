@@ -1,11 +1,12 @@
 import * as React from 'react'
 import { connect } from 'react-redux'
 import { returntypeof } from 'react-redux-typescript'
+import { replace } from 'react-router-redux'
 import { Actions } from '../actions'
 import { BASE_URL, loginLink } from '../constants'
 import { State } from '../reducers'
 
-import { replace } from 'react-router-redux'
+import '../styles/auth.pcss'
 
 const mapStateToProps = (state: State) => ({
 	user: state.user
@@ -32,7 +33,11 @@ class Login extends React.Component<Props> {
 	}
 
 	render () {
-		return <a href={loginLink}>LOGIN</a>
+		return (
+			<div className="auth">
+				<a className="button primary" href={loginLink}>Log in to Spotify</a>
+			</div>
+		)
 	}
 }
 
