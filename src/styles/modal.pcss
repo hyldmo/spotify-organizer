@@ -2,6 +2,7 @@
 
 .modal {
     & .overlay {
+        z-index: 500;
         position: absolute;
         top: 0;
         left: 0;
@@ -11,10 +12,10 @@
     }
 
     & .content {
+        z-index: 600;
         position: absolute;
         padding: 1rem;
         border-radius: 0.5rem;    
-        right: 3rem;
         background-color: var(--background);    
     }
 }

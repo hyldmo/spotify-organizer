@@ -6,6 +6,14 @@ function playlist (state: Playlist, action: Action): Playlist {
 		return state
 
 	switch (action.type) {
+		case 'FETCH_TRACKS_SUCCESS':
+			return {
+				...state,
+				tracks: {
+					...state.tracks,
+					items: action.payload
+				}
+			}
 		case 'PLAYLISTS_SELECT':
 			return { ...state, selected: action.payload }
 		default:
@@ -18,6 +26,7 @@ export default function playlists (state: Playlist[] = [], action: Action): Play
 		case 'FETCH_PLAYLISTS_SUCCESS':
 			return action.payload.map(p => ({ ...p, selected: false }))
 		case 'PLAYLISTS_SELECT':
+		case 'FETCH_TRACKS_SUCCESS':
 			return state.map(p => playlist(p, action))
 		case 'PLAYLISTS_SELECT_ALL':
 			return state.map(p => ({ ...p, selected: action.payload }))

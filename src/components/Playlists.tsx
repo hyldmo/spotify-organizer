@@ -3,7 +3,10 @@ import { Link } from 'react-router-dom'
 
 import { Actions } from '../actions'
 import Highlight from '../components/Highlight'
-import { Filters, Playlist } from '../types'
+import { BASE_URL } from '../constants'
+import { Filters, Playlist, Sort } from '../types'
+
+import '../styles/playlists.pcss'
 
 const headers = [
 	['Name', 'name'],
@@ -18,6 +21,7 @@ type Props = {
 	changeSortMode: typeof Actions.updatePlaylistsSort
 	select: typeof Actions.selectPlaylist
 }
+
 const Playlists: React.StatelessComponent<Props> = ({ playlists, select, selectAll, changeSortMode, filters }) => (
 	playlists.length > 0 ? (
 		<table className="playlists">
@@ -27,9 +31,10 @@ const Playlists: React.StatelessComponent<Props> = ({ playlists, select, selectA
 					<th className="image"></th>
 					{headers.map(([name, key]) => (
 						<th key={name} >
-							<a onClick={e => changeSortMode(filters.order.key === key && !filters.order.asc, key)}>
-								{name} { filters.order.key === key ? filters.order.asc ? '↓' : '↑' : ''}
+							<a onClick={e => changeSortMode(getNextSortMode(filters.order.key === key, filters.order.mode), key)}>
+								{name}
 							</a>
+							&nbsp;{getSortIcon(filters.order.key === key, filters.order.mode)}
 						</th>
 					))}
 				</tr>
@@ -44,12 +49,12 @@ const Playlists: React.StatelessComponent<Props> = ({ playlists, select, selectA
 							{p.images.length > 0 ? <img src={p.images[p.images.length - 1].url} /> : null}
 						</td>
 						<td>
-							<Link to={`playlists/${p.id}`}>
+							<Link to={`${BASE_URL}users/${p.owner.id}/playlists/${p.id}`}>
 								<Highlight text={p.name} term={filters.text} />
 							</Link>
 						</td>
 						<td>
-							<Highlight text={p.owner.display_name} term={filters.text} />
+							<Highlight text={p.owner.display_name || p.owner.id} term={filters.text} />
 						</td>
 						<td>
 							{p.tracks.total}
@@ -60,5 +65,33 @@ const Playlists: React.StatelessComponent<Props> = ({ playlists, select, selectA
 		</table>
 	) : null
 )
+
+function getSortIcon (isOwn: boolean, order: Sort) {
+	if (!isOwn)
+		return null
+
+	switch (order) {
+		case Sort.Asc:
+			return <i className="fa fa-sort-amount-asc" aria-hidden="true" />
+		case Sort.Desc:
+			return <i className="fa fa-sort-amount-desc" aria-hidden="true" />
+		default:
+			return null
+	}
+}
+
+function getNextSortMode (isOwn: boolean, order: Sort): Sort {
+	if (!isOwn)
+		return Sort.Desc
+
+	switch (order) {
+		case Sort.Asc:
+			return Sort.None
+		case Sort.Desc:
+			return Sort.Asc
+		case Sort.None:
+			return Sort.Desc
+	}
+}
 
 export default Playlists

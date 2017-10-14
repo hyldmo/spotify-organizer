@@ -1,17 +1,9 @@
-import { Playlist } from './spotify'
 
-type PlaylistKey = keyof Playlist | null | string
-export type Filters = {
-	playlists: {
-		order: {
-			key: PlaylistKey
-			asc: boolean
-		}
-		text: string,
-		ownedOnly: boolean,
-		hideEmpty: boolean
-	}
+export interface Tuple<T1, T2> extends Array<any> {
+	[0]: T1
+	[1]: T2
 }
+
 
 export type User = {
 	name: string
@@ -19,5 +11,7 @@ export type User = {
 	token: string
 }
 
+export * from './filters'
+export * from './modal'
 export * from './scopes'
 export * from './spotify'
