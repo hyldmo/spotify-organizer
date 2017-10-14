@@ -1,7 +1,10 @@
-import { SagaIterator } from 'redux-saga'
-import { call, select } from 'redux-saga/effects'
 
+import { SagaIterator } from 'redux-saga'
+import { call, put, select } from 'redux-saga/effects'
+
+import { Actions } from '../actions/'
 import { State } from '../reducers'
+
 
 // TODO: Remove any
 export default function* spotifyFetch (url: string, options: RequestInit = {}, apiToken?: string): SagaIterator | any {
@@ -13,7 +16,16 @@ export default function* spotifyFetch (url: string, options: RequestInit = {}, a
 	headers.append('Authorization', `Bearer ${token}`)
 	const response: Response = yield call(fetch, `https://api.spotify.com/v1/${url}`, { headers, ...options })
 	const body = yield response.json()
-	if (!response.ok)
-		throw new Error(body.error.message)
-	return body
+
+	switch (response.status) {
+		case 200:
+		case 302:
+			return body
+		case 401:
+			yield put(Actions.logout())
+			// window.open(loginLink(), '_self')
+			break
+		default:
+			throw new Error(body.error.message)
+	}
 }

@@ -35,7 +35,7 @@ function highlightSuggestion (suggestion = '', query = ''): Chunk[] {
 	const terms = query.toLowerCase().split(' ')
 	const chunks = new Array<Chunk>(terms.length)
 
-	if (suggestion.indexOf(query) === -1) {
+	if (suggestion.toLocaleLowerCase().indexOf(query.toLocaleLowerCase()) === -1) {
 		return [new Chunk(suggestion, false)]
 	}
 
