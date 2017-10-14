@@ -39,14 +39,15 @@ class TracksRoute extends React.Component<Props> {
 		const tracks = playlist.tracks.items
 		const duration = tracks.reduce((a, b) => a + b.duration_ms, 0)
 		return (
-			<div className="tracks">
-				<div className="header">
+			<div className="manager tracks">
+				<div className="header row">
 					<h1>{playlist.name}</h1>
+					<span className="filler" />
+					<ul className="stats right-menu">
+						<li>{tracks.length} Tracks</li>
+						<li>{new Duration(duration).toString()}</li>
+					</ul>
 				</div>
-				<ul className="stats right-menu">
-					<li>{tracks.length} Tracks</li>
-					<li>{new Duration(duration).toString()}</li>
-				</ul>
 				<hr />
 				<Tracks tracks={tracks} />
 			</div>

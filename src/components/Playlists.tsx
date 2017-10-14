@@ -6,6 +6,8 @@ import Highlight from '../components/Highlight'
 import { BASE_URL } from '../constants'
 import { Filters, Playlist } from '../types'
 
+import '../styles/playlists.pcss'
+
 const headers = [
 	['Name', 'name'],
 	['Owner', 'owner.display_name'],
@@ -50,7 +52,7 @@ const Playlists: React.StatelessComponent<Props> = ({ playlists, select, selectA
 							</Link>
 						</td>
 						<td>
-							<Highlight text={p.owner.display_name} term={filters.text} />
+							<Highlight text={p.owner.display_name || p.owner.id} term={filters.text} />
 						</td>
 						<td>
 							{p.tracks.total}

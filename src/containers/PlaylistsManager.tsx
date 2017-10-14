@@ -11,7 +11,7 @@ import { State } from '../reducers'
 import { applyPlaylistsFilters } from '../utils'
 import Settings from './Settings'
 
-import '../styles/playlists.pcss'
+import '../styles/manager.pcss'
 
 const mapStateToProps = (state: State) => ({
 	playlists: state.playlists,
@@ -34,19 +34,26 @@ const PlaylistsManager: React.StatelessComponent<Props> = (props) => {
 	const { filters, select, selectAll, changeSortMode, updateFilterText, user } = props
 	const playlists = applyPlaylistsFilters(props.playlists, filters, user)
 	return (
-		<div className="playlists">
-			<div className="header">
+		<div className="manager">
+			<div className="header row">
 				<h1>Playlists</h1>
 				<Input type="text" placeholder="&#xF002; Filter" onChange={(e: any) => updateFilterText(e.target.value)} />
-				<Settings />
+				<span className="filler" />
+
+				<Modal id="settings" component={<Button icon="cog" />}>
+					<Settings />
+				</Modal>
 			</div>
-			<Modal id="dupes" component={<Button primary>Remove duplicates</Button>}>
-				<h1>HELLO</h1>
-			</Modal>
-			<ul className="stats right-menu">
-				<li>{playlists.length} Playlists</li>
-				<li>{playlists.reduce((a, b) => a + b.tracks.total, 0)} Tracks</li>
-			</ul>
+			<div className="row">
+				<Modal id="dupes" component={<Button primary>Remove duplicates</Button>}>
+					<h1>HELLO</h1>
+				</Modal>
+				<span className="filler" />
+				<ul className="stats right-menu">
+					<li>{playlists.length} Playlists</li>
+					<li>{playlists.reduce((a, b) => a + b.tracks.total, 0)} Tracks</li>
+				</ul>
+			</div>
 			<hr />
 			<Playlists
 				changeSortMode={changeSortMode}
