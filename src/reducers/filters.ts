@@ -1,11 +1,11 @@
 import { Action } from '../actions'
-import { Filters } from '../types'
+import { Filters, Sort } from '../types'
 
 const initialState: Filters = {
  	playlists: {
 		order: {
 			key: 'name',
-			asc: true
+			mode: Sort.None
 		},
 		text: '',
 		ownedOnly: false,
@@ -21,7 +21,7 @@ function playlists (state: PlaylistFilters, action: Action): PlaylistFilters {
 			...state,
 			order: {
 				key: action.meta,
-				asc: action.payload
+				mode: action.payload
 			}
 		}
 

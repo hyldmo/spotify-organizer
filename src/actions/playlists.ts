@@ -1,4 +1,4 @@
-import { Playlist, Track } from '../types'
+import { Playlist, Sort, Track } from '../types'
 import { createAction } from './actionCreator'
 
 const PlaylistActions = {
@@ -9,7 +9,7 @@ const PlaylistActions = {
 
 	selectPlaylist: createAction<'PLAYLISTS_SELECT', boolean, string>('PLAYLISTS_SELECT'),
 	selectPlaylists: createAction<'PLAYLISTS_SELECT_ALL', boolean>('PLAYLISTS_SELECT_ALL'),
-	updatePlaylistsSort: createAction<'PLAYLISTS_SORT_MODE_CHANGE', boolean, keyof Playlist | string>('PLAYLISTS_SORT_MODE_CHANGE'),
+	updatePlaylistsSort: createAction<'PLAYLISTS_SORT_MODE_CHANGE', Sort, keyof Playlist | string>('PLAYLISTS_SORT_MODE_CHANGE'),
 	updateHideEmptyFilter: createAction<'PLAYLISTS_FILTER_EMPTY_CHANGE', boolean>('PLAYLISTS_FILTER_EMPTY_CHANGE'),
 	updateOwnedFilter: createAction<'PLAYLISTS_FILTER_OWNED_CHANGE', boolean>('PLAYLISTS_FILTER_OWNED_CHANGE'),
 	updateFilterText: createAction<'PLAYLISTS_FILTER_TEXT_CHANGE', string>('PLAYLISTS_FILTER_TEXT_CHANGE')

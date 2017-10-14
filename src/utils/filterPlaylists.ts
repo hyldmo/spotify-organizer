@@ -1,6 +1,6 @@
 import * as _ from 'lodash'
 
-import { Filters, Playlist, User } from '../types'
+import { Filters, Playlist, Sort, User } from '../types'
 import { compareByKey } from './sort'
 
 export function applyPlaylistsFilters (playlists: Playlist[], filters: Filters['playlists'], user: User): Playlist[] {
@@ -10,7 +10,7 @@ export function applyPlaylistsFilters (playlists: Playlist[], filters: Filters['
 		.filter(p => filters.ownedOnly ? p.owner.id === user.name : true)
 		.filter(p => filters.hideEmpty ? p.tracks.total > 0 : true)
 
-	return filters.order !== null
-		? filteredPlaylists.sort((a, b) => compareByKey(a, b, filters.order.key, !filters.order.asc))
+	return filters.order.mode !== Sort.None
+		? filteredPlaylists.sort((a, b) => compareByKey(a, b, filters.order.key, filters.order.mode === Sort.Asc))
 		: filteredPlaylists
 }

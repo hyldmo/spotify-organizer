@@ -1,11 +1,11 @@
-import { Playlist } from './spotify'
+import { Playlist, Sort } from './spotify'
 
 type PlaylistKey = keyof Playlist | null | string
 export type Filters = {
 	playlists: {
 		order: {
 			key: PlaylistKey
-			asc: boolean
+			mode: Sort
 		}
 		text: string,
 		ownedOnly: boolean,

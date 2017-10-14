@@ -3,6 +3,10 @@ export interface Playlist extends SpotifyApi.PlaylistObjectSimplified {
 	tracks: SpotifyApi.PlaylistObjectSimplified['tracks'] & { items?: Track[] }
 }
 
+export enum Sort {
+	Asc, Desc, None
+}
+
 export type TrackMeta = {
 	added_at: SpotifyApi.PlaylistTrackObject['added_at'],
 	added_by: SpotifyApi.PlaylistTrackObject['added_by'],
