@@ -8,4 +8,5 @@ export const REDIRECT_URI = __DEV__ ? 'http://localhost:1337' : `https://eivhyl.
 
 const id = '4a3ae815c2a0443c824541a7aa94cfcc'
 const scopes = [Scopes.PLAYLIST_READ_PRIVATE, Scopes.PLAYLIST_MODIFY_PRIVATE]
-export const loginLink = urlEscape`https://accounts.spotify.com/authorize?client_id=${id}&response_type=token&redirect_uri=${REDIRECT_URI}&scope=${scopes.join(' ')}`
+export const loginLink = () =>
+	urlEscape`https://accounts.spotify.com/authorize?client_id=${id}&response_type=token&redirect_uri=${REDIRECT_URI}&scope=${scopes.join(' ')}&state=${window.location.pathname}`

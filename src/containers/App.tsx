@@ -2,7 +2,7 @@
 import * as React from 'react'
 import { connect } from 'react-redux'
 import { returntypeof } from 'react-redux-typescript'
-import { Route, Switch } from 'react-router'
+import { Route, Switch, withRouter } from 'react-router'
 
 import ErrorBoundary from '../components/ErrorBoundary'
 import Footer from '../components/Footer'
@@ -16,8 +16,7 @@ import TracksRoute from './TracksRoute'
 
 
 const mapStateToProps = (state: State) => ({
-	user: state.user,
-	pathname: state.routing.location.pathname // TODO: Make rerender work without this
+	user: state.user
 })
 const stateProps = returntypeof(mapStateToProps)
 
@@ -43,6 +42,7 @@ const App: React.StatelessComponent<Props> = ({ user }) => (
 	</div>
 )
 
-export default connect(
-	mapStateToProps
-)(App)
+export default withRouter(connect(
+	mapStateToProps,
+	{}
+)(App) as any)

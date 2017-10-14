@@ -1,6 +1,7 @@
 import * as React from 'react'
 import { connect } from 'react-redux'
 import { returntypeof } from 'react-redux-typescript'
+import Modal from './Modal'
 
 import { Actions } from '../actions'
 import Button from '../components/Button'
@@ -39,7 +40,9 @@ const PlaylistsManager: React.StatelessComponent<Props> = (props) => {
 				<Input type="text" placeholder="&#xF002; Filter" onChange={(e: any) => updateFilterText(e.target.value)} />
 				<Settings />
 			</div>
-			<Button primary>Remove duplicates</Button>
+			<Modal id="dupes" component={<Button primary>Remove duplicates</Button>}>
+				<h1>HELLO</h1>
+			</Modal>
 			<ul className="stats right-menu">
 				<li>{playlists.length} Playlists</li>
 				<li>{playlists.reduce((a, b) => a + b.tracks.total, 0)} Tracks</li>

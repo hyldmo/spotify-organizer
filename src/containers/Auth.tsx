@@ -5,6 +5,7 @@ import { replace } from 'react-router-redux'
 import { Actions } from '../actions'
 import { BASE_URL, loginLink } from '../constants'
 import { State } from '../reducers'
+import { parseQueryString } from '../utils/parseQueryString'
 
 import '../styles/auth.pcss'
 
@@ -23,7 +24,8 @@ type Props = typeof stateProps & typeof dispatchToProps
 class Login extends React.Component<Props> {
 	componentDidMount () {
 		if (location.href.indexOf('#access_token=') !== -1) {
-			this.props.tokenAquired(getToken(location.href))
+			const query = parseQueryString(location.href, true)
+			this.props.tokenAquired(query.access_token, query.state)
 		}
 	}
 
@@ -35,18 +37,10 @@ class Login extends React.Component<Props> {
 	render () {
 		return (
 			<div className="auth">
-				<a className="button primary" href={loginLink}>Log in to Spotify</a>
+				<a className="button primary" href={loginLink()}>Log in to Spotify</a>
 			</div>
 		)
 	}
-}
-
-
-function getToken (url: string) {
-	const search = '#access_token='
-	const start = url.indexOf(search) + search.length
-	const end = url.indexOf('&')
-	return url.slice(start, end)
 }
 
 export default connect(
