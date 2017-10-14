@@ -12,5 +12,6 @@ export type User = {
 }
 
 export * from './filters'
+export * from './modal'
 export * from './scopes'
 export * from './spotify'

@@ -23,9 +23,9 @@ const Tracks: React.StatelessComponent<Props> = ({ tracks }) => (
 				{tracks.map((p, index) =>
 					<tr key={p.id + index}>
 						<td>{p.name}</td>
-						<td>{p.artists.map(a => a.name).join(',')}</td>
+						<td>{p.artists.map(a => a.name).join(', ')}</td>
 						<td>{p.album.name}</td>
-						<td>{p.meta.added_by.id}</td>
+						<td>{p.meta.added_by.display_name || p.meta.added_by.id}</td>
 						<td>{new Date(p.meta.added_at).toLocaleDateString()}</td>
 						<td>{new Duration(p.duration_ms).toMinutesString()}</td>
 					</tr>
