@@ -43,7 +43,7 @@ class Modal extends React.Component<Props> {
 
 	render () {
 		const { id, open, changeModal, children } = this.props
-		const Component = React.cloneElement(this.props.component, { onClick: _ => changeModal(true, id) })
+		const Component = React.cloneElement(this.props.component, { onClick: () => changeModal(true, id) })
 		return (
 			<div>
 				{Component}

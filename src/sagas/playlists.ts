@@ -44,7 +44,7 @@ function* getTracks (action: typeof Actions.fetchTracks) {
 		offset += limit
 	} while (response.next !== null)
 
-	function* waitForPlaylists () {
+	function* waitForPlaylists (): IterableIterator<any> {
 		const playlist: Playlist = yield select<State>(s => s.playlists.find(p => p.id === id))
 		if (playlist)
 			return

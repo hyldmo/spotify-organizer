@@ -19,15 +19,17 @@ class ErrorBoundary extends React.Component<Props> {
 		hasError: false
 	}
 
-	componentDidCatch (error, info) {
+	componentDidCatch (error: Error, info: React.ErrorInfo) {
 		this.setState({ hasError: true })
 	}
 
 	render () {
 		const { hasError } = this.state
 		if (hasError) {
-			this.props.replace(BASE_URL)
-			return false
+			if (location.pathname !== BASE_URL) {
+				this.props.replace(BASE_URL)
+			}
+			return null
 		}
 		return this.props.children as any
 	}

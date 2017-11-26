@@ -7,7 +7,7 @@ export interface Tuple<T1, T2> extends Array<any> {
 
 export type User = {
 	name: string
-	image: string
+	image: string | null
 	token: string
 }
 
