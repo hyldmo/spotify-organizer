@@ -6,6 +6,7 @@ import { Filters, Modal, User } from '../types'
 import filters from './filters'
 import modals from './modals'
 import playlists from './playlists'
+import timer from './timer'
 import user from './user'
 
 export type State = Readonly<{
@@ -14,14 +15,16 @@ export type State = Readonly<{
 	modals: Modal[]
 	playlists: Playlist[]
 	filters: Filters
+	timer: number
 }>
 
 const reducers = combineReducers<State>({
-	routing,
-	user,
+	filters,
 	modals,
 	playlists,
-	filters
+	routing,
+	timer,
+	user
 })
 
 export default reducers

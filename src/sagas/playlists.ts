@@ -6,9 +6,9 @@ import spotifyApi from './spotifyFetch'
 import { Actions } from '../actions'
 import { Playlist, Track } from '../types'
 
-export default function * watchPlaylists () {
-	yield takeLatest(Actions.fetchPlaylists.type, getPlaylists),
-	yield takeLatest(Actions.fetchTracks.type, getTracks)
+export default function* () {
+	yield takeLatest<typeof Actions.fetchPlaylists>(Actions.fetchPlaylists.type, getPlaylists),
+	yield takeLatest<typeof Actions.fetchTracks>(Actions.fetchTracks.type, getTracks)
 }
 
 function* getPlaylists () {

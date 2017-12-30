@@ -1,4 +1,3 @@
-
 import * as React from 'react'
 import { connect } from 'react-redux'
 import { returntypeof } from 'react-redux-typescript'
@@ -11,6 +10,7 @@ import Navbar from '../components/Navbar'
 import NotFound from '../components/NotFound'
 import { BASE_URL } from '../constants'
 import { State } from '../reducers'
+import Alerts from './Alerts'
 import Auth from './Auth'
 import TracksRoute from './TracksRoute'
 
@@ -25,6 +25,7 @@ type Props = typeof stateProps
 const App: React.StatelessComponent<Props> = ({ user }) => (
 	<div>
 		<Navbar user={user}/>
+		<Alerts />
 		<main>
 			<ErrorBoundary>
 				{user ? (

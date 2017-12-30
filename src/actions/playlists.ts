@@ -1,7 +1,7 @@
 import { Playlist, Sort, Track } from '../types'
 import { createAction } from './actionCreator'
 
-const PlaylistActions = {
+export default {
 	fetchPlaylists: createAction<'FETCH_PLAYLISTS'>('FETCH_PLAYLISTS'),
 	playlistsFetched: createAction<'FETCH_PLAYLISTS_SUCCESS', SpotifyApi.ListOfCurrentUsersPlaylistsResponse['items']>('FETCH_PLAYLISTS_SUCCESS'),
 	fetchTracks: createAction<'FETCH_TRACKS', { owner: string, id: string }>('FETCH_TRACKS'),
@@ -14,5 +14,3 @@ const PlaylistActions = {
 	updateOwnedFilter: createAction<'PLAYLISTS_FILTER_OWNED_CHANGE', boolean>('PLAYLISTS_FILTER_OWNED_CHANGE'),
 	updateFilterText: createAction<'PLAYLISTS_FILTER_TEXT_CHANGE', string>('PLAYLISTS_FILTER_TEXT_CHANGE')
 }
-
-export default PlaylistActions
