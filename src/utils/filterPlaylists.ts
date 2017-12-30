@@ -6,6 +6,7 @@ import { compareByKey } from './sort'
 export function applyPlaylistsFilters (playlists: Playlist[], filters: Filters['playlists'], user: User): Playlist[] {
 	const filteredPlaylists = playlists
 		.slice()
+		.filter(p => p.name !== null) // Needed as spotify can return playlists that doesn't exist
 		.filter(p => {
 			const query = filters.text.toLocaleLowerCase()
 			return _.includes(p.name.toLocaleLowerCase(), query) || _.includes((p.owner.display_name || p.owner.id).toLocaleLowerCase(), query)
