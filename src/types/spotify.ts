@@ -1,6 +1,9 @@
 export interface Playlist extends SpotifyApi.PlaylistObjectSimplified {
 	selected: boolean
-	tracks: SpotifyApi.PlaylistObjectSimplified['tracks'] & { items?: Track[] }
+	tracks: SpotifyApi.PlaylistObjectSimplified['tracks'] & {
+		loaded: number
+		items?: Track[]
+	}
 }
 
 export enum Sort {

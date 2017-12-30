@@ -5,6 +5,7 @@ export default {
 	fetchPlaylists: createAction<'FETCH_PLAYLISTS'>('FETCH_PLAYLISTS'),
 	playlistsFetched: createAction<'FETCH_PLAYLISTS_SUCCESS', SpotifyApi.ListOfCurrentUsersPlaylistsResponse['items']>('FETCH_PLAYLISTS_SUCCESS'),
 	fetchTracks: createAction<'FETCH_TRACKS', { owner: string, id: string }>('FETCH_TRACKS'),
+	fetchTracksProgress: createAction<'FETCH_TRACKS_PROGRESS', number, string>('FETCH_TRACKS_PROGRESS'),
 	tracksFetched: createAction<'FETCH_TRACKS_SUCCESS', Track[], string>('FETCH_TRACKS_SUCCESS'),
 
 	selectPlaylist: createAction<'PLAYLISTS_SELECT', boolean, string>('PLAYLISTS_SELECT'),

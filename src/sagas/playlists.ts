@@ -42,6 +42,7 @@ function* getTracks (action: typeof Actions.fetchTracks) {
 		}))
 		tracks = tracks.concat(mappedTracks)
 		offset += limit
+		yield put(Actions.fetchTracksProgress(tracks.length, id))
 	} while (response.next !== null)
 
 	function* waitForPlaylists (): IterableIterator<any> {

@@ -33,8 +33,11 @@ class TracksRoute extends React.Component<Props> {
 	render () {
 		const { match, playlists } = this.props
 		const playlist = playlists.find(p => p.id === match.params.id)
-		if (playlist === undefined || playlist.tracks.items === undefined)
+		if (playlist === undefined)
 			return <Loading />
+		if (playlist.tracks.loaded < playlist.tracks.total || playlist.tracks.items === undefined)
+			return <Loading progress={{ current: playlist.tracks.loaded, total: playlist.tracks.total }} />
+
 
 		const tracks = playlist.tracks.items
 		const duration = tracks.reduce((a, b) => a + b.duration_ms, 0)
