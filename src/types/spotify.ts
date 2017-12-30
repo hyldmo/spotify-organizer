@@ -15,4 +15,5 @@ export type TrackMeta = {
 
 export interface Track extends SpotifyApi.TrackObjectFull {
 	meta: TrackMeta
+	album: SpotifyApi.AlbumObjectFull | SpotifyApi.AlbumObjectSimplified
 }
