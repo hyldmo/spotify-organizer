@@ -1,3 +1,4 @@
+export * from './deduplicate'
 export * from './duration'
 export * from './filterPlaylists'
 export * from './parseQueryString'
