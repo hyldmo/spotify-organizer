@@ -19,7 +19,8 @@ function playlist (state: Playlist, action: Action): Playlist {
 				...state,
 				tracks: {
 					...state.tracks,
-					items: action.payload
+					items: action.payload,
+					loaded: action.payload.length
 				}
 			}
 		case 'PLAYLISTS_SELECT':

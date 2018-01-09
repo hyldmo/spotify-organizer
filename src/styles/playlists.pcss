@@ -1,42 +1,11 @@
 @import "./variables.pcss";
 
 .playlists {
-	width: 100%;
-	border-collapse: collapse;
-	
 	& th.select, & th.image {
 		width: 2rem;
 	}
-
-	& th, & td {
-		text-align: left;
-		padding: 0.5rem;
-		border: none;
-	}
-
-	& td {
-		line-height: 0.7;
-	}
-
 	& .images img {
 		height: 2rem;
 		width: 2rem;
-	}
-
-	& tr, & td {
-		height: 2rem;
-	}
-
-	& tbody {
-		& tr {
-			border-top: 1px solid var(--background-highlight);
-			&:hover {
-				background-color: var(--background-highlight);
-			}
-		}
-	}
-
-	& .highlighted {
-		background-color: gray(100%, 20%);
 	}
 }   

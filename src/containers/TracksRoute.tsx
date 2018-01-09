@@ -10,7 +10,7 @@ import Tracks from '../components/Tracks'
 import { State as ReduxState } from '../reducers'
 import { Duration } from '../utils'
 
-import '../styles/playlists.pcss'
+import '../styles/tracks.pcss'
 
 const mapStateToProps = (state: ReduxState) => ({
 	playlists: state.playlists
@@ -44,7 +44,15 @@ class TracksRoute extends React.Component<Props> {
 		return (
 			<div className="manager tracks">
 				<div className="header row">
-					<h1>{playlist.name}</h1>
+					{playlist.images.length > 0
+						? <img src={playlist.images.reduce((a, b) => (a.height || 0 > (b.height || 0)) ? a : b).url} />
+						: null}
+					<div className="info">
+						{playlist.collaborative && <p><strong>Collaborative Playlist</strong></p>}
+						<h1>{playlist.name}</h1>
+						<p>TODO: Fetch description{playlist.description}</p>
+						<p>Created by: <strong>{playlist.owner.display_name || playlist.owner.id}</strong></p>
+					</div>
 					<span className="filler" />
 					<ul className="stats right-menu">
 						<li>{tracks.length} Tracks</li>

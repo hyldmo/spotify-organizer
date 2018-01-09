@@ -1,5 +1,6 @@
 export interface Playlist extends SpotifyApi.PlaylistObjectSimplified {
 	selected: boolean
+	description?: SpotifyApi.PlaylistObjectFull['description']
 	tracks: SpotifyApi.PlaylistObjectSimplified['tracks'] & {
 		loaded: number
 		items?: Track[]
