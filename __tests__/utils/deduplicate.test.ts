@@ -89,7 +89,7 @@ describe(pullTracks.name, () => {
 			makeTrack('song', 'artist', 'album', 0, 'id3')
 		]
 
-		const deduplicatedTracks = pullTracks(source, tracksToRemove, CompareType.Id)
+		const deduplicatedTracks = pullTracks(source, tracksToRemove, CompareType.SongId)
 
 		expect(deduplicatedTracks).toEqual([source[0]])
 	})

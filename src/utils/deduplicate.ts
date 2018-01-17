@@ -3,7 +3,7 @@ import * as memoize from 'memoizee'
 import { Track } from '../types'
 
 export enum CompareType {
-	Id,
+	SongId,
 	Name,
 	NameAndAlbum,
 	NameAndDuration
@@ -43,7 +43,7 @@ function compareTrack (trackA: Track, trackB: Track, compareType: CompareType): 
  * @param compareType The comparison type. Note that tracks are always compared by track and artist id
  * @returns Returns the new tracklist with unique tracks.
  */
-export function deduplicate (tracks: Track[], compareType = CompareType.Id): Track[] {
+export function deduplicate (tracks: Track[], compareType = CompareType.SongId): Track[] {
 	return  uniqWith(tracks, (a, b) => compareTrack(a, b, compareType))
 }
 
@@ -54,6 +54,6 @@ export function deduplicate (tracks: Track[], compareType = CompareType.Id): Tra
  * @param compareType The comparison type. Note that tracks are always compared by track and artist id
  * @returns Returns the tracklist with the tracks removed.
  */
-export function pullTracks (source: Track[], tracksToRemove: Track[], compareType = CompareType.Id): Track[] {
+export function pullTracks (source: Track[], tracksToRemove: Track[], compareType = CompareType.SongId): Track[] {
 	return differenceWith(source, tracksToRemove, (a, b) => compareTrack(a, b, compareType))
 }
