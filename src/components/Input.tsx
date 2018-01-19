@@ -6,7 +6,7 @@ interface Props extends React.HTMLProps<HTMLInputElement> {
 }
 
 const Input: React.StatelessComponent<Props> = ({ label, ...props }) => (
-	<label className={props.type}>
+	<label className={`input ${props.type}`}>
 		<input {...props} />
 		<span className="label">{label}</span>
 	</label>
