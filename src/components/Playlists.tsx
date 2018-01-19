@@ -6,8 +6,6 @@ import Highlight from '../components/Highlight'
 import { BASE_URL } from '../constants'
 import { Filters, Playlist, Sort } from '../types'
 
-import '../styles/playlists.pcss'
-
 const headers = [
 	['Name', 'name'],
 	['Owner', 'owner.display_name'],

@@ -1,7 +1,5 @@
 import * as React from 'react'
 
-import '../styles/loading.pcss'
-
 type Props = {
 	progress?: {
 		current: number

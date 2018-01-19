@@ -11,8 +11,6 @@ import { State } from '../reducers'
 import { applyPlaylistsFilters, CompareType } from '../utils'
 import Settings from './Settings'
 
-import '../styles/manager.pcss'
-
 const mapStateToProps = (state: State) => ({
 	playlists: state.playlists,
 	filters: state.filters.playlists,
@@ -36,7 +34,7 @@ const PlaylistsManager: React.StatelessComponent<Props> = (props) => {
 		<div className="manager">
 			<div className="header row">
 				<h1>Playlists</h1>
-				<Input type="text" placeholder="&#xF002; Filter" onChange={(e: any) => updateFilterText(e.target.value)} />
+				<input type="text" placeholder="&#xF002; Filter" onChange={(e: any) => updateFilterText(e.target.value)} />
 				<span className="filler" />
 
 				<Modal id="settings" component={<Button icon="cog" />}>
@@ -48,11 +46,9 @@ const PlaylistsManager: React.StatelessComponent<Props> = (props) => {
 					<form>
 						<strong>Select duplicate criteria</strong>
 						{Object.keys(CompareType).filter(key => isNaN(Number(key))).map(key =>
-							<label className="radio" key={key}>
-								<input name="comparetype" type="radio" value={key} />
-								<span className="label">{key.replace(/([A-Z])/g, ' $1')}</span>
-							</label>
+							<Input name="comparetype" type="radio" value={key} label={key.replace(/([A-Z])/g, ' $1').trimLeft()} />
 						)}
+						<Input name="advanced" type="checkbox" label="Advanced mode" />
 					</form>
 				</Modal>
 				<span className="filler" />

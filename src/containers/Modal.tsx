@@ -6,8 +6,6 @@ import { Actions } from '../actions'
 import { State } from '../reducers'
 import { } from '../reducers/modals'
 
-import '../styles/modal.pcss'
-
 type OwnProps = {
 	id: string
 	component: any

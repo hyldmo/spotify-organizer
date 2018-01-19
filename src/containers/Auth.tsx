@@ -7,8 +7,6 @@ import { BASE_URL, loginLink } from '../constants'
 import { State } from '../reducers'
 import { parseQueryString } from '../utils/parseQueryString'
 
-import '../styles/auth.pcss'
-
 const mapStateToProps = (state: State) => ({
 	user: state.user
 })

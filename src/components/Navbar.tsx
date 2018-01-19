@@ -4,9 +4,6 @@ import { Link } from 'react-router-dom'
 import { BASE_URL } from '../constants'
 import { User } from '../types'
 
-import '../styles/navbar.pcss'
-
-
 type Props = {
 	user: User
 }

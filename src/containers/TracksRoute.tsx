@@ -10,8 +10,6 @@ import Tracks from '../components/Tracks'
 import { State as ReduxState } from '../reducers'
 import { Duration } from '../utils'
 
-import '../styles/tracks.pcss'
-
 const mapStateToProps = (state: ReduxState) => ({
 	playlists: state.playlists
 })
