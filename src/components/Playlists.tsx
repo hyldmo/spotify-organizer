@@ -6,8 +6,6 @@ import Highlight from '../components/Highlight'
 import { BASE_URL } from '../constants'
 import { Filters, Playlist, Sort } from '../types'
 
-import '../styles/playlists.pcss'
-
 const headers = [
 	['Name', 'name'],
 	['Owner', 'owner.display_name'],
@@ -46,7 +44,7 @@ const Playlists: React.StatelessComponent<Props> = ({ playlists, select, selectA
 							<input type="checkbox" checked={p.selected} onChange={e => select(e.target.checked, p.id)} />
 						</td>
 						<td className="images">
-							{p.images.length > 0 ? <img src={p.images[p.images.length - 1].url} /> : null}
+							{p.images.length > 0 ? <img src={p.images.slice().sort(i => i.height as number)[0].url} /> : null}
 						</td>
 						<td>
 							<Link to={`${BASE_URL}users/${p.owner.id}/playlists/${p.id}`}>

@@ -4,8 +4,6 @@ import { returntypeof } from 'react-redux-typescript'
 import { Actions } from '../actions'
 import { State } from '../reducers'
 
-import '../styles/settings.pcss'
-
 const mapStateToProps = (state: State) => ({
 	filters: state.filters.playlists
 })

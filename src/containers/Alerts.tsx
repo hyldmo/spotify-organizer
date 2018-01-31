@@ -5,8 +5,6 @@ import { Actions } from '../actions'
 
 import { State } from '../reducers'
 
-import '../styles/alerts.pcss'
-
 const mapStateToProps = (state: State) => ({
 	timer: state.timer
 })

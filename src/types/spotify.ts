@@ -1,5 +1,6 @@
 export interface Playlist extends SpotifyApi.PlaylistObjectSimplified {
 	selected: boolean
+	description?: SpotifyApi.PlaylistObjectFull['description']
 	tracks: SpotifyApi.PlaylistObjectSimplified['tracks'] & {
 		loaded: number
 		items?: Track[]
@@ -16,6 +17,18 @@ export type TrackMeta = {
 	is_local: SpotifyApi.PlaylistTrackObject['is_local']
 }
 
-export interface Track extends SpotifyApi.TrackObjectFull {
+
+export interface Track {
+	id: SpotifyApi.TrackObjectFull['id']
+	name: SpotifyApi.TrackObjectFull['name']
+	artists: Array<{
+		id: SpotifyApi.ArtistObjectSimplified['id']
+		name: SpotifyApi.ArtistObjectSimplified['name']
+	}>
+	album: {
+		id: SpotifyApi.AlbumObjectSimplified['id']
+		name: SpotifyApi.AlbumObjectSimplified['name']
+	}
+	duration_ms: SpotifyApi.TrackObjectFull['duration_ms']
 	meta: TrackMeta
 }

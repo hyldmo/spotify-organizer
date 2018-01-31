@@ -33,7 +33,17 @@ function* getTracks (action: typeof Actions.fetchTracks) {
 	do {
 		response = yield call(spotifyApi, `users/${owner}/playlists/${id}/tracks?offset=${offset}&limit=${limit}`)
 		const mappedTracks = response.items.map<Track>(t => ({
-			...t.track,
+			id: t.track.id,
+			name: t.track.name,
+			artists: t.track.artists.map(artist => ({
+				id: artist.id,
+				name: artist.name
+			})),
+			album: {
+				id: t.track.album.id,
+				name: t.track.album.name
+			},
+			duration_ms: t.track.duration_ms,
 			meta: {
 				added_at: t.added_at,
 				added_by: t.added_by,

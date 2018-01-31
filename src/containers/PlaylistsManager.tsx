@@ -8,10 +8,8 @@ import Button from '../components/Button'
 import Input from '../components/Input'
 import Playlists from '../components/Playlists'
 import { State } from '../reducers'
-import { applyPlaylistsFilters } from '../utils'
+import { applyPlaylistsFilters, CompareType } from '../utils'
 import Settings from './Settings'
-
-import '../styles/manager.pcss'
 
 const mapStateToProps = (state: State) => ({
 	playlists: state.playlists,
@@ -31,13 +29,12 @@ const stateProps = returntypeof(mapStateToProps)
 type Props = typeof stateProps & typeof dispatchToProps
 
 const PlaylistsManager: React.StatelessComponent<Props> = (props) => {
-	const { filters, select, selectAll, changeSortMode, updateFilterText, user } = props
-	const playlists = applyPlaylistsFilters(props.playlists, filters, user)
+	const { filters, select, selectAll, changeSortMode, updateFilterText, user } = props; const playlists = applyPlaylistsFilters(props.playlists, filters, user)
 	return (
 		<div className="manager">
 			<div className="header row">
 				<h1>Playlists</h1>
-				<Input type="text" placeholder="&#xF002; Filter" onChange={(e: any) => updateFilterText(e.target.value)} />
+				<input type="text" placeholder="&#xF002; Filter" onChange={(e: any) => updateFilterText(e.target.value)} />
 				<span className="filler" />
 
 				<Modal id="settings" component={<Button icon="cog" />}>
@@ -46,7 +43,13 @@ const PlaylistsManager: React.StatelessComponent<Props> = (props) => {
 			</div>
 			<div className="row">
 				<Modal id="dupes" component={<Button primary>Remove duplicates</Button>}>
-					<h1>HELLO</h1>
+					<form>
+						<strong>Select duplicate criteria</strong>
+						{Object.keys(CompareType).filter(key => isNaN(Number(key))).map(key =>
+							<Input name="comparetype" type="radio" value={key} label={key.replace(/([A-Z])/g, ' $1').trimLeft()} />
+						)}
+						<Input name="advanced" type="checkbox" label="Advanced mode" />
+					</form>
 				</Modal>
 				<span className="filler" />
 				<ul className="stats right-menu">

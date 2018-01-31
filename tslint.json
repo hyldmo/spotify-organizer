@@ -20,6 +20,7 @@
         ],
         "interface-name": [false],
         "interface-over-type-literal": false,
+        "linebreak-style": [ true, "LF" ],
         "max-line-length": [true, 180],
         "member-access": false,
         "no-consecutive-blank-lines": [true, 2],
