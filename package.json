@@ -1,6 +1,6 @@
 {
     "name": "spotify-organizer",
-    "repository": "https://github.com/eivhyl/spotify-organizer",
+    "repository": "https://github.com/hyldmo/spotify-organizer",
     "version": "0.3.0",
     "scripts": {
         "dev": "cross-env NODE_ENV=development webpack-dev-server --config webpack.development.config.js --progress --colors",
