@@ -44,4 +44,3 @@ export default function playlists (state: Playlist[] = [], action: Action): Play
 			return state
 	}
 }
-

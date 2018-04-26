@@ -17,7 +17,6 @@ export type TrackMeta = {
 	is_local: SpotifyApi.PlaylistTrackObject['is_local']
 }
 
-
 export interface Track {
 	id: SpotifyApi.TrackObjectFull['id']
 	name: SpotifyApi.TrackObjectFull['name']

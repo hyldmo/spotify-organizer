@@ -1,10 +1,10 @@
 {
-
     "extends": [
         "tslint-eslint-rules",
         "tslint:recommended"
     ],
     "rules": {
+        "array-bracket-spacing": [true, "never"],
         "arrow-parens": false,
         "class-name": true,
         "comment-format": [
@@ -13,17 +13,19 @@
         ],
         "curly": false,
         "eofline": true,
-        "indent": [
-            true,
-            "tabs",
-            4
-        ],
+        "indent": [true, "tabs"],
+        "ter-indent": [true, "tab", {
+            "SwitchCase": 1,
+            "MemberExpression": 1,
+            "ArrayExpression": 1,
+            "ObjectExpression": 1
+        }],
         "interface-name": [false],
         "interface-over-type-literal": false,
-        "linebreak-style": [ true, "LF" ],
+        "linebreak-style": [true, "LF"],
         "max-line-length": [true, 180],
         "member-access": false,
-        "no-consecutive-blank-lines": [true, 2],
+        "no-consecutive-blank-lines": [true, 1],
         "no-console": [true],
         "no-internal-module": true,
         "no-trailing-whitespace": true,

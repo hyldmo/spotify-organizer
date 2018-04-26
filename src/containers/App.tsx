@@ -1,8 +1,6 @@
 import * as React from 'react'
 import { connect } from 'react-redux'
-import { returntypeof } from 'react-redux-typescript'
 import { Route, Switch, withRouter } from 'react-router'
-
 import ErrorBoundary from '../components/ErrorBoundary'
 import Footer from '../components/Footer'
 import Home from '../components/Home'
@@ -14,13 +12,11 @@ import Alerts from './Alerts'
 import Auth from './Auth'
 import TracksRoute from './TracksRoute'
 
-
 const mapStateToProps = (state: State) => ({
 	user: state.user
 })
-const stateProps = returntypeof(mapStateToProps)
 
-type Props = typeof stateProps
+type Props = ReturnType<typeof mapStateToProps>
 
 const App: React.StatelessComponent<Props> = ({ user }) => (
 	<div>

@@ -1,6 +1,5 @@
 import * as React from 'react'
 import { connect } from 'react-redux'
-import { returntypeof } from 'react-redux-typescript'
 import { replace } from 'react-router-redux'
 import { Actions } from '../actions'
 import { BASE_URL, loginLink } from '../constants'
@@ -16,8 +15,7 @@ const dispatchToProps = {
 	replace
 }
 
-const stateProps = returntypeof(mapStateToProps)
-type Props = typeof stateProps & typeof dispatchToProps
+type Props = ReturnType<typeof mapStateToProps> & typeof dispatchToProps
 
 class Login extends React.Component<Props> {
 	componentDidMount () {

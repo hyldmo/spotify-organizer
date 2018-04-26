@@ -11,7 +11,7 @@ function makeTrack (name: string, artists: string | string[], album: string, dur
 		},
 		artists: artists instanceof Array
 			? artists.map(a => ({ id: a, name: a }))
-			: [ { id: artists, name: artists } ],
+			: [{ id: artists, name: artists }],
 		duration_ms: duration,
 		meta: {
 			added_at: '',

@@ -4,10 +4,8 @@
 		"sourceMap": true,
 		"allowJs": true,
 		"checkJs": true,
-		"strict": false,
-		"noImplicitAny": true,
-		"strictNullChecks": true,
-		"noStrictGenericChecks": false,
+		"strict": true,
+		"strictFunctionTypes": false, //blocked by https://github.com/Microsoft/TypeScript/issues/12400
 		"forceConsistentCasingInFileNames": true,
 		"noUnusedLocals": true,
 		"module": "commonjs",

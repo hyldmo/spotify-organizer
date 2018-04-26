@@ -15,7 +15,6 @@ const store = configureStore(initialState as State)
 
 store.dispatch(Actions.loadUser())
 
-
 export default class Root extends React.Component {
 	state = {
 		error: null
@@ -51,4 +50,3 @@ export default class Root extends React.Component {
 		)
 	}
 }
-

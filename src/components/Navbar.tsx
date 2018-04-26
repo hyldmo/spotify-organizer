@@ -5,7 +5,7 @@ import { BASE_URL } from '../constants'
 import { User } from '../types'
 
 type Props = {
-	user: User
+	user: User | null // TODO
 }
 // TODO: Handle user not having image
 const Navbar: React.StatelessComponent<Props> = ({ user }) => (

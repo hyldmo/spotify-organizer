@@ -4,7 +4,7 @@ import * as ReactDOM from 'react-dom'
 import App from './containers/App'
 import Root from './containers/Root'
 
-import './styles/main.pcss'
+import './styles/main.scss'
 
 const rootDiv = document.getElementById('root')
 
@@ -23,4 +23,3 @@ if (module.hot) {
 	})
 }
 render(App)
-

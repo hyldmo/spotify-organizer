@@ -23,7 +23,6 @@ it('parses 82.423 days to 82 days 10 hours 9 minutes 7 seconds', () => {
 	expect(duration.seconds).toBe(7)
 })
 
-
 it('parses 5.6 days to 5 days 14 hours 24 minutes', () => {
 	const duration = new Duration(makeMsDuration(5, 14, 24))
 

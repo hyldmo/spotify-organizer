@@ -5,12 +5,11 @@ import { Actions } from '../actions'
 import { State } from '../reducers'
 import { sleep } from '../utils'
 
-
 // TODO: Remove any
 export default function* spotifyFetch (url: string, options: RequestInit = {}, apiToken?: string): SagaIterator | any {
 	const token = apiToken !== undefined
 		? apiToken
-		: yield select((state: State) => state.user.token)
+		: yield select((state: State) => state.user && state.user.token)
 
 	const headers = new Headers({
 		Authorization: `Bearer ${token}`

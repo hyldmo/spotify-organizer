@@ -11,4 +11,3 @@ export default function user (state: User | null = null, action: Action): User |
 			return state
 	}
 }
-

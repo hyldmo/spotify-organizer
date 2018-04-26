@@ -1,13 +1,12 @@
 import * as React from 'react'
 import { connect } from 'react-redux'
-import { returntypeof } from 'react-redux-typescript'
-
 import { Actions } from '../actions'
 import { State } from '../reducers'
 import { } from '../reducers/modals'
 
 type OwnProps = {
 	id: string
+	disabled?: boolean
 	component: any
 }
 
@@ -24,9 +23,7 @@ const dispatchToProps = {
 	changeModal: Actions.changeModal
 }
 
-const stateProps = returntypeof(mapStateToProps)
-
-type Props = OwnProps & typeof stateProps & typeof dispatchToProps
+type Props = OwnProps & ReturnType<typeof mapStateToProps> & typeof dispatchToProps
 
 class Modal extends React.Component<Props> {
 	componentDidMount () {
@@ -40,8 +37,8 @@ class Modal extends React.Component<Props> {
 	}
 
 	render () {
-		const { id, open, changeModal, children } = this.props
-		const Component = React.cloneElement(this.props.component, { onClick: () => changeModal(true, id) })
+		const { id, open, disabled, changeModal, children } = this.props
+		const Component = React.cloneElement(this.props.component, { onClick: () => !disabled && changeModal(true, id) })
 		return (
 			<div>
 				{Component}
