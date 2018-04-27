@@ -48,6 +48,8 @@ class PlaylistsManager extends React.Component<Props> {
 
 	render () {
 		const { filters, select, selectAll, changeSortMode, updateFilterText, user } = this.props
+		if (user === null)
+			return
 		const { mode } = this.state
 		const playlists = applyPlaylistsFilters(this.props.playlists, filters, user)
 		const disabled = playlists.filter(p => p.selected).length === 0
@@ -83,7 +85,7 @@ class PlaylistsManager extends React.Component<Props> {
 								{Object.keys(CompareType).filter(key => isNaN(Number(key))).map(key =>
 									<Input key={key} name="comparetype" type="radio" value={key} label={key.replace(/([A-Z])/g, ' $1').trimLeft()} />
 								)}
-								<Input name="advanced" type="checkbox" label="Advanced mode"
+								<Input name="advanced" type="checkbox" label="From another playlist"
 									onChange={e => this.handleInputChange(e)}
 								/>
 							</div>
@@ -100,6 +102,7 @@ class PlaylistsManager extends React.Component<Props> {
 						playlists={playlists}
 					/>
 					: <PullPlaylist
+						user={user}
 						filters={filters}
 						select={select}
 						selectAll={selectAll}

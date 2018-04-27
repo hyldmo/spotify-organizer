@@ -2,7 +2,7 @@ import * as React from 'react'
 import { Actions } from '../actions'
 import Highlight from '../components/Highlight'
 import { initialState, playlists as updateFilters } from '../reducers/filters'
-import { Filters as PlaylistFilters, Playlist } from '../types'
+import { Filters as PlaylistFilters, Playlist, User } from '../types'
 import { applyPlaylistsFilters, getNextSortMode, getSortIcon } from '../utils'
 
 const headers = [
@@ -14,6 +14,7 @@ const headers = [
 type Filters = PlaylistFilters['playlists']
 
 type Props = {
+	user: User
 	playlists: Playlist[]
 	filters?: Filters
 	selectAll: typeof Actions.selectPlaylists
@@ -43,10 +44,10 @@ class PullPlaylist extends React.Component<Props, State> {
 	}
 
 	render () {
-		const { playlists, select, selectAll } = this.props
+		const { playlists, select, selectAll, user } = this.props
 		const { aFilters, bFilters } = this.state
 		const aPlaylists = applyPlaylistsFilters(playlists, aFilters)
-		const bPlaylists = applyPlaylistsFilters(playlists, bFilters)
+		const bPlaylists = applyPlaylistsFilters(playlists, bFilters).filter(pl => pl.collaborative || pl.owner.id === user.name)
 		return (
 			<div className="playlists-compare">
 				<div className="playlists">
@@ -89,7 +90,6 @@ class PullPlaylist extends React.Component<Props, State> {
 					</table>
 				</div>
 				<div className="playlists">
-
 					<table>
 						<thead>
 							<tr>
