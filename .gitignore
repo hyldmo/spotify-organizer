@@ -9,3 +9,5 @@ webpack.*.js
 compilation-stats.json
 
 src/**/*.scss.d.ts
+
+coverage/

@@ -8,7 +8,7 @@ type Props = {
 }
 
 const Button: React.StatelessComponent<Props> = ({ primary, disabled, icon, children, onClick }) =>  (
-	<button className={`button ${primary && 'primary'} ${disabled && 'disabled'}`} onClick={onClick}>
+	<button className={`button ${primary && 'primary'} ${disabled && 'disabled'}`} onClick={e => !disabled && onClick && onClick(e)}>
 		{icon && <i className={`fa fa-${icon}`} aria-hidden="true" />}
 		{icon && children && <span>&nbsp;</span>}
 		{children}

@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Sort } from '../types'
+import { Playlist, Sort, User } from '../types'
 export function getNextSortMode (isOwn: boolean, order: Sort): Sort {
 	if (!isOwn)
 		return Sort.Desc
@@ -26,4 +26,8 @@ export function getSortIcon (isOwn: boolean, order: Sort) {
 		default:
 			return null
 	}
+}
+
+export function canModifyPlaylist (playlist: Playlist, user: User) {
+	return playlist.collaborative || playlist.owner.id === user.name
 }

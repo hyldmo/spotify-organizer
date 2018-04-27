@@ -19,10 +19,11 @@ type Props = {
 	filters?: Filters
 	selectAll: typeof Actions.selectPlaylists
 	select: typeof Actions.selectPlaylist
+	onPlaylistSelect: (playlist: Playlist) => void
 }
 
 type State = {
-	playlistToRemoveFrom: string | null
+	playlistToRemoveFrom: Playlist | null
 	aFilters: Filters
 	bFilters: Filters
 }
@@ -109,7 +110,7 @@ class PullPlaylist extends React.Component<Props, State> {
 							{bPlaylists.map(p =>
 								<tr key={p.id}>
 									<td>
-										<input type="radio" name="playlist" value={p.id} onChange={() => this.setState({ playlistToRemoveFrom: p.id })} />
+										<input type="radio" name="playlist" value={p.id} onChange={() => this.setState({ playlistToRemoveFrom: p })} />
 									</td>
 									<td className="images">
 										{p.images.length > 0 ? <img src={p.images.slice().sort(i => i.height as number)[0].url} /> : null}

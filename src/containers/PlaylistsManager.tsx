@@ -7,7 +7,7 @@ import Playlists from '../components/Playlists'
 import PullPlaylist from '../components/PullPlaylist'
 import { State } from '../reducers'
 import { OperationMode } from '../types/index'
-import { applyPlaylistsFilters, CompareType } from '../utils'
+import { applyPlaylistsFilters, canModifyPlaylist, CompareType } from '../utils'
 import Modal from './Modal'
 import Settings from './Settings'
 
@@ -21,14 +21,17 @@ const dispatchToProps = {
 	selectAll: Actions.selectPlaylists,
 	select: Actions.selectPlaylist,
 	changeSortMode: Actions.updatePlaylistsSort,
-	updateFilterText: Actions.updateFilterText
+	updateFilterText: Actions.updateFilterText,
+	deduplicate: Actions.deduplicatePlaylists
 }
 
 type Props = ReturnType<typeof mapStateToProps> & typeof dispatchToProps
 
 class PlaylistsManager extends React.Component<Props> {
 	state = {
-		mode: OperationMode.None
+		mode: OperationMode.None,
+		compareType: CompareType.SongId,
+		secondPlaylist: null
 	}
 
 	changeMode (mode: OperationMode) {
@@ -47,12 +50,13 @@ class PlaylistsManager extends React.Component<Props> {
 	}
 
 	render () {
-		const { filters, select, selectAll, changeSortMode, updateFilterText, user } = this.props
+		const { filters, select, selectAll, changeSortMode, updateFilterText, user, deduplicate } = this.props
+		const { mode, compareType, secondPlaylist } = this.state
 		if (user === null)
 			return
-		const { mode } = this.state
 		const playlists = applyPlaylistsFilters(this.props.playlists, filters, user)
 		const disabled = playlists.filter(p => p.selected).length === 0
+		const removeTracks = mode === OperationMode.Duplicates || mode === OperationMode.PullTracks
 		return (
 			<div className="manager">
 				<div className="header row">
@@ -65,16 +69,28 @@ class PlaylistsManager extends React.Component<Props> {
 					</Modal>
 				</div>
 				<div className="row">
-					<Button primary disabled={disabled} onClick={e => this.changeMode(OperationMode.Duplicates)}>
-						Remove duplicates
-					</Button>
+					{removeTracks ? <>
+						<Button onClick={e => this.changeMode(OperationMode.None)}>
+							Cancel
+						</Button>
+						<Button primary
+							disabled={disabled && (mode === OperationMode.PullTracks ? secondPlaylist !== null : playlists.every(pl => canModifyPlaylist(pl, user)))}
+							onClick={e => removeTracks && deduplicate({ source: playlists.filter(pl => pl.selected), target: secondPlaylist }, compareType)}
+						>
+							Confirm
+						</Button>
+					</> :
+						<Button primary disabled={disabled} onClick={e => this.changeMode(OperationMode.Duplicates)}>
+							Remove duplicates
+						</Button>
+					}
 					<span className="filler" />
 					<ul className="stats right-menu">
 						<li>{playlists.length} Playlists</li>
 						<li>{playlists.reduce((a, b) => a + b.tracks.total, 0)} Tracks</li>
 					</ul>
 				</div>
-				{(mode === OperationMode.Duplicates || mode === OperationMode.PullTracks) && (
+				{removeTracks && (
 					<div className="row">
 						<form className="horizontal">
 							<div className="row">
@@ -83,7 +99,9 @@ class PlaylistsManager extends React.Component<Props> {
 							</div>
 							<div className="row">
 								{Object.keys(CompareType).filter(key => isNaN(Number(key))).map(key =>
-									<Input key={key} name="comparetype" type="radio" value={key} label={key.replace(/([A-Z])/g, ' $1').trimLeft()} />
+									<Input key={key} name="comparetype" type="radio" value={key} onClick={() => this.setState({ compareType: key })}
+										label={key.replace(/([A-Z])/g, ' $1').trimLeft()}
+									/>
 								)}
 								<Input name="advanced" type="checkbox" label="From another playlist"
 									onChange={e => this.handleInputChange(e)}
@@ -107,6 +125,7 @@ class PlaylistsManager extends React.Component<Props> {
 						select={select}
 						selectAll={selectAll}
 						playlists={playlists}
+						onPlaylistSelect={id => this.setState({ secondPlaylistId: id })}
 					/>}
 			</div>
 		)
