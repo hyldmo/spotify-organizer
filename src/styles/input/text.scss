@@ -4,7 +4,7 @@ input[type="text"] {
 	border-radius: 0.25rem;
 	outline: none;
 	padding: 0.5rem;
-	color: var(--text-color-inactive);
+	color: $text-color-inactive;
 
 	&::placeholder {
 		font-family: FontAwesome, sans-serif;
@@ -13,13 +13,13 @@ input[type="text"] {
 		}
 	}
 	&:hover::placeholder {
-		color: var(--text-color);
+		color: $text-color;
 	}
 
 	&:focus {
 
-		color: var(--text-color);
-		background-color: var(--input-focus);
+		color: $text-color;
+		background-color: $input-focus;
 	}
 }
 

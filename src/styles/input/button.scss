@@ -8,33 +8,33 @@ a.button:hover {
 	cursor: pointer;
 	background: none;
 	outline: 0;
-	border: 1px solid color(var(--text-color) alpha(-20%));
+	border: 1px solid transparentize($text-color, 0.2);
 	border-radius: 3rem;
 	padding: 0.5rem;
-	color: var(--text-color);
+	color: $text-color;
 	text-align: center;
 
 	&:active {
-		border-color: var(--text-color-inactive);
-		color: var(--text-color-inactive);
+		border-color: $text-color-inactive;
+		color: $text-color-inactive;
 	}
 
 	&:hover:not(:active) {
-		background-color: var(--background-highlight);
+		background-color: $background-highlight;
 		border-width: 2px;
 		padding: calc(0.5rem - 1px);
 	}
 
 	&.primary {
 		border: none;
-		background-color: var(--primary);
+		background-color: $primary;
 
 		&:hover {
-			background-color: var(--primary-light);
+			background-color: $primary-light;
 			padding: 0.5rem;
 		}
 		&:active {
-			background-color: var(--primary-dark);
+			background-color: $primary-dark;
 		}
 
 		&.disabled {

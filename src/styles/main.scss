@@ -9,7 +9,7 @@
 }
 
 a {
-	color: var(--text-color);
+	color: $text-color;
 	text-decoration: none;
 
 	&:hover {
@@ -20,8 +20,8 @@ a {
 html, body, #root {
 	height: 100%;
 	overflow-y: overlay;
-	background-color: var(--background);
-	color: var(--text-color);
+	background-color: $background;
+	color: $text-color;
 }
 
 #root > div {
@@ -33,11 +33,11 @@ html, body, #root {
 		"left  main   right"
 		"left  footer right";
 
-	grid-template-rows: var(--header-height) auto 1fr 4rem;
-	grid-template-columns: var(--grid-columns);
+	grid-template-rows: $header-height auto 1fr 4rem;
+	grid-template-columns: $grid-columns;
 }
 
-@media (--medium) {
+@include tablet {
 	#root > div, #root > div > header {
 		grid-template-columns: 0 100% 0;
 	}

@@ -1,5 +1,5 @@
 .modal {
-	& .overlay {
+	.overlay {
 		z-index: 500;
 		position: absolute;
 		top: 0;
@@ -9,11 +9,11 @@
 		background-color: gray(100%, 10%);
 	}
 
-	& .content {
+	.content {
 		z-index: 600;
 		position: absolute;
 		padding: 1rem;
 		border-radius: 0.5rem;
-		background-color: var(--background);
+		background-color: $background;
 	}
 }

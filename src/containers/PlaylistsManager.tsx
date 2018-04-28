@@ -74,7 +74,9 @@ class PlaylistsManager extends React.Component<Props> {
 							Cancel
 						</Button>
 						<Button primary
-							disabled={disabled && (mode === OperationMode.PullTracks ? secondPlaylist !== null : playlists.every(pl => canModifyPlaylist(pl, user)))}
+							disabled={disabled || mode === OperationMode.PullTracks
+								? secondPlaylist === null
+								: playlists.every(pl => canModifyPlaylist(pl, user))}
 							onClick={e => removeTracks && deduplicate({ source: playlists.filter(pl => pl.selected), target: secondPlaylist }, compareType)}
 						>
 							Confirm

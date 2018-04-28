@@ -7,7 +7,6 @@ import { applyPlaylistsFilters, getNextSortMode, getSortIcon } from '../utils'
 
 const headers = [
 	['Name', 'name'],
-	['Owner', 'owner.display_name'],
 	['Tracks', 'tracks.total']
 ]
 
@@ -58,7 +57,7 @@ class PullPlaylist extends React.Component<Props, State> {
 								<th className="select"><input type="checkbox" onChange={e => selectAll(e.target.checked)}/></th>
 								<th className="image"></th>
 								{headers.map(([name, key]) => (
-									<th key={name} >
+									<th key={name} className={key}>
 										<a onClick={() => this.updateAFilters(Actions.updatePlaylistsSort(getNextSortMode(aFilters.order.key === key, aFilters.order.mode), key))}>
 											{name}
 										</a>
@@ -80,9 +79,6 @@ class PullPlaylist extends React.Component<Props, State> {
 										<Highlight text={p.name} term={aFilters.text} />
 									</td>
 									<td>
-										<Highlight text={p.owner.display_name || p.owner.id} term={aFilters.text} />
-									</td>
-									<td>
 										{p.tracks.total}
 									</td>
 								</tr>
@@ -97,7 +93,7 @@ class PullPlaylist extends React.Component<Props, State> {
 								<th className="select" />
 								<th className="image" />
 								{headers.map(([name, key]) => (
-									<th key={name} >
+									<th key={name} className={key}>
 										<a onClick={e => this.updateBFilters(Actions.updatePlaylistsSort(getNextSortMode(bFilters.order.key === key, bFilters.order.mode), key))}>
 											{name}
 										</a>
@@ -117,9 +113,6 @@ class PullPlaylist extends React.Component<Props, State> {
 									</td>
 									<td>
 										<Highlight text={p.name} term={bFilters.text} />
-									</td>
-									<td>
-										<Highlight text={p.owner.display_name || p.owner.id} term={bFilters.text} />
 									</td>
 									<td>
 										{p.tracks.total}

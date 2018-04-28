@@ -1,14 +1,10 @@
 .playlists {
-	& th.select, & th.image {
-		width: 2rem;
-	}
-	& .images img {
-		height: 2rem;
+	th.select, th.image {
 		width: 2rem;
 	}
 
-	& input[type="checkbox"] {
-		border-color: var(--border-dark);
+	input[type="checkbox"] {
+		border-color: $border-dark;
 	}
 }
 
@@ -20,7 +16,9 @@
 	align-content: stretch;
 	width: 100%;
 
-	& .playlists {
+	.playlists {
 		width: 50%;
+
+
 	}
 }

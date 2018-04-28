@@ -3,7 +3,7 @@ input[type="radio"] {
 	appearance: none;
 	width: 1.25rem;
 	height: 1.25rem;
-	border: 2px solid var(--border-light);
+	border: 2px solid $border-light;
 	border-radius: 50%;
 	cursor: pointer;
 	outline: none;
@@ -20,6 +20,6 @@ input[type="radio"] {
 		background-color: transparent;
 	}
 	&:checked::after {
-		background-color: var(--text-color);
+		background-color: $text-color;
 	}
 }

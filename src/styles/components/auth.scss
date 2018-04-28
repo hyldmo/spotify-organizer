@@ -4,13 +4,13 @@
 	left: 0;
 	width: 100%;
 	height: 100%;
-	background-color: var(--background-highlight);
+	background-color: $background-highlight;
 
 	display: flex;
 	align-items: center;
 	justify-content: center;
 
-	& .button {
+	.button {
 		padding: 0.6rem 1rem;
 		font-size: 1.8rem;
 

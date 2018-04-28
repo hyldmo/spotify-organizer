@@ -75,7 +75,7 @@ function* deduplicateTracks (action: typeof Actions.deduplicatePlaylists) {
 	yield all(source.map(pl => call(getTracks, Actions.fetchTracks({ id: pl.id, owner: pl.owner.id }))))
 	const playlists: Playlist[] = yield select((state: State) => state.playlists.filter(pl => source.map(p => p.id).includes(pl.id)))
 	if (target === null) {
-		const result = playlists.map(playlist => ({ ...playlist, tracks: deduplicate(playlist.tracks.items as Track[], compareMode) }))
+		const result = playlists.map(playlist => ({ name: playlist.name, tracks: deduplicate(playlist.tracks.items as Track[], compareMode) }))
 		console.log(result)
 		console.log('Finished deduplicate at ' + new Date())
 	} else {

@@ -1,7 +1,7 @@
 input[type="checkbox"] {
 	-webkit-appearance: none;
-	background-color: var(--background);
-	border: 2px solid var(--border-light);
+	background-color: $background;
+	border: 2px solid $border-light;
 	padding: 0.5rem;
 	border-radius: 0.2rem;
 	display: inline-block;
@@ -15,7 +15,7 @@ input[type="checkbox"] {
 		position: absolute;
 		top: -2px;
 		left: 1px;
-		color: var(--text-color);
+		color: $text-color;
 	}
 
 	&:focus {
