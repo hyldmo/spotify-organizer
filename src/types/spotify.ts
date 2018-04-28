@@ -11,10 +11,12 @@ export enum Sort {
 	Asc, Desc, None
 }
 
-export type TrackMeta = {
+export interface TrackMeta {
 	added_at: SpotifyApi.PlaylistTrackObject['added_at'],
 	added_by: SpotifyApi.PlaylistTrackObject['added_by'],
 	is_local: SpotifyApi.PlaylistTrackObject['is_local']
+	// Position of track in playlist
+	index: number
 }
 
 export interface Track {

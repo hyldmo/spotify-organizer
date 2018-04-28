@@ -1,4 +1,4 @@
-import { differenceWith, isEqual, uniqWith } from 'lodash'
+import { isEqual } from 'lodash'
 import * as memoize from 'memoizee'
 import { Track } from '../types'
 
@@ -14,10 +14,10 @@ const simplifyTrack = memoize((track: Track) => ({
 	name: track.name,
 	artists: track.artists.map(artist => artist.id).sort(),
 	album: track.album.name,
-	duration: Math.round(track.duration_ms / 1000)
+	duration: track.duration_ms
 }))
 
-function compareTrack (trackA: Track, trackB: Track, compareType: CompareType): boolean {
+export function compareTrack (trackA: Track, trackB: Track, compareType: CompareType): boolean {
 	const a = simplifyTrack(trackA)
 	const b = simplifyTrack(trackB)
 
@@ -31,7 +31,7 @@ function compareTrack (trackA: Track, trackB: Track, compareType: CompareType): 
 		case CompareType.NameAndAlbum:
 			return a.name === b.name && a.album === b.album
 		case CompareType.NameAndDuration:
-			return a.name === b.name && a.duration === b.duration
+			return a.name === b.name && Math.abs(a.duration - b.duration) < 1000
 		default:
 			return false
 	}
@@ -41,19 +41,25 @@ function compareTrack (trackA: Track, trackB: Track, compareType: CompareType): 
  * Removes duplicates from an array of tracks.
  * @param tracks The tracklist to inspect.
  * @param compareType The comparison type. Note that tracks are always compared by track and artist id
- * @returns Returns the new tracklist with unique tracks.
+ * @returns Returns the tracks are duplicates.
  */
 export function deduplicate (tracks: Track[], compareType = CompareType.SongId): Track[] {
-	return  uniqWith(tracks, (a, b) => compareTrack(a, b, compareType))
+	tracks = tracks.slice()
+	return tracks
+		.sort((a, b) => a.meta.index - b.meta.index)
+		.filter((a, i) => {
+			const track = tracks.find(b => compareTrack(a, b, compareType))
+			return track !== undefined && track.meta.index !== i
+		})
 }
 
 /**
  * Removes tracks from one playlist to another
  * @param source The tracklist to inspect.
- * @param values The tracks to remove.
  * @param compareType The comparison type. Note that tracks are always compared by track and artist id
- * @returns Returns the tracklist with the tracks removed.
+ * @param tracksToRemove The tracks to remove from the source playlist.
+ * @returns Returns the tracks that should be removed from source.
  */
-export function pullTracks (source: Track[], tracksToRemove: Track[], compareType = CompareType.SongId): Track[] {
-	return differenceWith(source, tracksToRemove, (a, b) => compareTrack(a, b, compareType))
+export function pullTracks (source: Track[], compareType = CompareType.SongId, tracksToRemove: Track[]): Track[] {
+	return source.filter(a => tracksToRemove.some(b => compareTrack(a, b, compareType)))
 }

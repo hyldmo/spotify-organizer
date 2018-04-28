@@ -33,7 +33,7 @@ function* getTracks (action: typeof Actions.fetchTracks) {
 	let offset = 0
 	do {
 		response = yield call(spotifyApi, `users/${owner}/playlists/${id}/tracks?offset=${offset}&limit=${limit}`)
-		const mappedTracks = response.items.map<Track>(t => ({
+		const mappedTracks = response.items.map<Track>((t, index) => ({
 			id: t.track.id,
 			name: t.track.name,
 			artists: t.track.artists.map(artist => ({
@@ -48,7 +48,8 @@ function* getTracks (action: typeof Actions.fetchTracks) {
 			meta: {
 				added_at: t.added_at,
 				added_by: t.added_by,
-				is_local: t.is_local
+				is_local: t.is_local,
+				index
 			}
 		}))
 		tracks = tracks.concat(mappedTracks)
