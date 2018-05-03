@@ -1,26 +1,31 @@
-.modal {
-	z-index: 500;
-	position: absolute;
-	top: 0;
-	left: 0;
-	width: 100%;
-	height: 100%;
-	background-color: gray(100%, 0.05);
-	overflow: hidden;
 
-	.content {
-		padding: 1rem;
-		border-radius: 0.5rem;
-		background-color: $background;
+.modal {
+	padding: 1rem;
+	border-radius: 0.5rem;
+	background-color: $background;
+
+	&__overlay {
+		z-index: 500;
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		background-color: gray(100%, 0.05);
+		overflow: hidden;
+
+		&.centered {
+			display: flex;
+			justify-content: center;
+			align-items: center;
+		}
 	}
 
-	&.centered {
-		display: flex;
-		justify-content: center;
-		align-items: center;
-
-		.content {
-			height: unset;
+	&__buttons {
+		padding-top: 1rem;
+		float: right;
+		> * {
+			margin-left: 0.5rem;
 		}
 	}
 }

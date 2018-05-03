@@ -24,7 +24,7 @@ html, body, #root {
 	color: $text-color;
 }
 
-#root > div {
+#root {
 	display: grid;
 	width: 100%;
 	height: 100%;
@@ -38,7 +38,7 @@ html, body, #root {
 }
 
 @include tablet {
-	#root > div, #root > div > header {
+	#root, #root > header {
 		grid-template-columns: 0 100% 0;
 	}
 }

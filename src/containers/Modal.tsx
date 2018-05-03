@@ -3,13 +3,15 @@ import * as React from 'react'
 import { createPortal } from 'react-dom'
 import { connect } from 'react-redux'
 import { Actions } from '../actions'
+import Button from '../components/Button'
 import { State } from '../reducers'
 
 type OwnProps = {
 	id: string
 	disabled?: boolean
 	centered?: boolean
-	component: any
+	component: React.ReactElement<any>
+	onConfirm?: (e: React.MouseEvent<HTMLButtonElement>) => void
 }
 
 const mapStateToProps = (state: State, ownProps: OwnProps) => {
@@ -39,20 +41,30 @@ class Modal extends React.Component<Props> {
 	}
 
 	render () {
-		const { id, open, centered, disabled, changeModal, children } = this.props
+		const { id, open, centered, disabled, changeModal, children, onConfirm } = this.props
 		const Component = React.cloneElement(this.props.component, { onClick: () => !disabled && changeModal(true, id) })
 		return (
-			<div>
+			<>
 				{Component}
 				{open && createPortal(
-					<div className={classnames('modal', { centered })} onClick={_ => changeModal(false, id)} >
-						<div className="content" onClick={e => e.stopPropagation()}>
-							{children}
+					<div className={classnames('modal__overlay', { centered })} onClick={_ => changeModal(false, id)}>
+						<div className="modal" onClick={e => e.stopPropagation()}>
+							<div className="content">
+								{children}
+							</div>
+							{onConfirm && <div className="modal__buttons">
+								<Button onClick={_ => changeModal(false, id)}>
+									Cancel
+								</Button>
+								<Button primary onClick={e => { onConfirm(e); changeModal(false, id) }}>
+									Confirm
+								</Button>
+							</div>}
 						</div>
 					</div>,
 					document.getElementById('root') as HTMLElement
 				)}
-			</div>
+			</>
 		)
 	}
 }

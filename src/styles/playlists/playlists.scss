@@ -18,7 +18,11 @@
 
 	.playlists {
 		width: 50%;
-
-
+		&:first-child {
+			border-right: 1px solid rgba($text-color, 0.4);
+		}
+		&:last-child {
+			border-left: 1px solid rgba($text-color, 0.6);
+		}
 	}
 }

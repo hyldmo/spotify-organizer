@@ -1,4 +1,5 @@
 import * as React from 'react'
+import { hot } from 'react-hot-loader'
 import { connect } from 'react-redux'
 import { Route, Switch, withRouter } from 'react-router'
 import ErrorBoundary from '../components/ErrorBoundary'
@@ -8,6 +9,7 @@ import Navbar from '../components/Navbar'
 import NotFound from '../components/NotFound'
 import { BASE_URL } from '../constants'
 import { State } from '../reducers'
+import '../styles/main.scss'
 import Alerts from './Alerts'
 import Auth from './Auth'
 import TracksRoute from './TracksRoute'
@@ -19,7 +21,7 @@ const mapStateToProps = (state: State) => ({
 type Props = ReturnType<typeof mapStateToProps>
 
 const App: React.StatelessComponent<Props> = ({ user }) => (
-	<div>
+	<>
 		<Navbar user={user}/>
 		<Alerts />
 		<main>
@@ -36,10 +38,10 @@ const App: React.StatelessComponent<Props> = ({ user }) => (
 			</ErrorBoundary>
 		</main>
 		<Footer />
-	</div>
+	</>
 )
 
-export default withRouter(connect(
+export default hot(module)(withRouter(connect(
 	mapStateToProps,
 	{}
-)(App) as any)
+)(App) as any))

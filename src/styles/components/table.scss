@@ -5,7 +5,7 @@ table {
 
 	th, td {
 		text-align: left;
-		padding: 0 0.5rem;
+		padding: 0 .75rem;
 		border: none;
 	}
 
@@ -17,9 +17,12 @@ table {
 		height: $size;
 	}
 
-	.images img {
-		height: $size;
-		width: $size;
+	.images {
+		padding: 0;
+		img {
+			height: $size;
+			width: $size;
+		}
 	}
 
 	tbody {

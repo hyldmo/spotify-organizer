@@ -22,3 +22,7 @@ $primary-light: #1ed760;
 		@content;
 	}
 }
+
+@function gray($intensity, $alpha: 1) {
+	@return rgba($intensity, $intensity, $intensity, $alpha);
+}

@@ -25,6 +25,7 @@
         "linebreak-style": [true, "LF"],
         "max-line-length": [true, 180],
         "member-access": false,
+        "no-bitwise": false,
         "no-consecutive-blank-lines": [true, 1],
         "no-console": [true],
         "no-internal-module": true,

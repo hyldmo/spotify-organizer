@@ -43,6 +43,11 @@ class PullPlaylist extends React.Component<Props, State> {
 		this.setState({ bFilters: newState })
 	}
 
+	handleRadioClick (playlist: Playlist) {
+		this.setState({ playlistToRemoveFrom: playlist })
+		this.props.onPlaylistSelect(playlist)
+	}
+
 	render () {
 		const { playlists, select, selectAll, user } = this.props
 		const { aFilters, bFilters } = this.state
@@ -106,7 +111,7 @@ class PullPlaylist extends React.Component<Props, State> {
 							{bPlaylists.map(p =>
 								<tr key={p.id}>
 									<td>
-										<input type="radio" name="playlist" value={p.id} onChange={() => this.setState({ playlistToRemoveFrom: p })} />
+										<input type="radio" name="playlist" value={p.id} onChange={() => this.handleRadioClick(p)} />
 									</td>
 									<td className="images">
 										{p.images.length > 0 ? <img src={p.images.slice().sort(i => i.height as number)[0].url} /> : null}

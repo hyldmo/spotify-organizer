@@ -3,10 +3,10 @@ import * as memoize from 'memoizee'
 import { Track } from '../types'
 
 export enum CompareType {
-	SongId,
-	Name,
-	NameAndAlbum,
-	NameAndDuration
+	SongId = 'SongId',
+	Name = 'Name',
+	NameAndAlbum = 'NameAndAlbum',
+	NameAndDuration = 'NameAndDuration'
 }
 
 const simplifyTrack = memoize((track: Track) => ({

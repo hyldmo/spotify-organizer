@@ -5,13 +5,13 @@ import Button from '../components/Button'
 import Input from '../components/Input'
 import Playlists from '../components/Playlists'
 import PullPlaylist from '../components/PullPlaylist'
-import { State } from '../reducers'
-import { OperationMode } from '../types/index'
+import { State as ReduxState } from '../reducers'
+import { OperationMode, Playlist } from '../types'
 import { applyPlaylistsFilters, canModifyPlaylist, CompareType } from '../utils'
 import Modal from './Modal'
 import Settings from './Settings'
 
-const mapStateToProps = (state: State) => ({
+const mapStateToProps = (state: ReduxState) => ({
 	playlists: state.playlists,
 	filters: state.filters.playlists,
 	user: state.user
@@ -27,7 +27,13 @@ const dispatchToProps = {
 
 type Props = ReturnType<typeof mapStateToProps> & typeof dispatchToProps
 
-class PlaylistsManager extends React.Component<Props> {
+type State = {
+	mode: OperationMode,
+	compareType: CompareType,
+	secondPlaylist: Playlist | null
+}
+
+class PlaylistsManager extends React.Component<Props, State> {
 	state = {
 		mode: OperationMode.None,
 		compareType: CompareType.SongId,
@@ -55,7 +61,7 @@ class PlaylistsManager extends React.Component<Props> {
 		if (user === null)
 			return
 		const playlists = applyPlaylistsFilters(this.props.playlists, filters, user)
-		const disabled = playlists.filter(p => p.selected).length === 0
+		const selectedPlaylists = playlists.filter(p => p.selected)
 		const removeTracks = mode === OperationMode.Duplicates || mode === OperationMode.PullTracks
 		return (
 			<div className="manager">
@@ -64,7 +70,7 @@ class PlaylistsManager extends React.Component<Props> {
 					<input type="text" placeholder="&#xF002; Filter" onChange={e => updateFilterText(e.target.value)} />
 					<span className="filler" />
 
-					<Modal id="settings" component={<Button icon="cog" />}>
+					<Modal id="settings" centered component={<Button icon="cog" />}>
 						<Settings />
 					</Modal>
 				</div>
@@ -74,15 +80,15 @@ class PlaylistsManager extends React.Component<Props> {
 							Cancel
 						</Button>
 						<Button primary
-							disabled={disabled || mode === OperationMode.PullTracks
+							disabled={selectedPlaylists.length === 0 || mode === OperationMode.PullTracks
 								? secondPlaylist === null
-								: playlists.every(pl => canModifyPlaylist(pl, user))}
+								: !selectedPlaylists.every(pl => canModifyPlaylist(pl, user))}
 							onClick={e => removeTracks && deduplicate({ source: playlists.filter(pl => pl.selected), target: secondPlaylist }, compareType)}
 						>
 							Confirm
 						</Button>
 					</> :
-						<Button primary disabled={disabled} onClick={e => this.changeMode(OperationMode.Duplicates)}>
+						<Button primary disabled={selectedPlaylists.length === 0} onClick={e => this.changeMode(OperationMode.Duplicates)}>
 							Remove duplicates
 						</Button>
 					}
@@ -101,7 +107,7 @@ class PlaylistsManager extends React.Component<Props> {
 							</div>
 							<div className="row">
 								{Object.keys(CompareType).filter(key => isNaN(Number(key))).map(key =>
-									<Input key={key} name="comparetype" type="radio" value={key} onClick={() => this.setState({ compareType: key })}
+									<Input key={key} name="comparetype" type="radio" value={key} onClick={() => this.setState({ compareType: key as CompareType })}
 										label={key.replace(/([A-Z])/g, ' $1').trimLeft()}
 									/>
 								)}
@@ -127,7 +133,7 @@ class PlaylistsManager extends React.Component<Props> {
 						select={select}
 						selectAll={selectAll}
 						playlists={playlists}
-						onPlaylistSelect={id => this.setState({ secondPlaylistId: id })}
+						onPlaylistSelect={id => this.setState({ secondPlaylist: id })}
 					/>}
 			</div>
 		)
