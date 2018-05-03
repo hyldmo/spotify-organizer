@@ -1,12 +1,14 @@
+import * as classnames from 'classnames'
 import * as React from 'react'
+import { createPortal } from 'react-dom'
 import { connect } from 'react-redux'
 import { Actions } from '../actions'
 import { State } from '../reducers'
-import { } from '../reducers/modals'
 
 type OwnProps = {
 	id: string
 	disabled?: boolean
+	centered?: boolean
 	component: any
 }
 
@@ -37,17 +39,19 @@ class Modal extends React.Component<Props> {
 	}
 
 	render () {
-		const { id, open, disabled, changeModal, children } = this.props
+		const { id, open, centered, disabled, changeModal, children } = this.props
 		const Component = React.cloneElement(this.props.component, { onClick: () => !disabled && changeModal(true, id) })
 		return (
 			<div>
 				{Component}
-				{open && <div className="modal">
-					<div className="overlay" onClick={_ => changeModal(false, id)} />
-					<div className="content">
-						{children}
-					</div>
-				</div>}
+				{open && createPortal(
+					<div className={classnames('modal', { centered })} onClick={_ => changeModal(false, id)} >
+						<div className="content" onClick={e => e.stopPropagation()}>
+							{children}
+						</div>
+					</div>,
+					document.getElementById('root') as HTMLElement
+				)}
 			</div>
 		)
 	}
