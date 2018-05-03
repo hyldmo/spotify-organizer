@@ -9,6 +9,7 @@ const config: webpack.Configuration = {
 
 	output: {
 		path: path.join(__dirname, 'dist'),
+		publicPath: '/',
 		filename: '[name]-[hash].js'
 	},
 
@@ -23,7 +24,8 @@ const config: webpack.Configuration = {
 		rules: [
 			{
 				test: /\.tsx?$/,
-				loader: 'ts-loader'
+				loader: 'ts-loader',
+				exclude: /node_modules/
 			},
 			{
 				test: /\.scss$/,

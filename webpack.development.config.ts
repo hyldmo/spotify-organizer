@@ -6,7 +6,7 @@ import baseConfig from './webpack.config'
 const config: webpack.Configuration = {
 	...baseConfig,
 	mode: 'development',
-	devtool: 'cheap-eval-source-map',
+	devtool: 'source-map',
 
 	devServer: {
 		historyApiFallback: true,
