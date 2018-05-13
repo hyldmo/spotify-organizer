@@ -4,9 +4,8 @@ import { Link } from 'react-router-dom'
 import { Actions } from '../actions'
 import Highlight from '../components/Highlight'
 import { BASE_URL } from '../constants'
-import { Filters, Playlist, Sort } from '../types'
-
-import '../styles/playlists.pcss'
+import { Filters, Playlist } from '../types'
+import { getNextSortMode, getSortIcon } from '../utils'
 
 const headers = [
 	['Name', 'name'],
@@ -46,7 +45,7 @@ const Playlists: React.StatelessComponent<Props> = ({ playlists, select, selectA
 							<input type="checkbox" checked={p.selected} onChange={e => select(e.target.checked, p.id)} />
 						</td>
 						<td className="images">
-							{p.images.length > 0 ? <img src={p.images[p.images.length - 1].url} /> : null}
+							{p.images.length > 0 ? <img src={p.images.slice().sort(i => i.height as number)[0].url} /> : null}
 						</td>
 						<td>
 							<Link to={`${BASE_URL}users/${p.owner.id}/playlists/${p.id}`}>
@@ -65,33 +64,5 @@ const Playlists: React.StatelessComponent<Props> = ({ playlists, select, selectA
 		</table>
 	) : null
 )
-
-function getSortIcon (isOwn: boolean, order: Sort) {
-	if (!isOwn)
-		return null
-
-	switch (order) {
-		case Sort.Asc:
-			return <i className="fa fa-sort-amount-asc" aria-hidden="true" />
-		case Sort.Desc:
-			return <i className="fa fa-sort-amount-desc" aria-hidden="true" />
-		default:
-			return null
-	}
-}
-
-function getNextSortMode (isOwn: boolean, order: Sort): Sort {
-	if (!isOwn)
-		return Sort.Desc
-
-	switch (order) {
-		case Sort.Asc:
-			return Sort.None
-		case Sort.Desc:
-			return Sort.Asc
-		case Sort.None:
-			return Sort.Desc
-	}
-}
 
 export default Playlists

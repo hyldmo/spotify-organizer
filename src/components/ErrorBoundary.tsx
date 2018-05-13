@@ -5,7 +5,6 @@ import { replace } from 'react-router-redux'
 import { BASE_URL } from '../constants'
 import { State } from '../reducers'
 
-
 const mapStateToProps = (state: State) => ({})
 
 const dispatchToProps = {
@@ -35,9 +34,7 @@ class ErrorBoundary extends React.Component<Props> {
 	}
 }
 
-
 export default connect(
 	mapStateToProps,
 	dispatchToProps
 )(ErrorBoundary)
-

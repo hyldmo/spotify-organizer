@@ -1,0 +1,143 @@
+import * as React from 'react'
+import { Actions } from '../actions'
+import Highlight from '../components/Highlight'
+import { initialState, playlists as updateFilters } from '../reducers/filters'
+import { Filters as PlaylistFilters, Playlist, User } from '../types'
+import { applyPlaylistsFilters, getNextSortMode, getSortIcon } from '../utils'
+
+const headers = [
+	['Name', 'name'],
+	['Tracks', 'tracks.total']
+]
+
+type Filters = PlaylistFilters['playlists']
+
+type Props = {
+	user: User
+	playlists: Playlist[]
+	filters?: Filters
+	selectAll: typeof Actions.selectPlaylists
+	select: typeof Actions.selectPlaylist
+	onPlaylistSelect: (playlist: Playlist) => void
+}
+
+type State = {
+	playlistToRemoveFrom?: Playlist
+	aFilters: Filters
+	bFilters: Filters
+}
+
+class PullPlaylist extends React.Component<Props, State> {
+	constructor (props: Props) {
+		super(props)
+
+		this.state = {
+			aFilters: this.props.filters || initialState.playlists,
+			bFilters: initialState.playlists
+		}
+	}
+
+	updateAFilters (action: any) {
+		const newState = updateFilters(this.state.aFilters, action)
+		this.setState({ aFilters: newState })
+	}
+	updateBFilters (action: any) {
+		const newState = updateFilters(this.state.bFilters, action)
+		this.setState({ bFilters: newState })
+	}
+
+	handleRadioClick (playlist: Playlist) {
+		this.setState({ playlistToRemoveFrom: playlist })
+		this.props.onPlaylistSelect(playlist)
+	}
+
+	render () {
+		const { playlists, select, selectAll, user } = this.props
+		const { aFilters, bFilters, playlistToRemoveFrom } = this.state
+		const aPlaylists = applyPlaylistsFilters(playlists, aFilters)
+		const bPlaylists = applyPlaylistsFilters(playlists, bFilters)
+			.filter(pl => pl.collaborative || pl.owner.id === user.name)
+			.filter(pl => !aPlaylists.filter(p => p.selected).some(p => p.id === pl.id))
+		return (
+			<div className="playlists-compare">
+				<div className="playlists">
+					<table>
+						<thead>
+							<tr>
+								<th className="select"><input type="checkbox" onChange={e => selectAll(e.target.checked)}/></th>
+								<th className="image"></th>
+								{headers.map(([name, key]) => (
+									<th key={name} className={key}>
+										<a onClick={() => this.updateAFilters(Actions.updatePlaylistsSort(getNextSortMode(aFilters.order.key === key, aFilters.order.mode), key))}>
+											{name}
+										</a>
+										&nbsp;{getSortIcon(aFilters.order.key === key, aFilters.order.mode)}
+									</th>
+								))}
+							</tr>
+						</thead>
+						<tbody>
+							{aPlaylists.map(p =>
+								<tr key={p.id}>
+									<td>
+										<input type="checkbox" checked={p.selected} onChange={e => select(e.target.checked, p.id)} />
+									</td>
+									<td className="images">
+										{p.images.length > 0 ? <img src={p.images.slice().sort(i => i.height as number)[0].url} /> : null}
+									</td>
+									<td>
+										<Highlight text={p.name} term={aFilters.text} />
+									</td>
+									<td>
+										{p.tracks.total}
+									</td>
+								</tr>
+							)}
+						</tbody>
+					</table>
+				</div>
+				<div className="playlists">
+					<table>
+						<thead>
+							<tr>
+								<th className="select" />
+								<th className="image" />
+								{headers.map(([name, key]) => (
+									<th key={name} className={key}>
+										<a onClick={e => this.updateBFilters(Actions.updatePlaylistsSort(getNextSortMode(bFilters.order.key === key, bFilters.order.mode), key))}>
+											{name}
+										</a>
+										&nbsp;{getSortIcon(bFilters.order.key === key, bFilters.order.mode)}
+									</th>
+								))}
+							</tr>
+						</thead>
+						<tbody>
+							{bPlaylists.map(p =>
+								<tr key={p.id}>
+									<td>
+										<input type="radio" name="playlist" value={p.id}
+											checked={playlistToRemoveFrom !== undefined && playlistToRemoveFrom.id === p.id}
+											onChange={() => this.handleRadioClick(p)}
+										/>
+									</td>
+									<td className="images">
+										{p.images.length > 0 ? <img src={p.images.slice().sort(i => i.height as number)[0].url} /> : null}
+									</td>
+									<td>
+										<Highlight text={p.name} term={bFilters.text} />
+									</td>
+									<td>
+										{p.tracks.total}
+									</td>
+								</tr>
+							)}
+						</tbody>
+					</table>
+				</div>
+			</div>
+		)
+	}
+}
+
+export default PullPlaylist

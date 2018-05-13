@@ -1,10 +1,9 @@
 import { call, put, takeLatest } from 'redux-saga/effects'
-
 import { Actions } from '../actions'
 import { sleep } from '../utils/sleep'
 
 export default function* () {
-	yield takeLatest<typeof Actions.startTimer>(Actions.startTimer.type, startTimer)
+	yield takeLatest<typeof Actions.startTimer>(Actions.startTimer(0).type, startTimer)
 }
 
 function* startTimer (action: typeof Actions.startTimer) {

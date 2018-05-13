@@ -1,0 +1,40 @@
+table {
+	$size: 3rem;
+	width: 100%;
+	border-collapse: collapse;
+
+	th, td {
+		text-align: left;
+		padding: 0 .75rem;
+		border: none;
+	}
+
+	td {
+		line-height: 0.7;
+	}
+
+	tr, td {
+		height: $size;
+	}
+
+	.images {
+		padding: 0;
+		img {
+			height: $size;
+			width: $size;
+		}
+	}
+
+	tbody {
+		tr {
+			border-top: 1px solid $background-highlight;
+			&:hover {
+				background-color: $background-highlight;
+			}
+		}
+	}
+
+	.highlighted {
+		background-color: gray(50%, 20%);
+	}
+}

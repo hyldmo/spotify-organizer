@@ -1,26 +1,18 @@
-import { routerReducer as routing, RouterState } from 'react-router-redux'
+import { routerReducer as routing } from 'react-router-redux'
 import { combineReducers } from 'redux'
-
-import { Playlist } from '../types'
-import { Filters, Modal, User } from '../types'
 import filters from './filters'
 import modals from './modals'
+import notifications from './notifications'
 import playlists from './playlists'
 import timer from './timer'
 import user from './user'
 
-export type State = Readonly<{
-	user: User
-	routing: RouterState
-	modals: Modal[]
-	playlists: Playlist[]
-	filters: Filters
-	timer: number
-}>
+export type State = ReturnType<typeof reducers>
 
-const reducers = combineReducers<State>({
+const reducers = combineReducers({
 	filters,
 	modals,
+	notifications,
 	playlists,
 	routing,
 	timer,

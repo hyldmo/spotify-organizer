@@ -9,4 +9,3 @@ export default function user (state: number = 0, action: Action): number {
 			return state
 	}
 }
-

@@ -1,22 +1,26 @@
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
 import * as React from 'react'
-import { AppContainer } from 'react-hot-loader'
 import { Provider } from 'react-redux'
 import { ConnectedRouter } from 'react-router-redux'
 import RedBox from 'redbox-react'
 import { Actions } from '../actions'
 import configureStore, { history } from '../configureStore'
-import { State } from '../reducers'
+import { State as ReduxState } from '../reducers'
+import App from './App'
 
-const initialState: Partial<State> = {
+const initialState: Partial<ReduxState> = {
 
 }
 
-const store = configureStore(initialState as State)
+const store = configureStore(initialState)
 
 store.dispatch(Actions.loadUser())
 
+type State = {
+	error: Error | null
+}
 
-export default class Root extends React.Component {
+export default class Root extends React.Component<{}, State> {
 	state = {
 		error: null
 	}
@@ -26,29 +30,22 @@ export default class Root extends React.Component {
 	}
 
 	componentDidCatch (error: Error, info: React.ErrorInfo) {
-		// Display fallback UI
 		this.setState({ error })
 	}
 
 	render () {
 		const { error } = this.state
-		if (error !== null && process.env.NODE_ENV === 'development') {
-			// You can render any custom fallback UI
+		if (error && process.env.NODE_ENV !== 'test') {
 			return <RedBox error={error} />
 		}
 		return (
-			<Provider store={store}>
-				<ConnectedRouter history={history}>
-					{module.hot ? (
-						<AppContainer>
-							{this.props.children as React.ReactElement<any>}
-						</AppContainer>
-					) : (
-						this.props.children
-					)}
-				</ConnectedRouter>
-			</Provider>
+			<MuiThemeProvider>
+				<Provider store={store}>
+					<ConnectedRouter history={history}>
+						<App />
+					</ConnectedRouter>
+				</Provider>
+			</MuiThemeProvider>
 		)
 	}
 }
-
