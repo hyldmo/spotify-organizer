@@ -10,7 +10,7 @@ const initialState: Partial<ReduxState> = {
 
 }
 
-const store = configureStore(initialState as ReduxState)
+const store = configureStore(initialState)
 
 type State = {
 	error: Error | null

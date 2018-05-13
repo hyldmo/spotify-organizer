@@ -6,16 +6,9 @@ import playlists from './playlists'
 import timer from './timer'
 import user from './user'
 
-export type State = {
-	user: ReturnType<typeof user>
-	routing: ReturnType<typeof routing>
-	modals: ReturnType<typeof modals>
-	playlists: ReturnType<typeof playlists>
-	filters: ReturnType<typeof filters>
-	timer: ReturnType<typeof timer>
-}
+export type State = ReturnType<typeof reducers>
 
-const reducers = combineReducers<State>({
+const reducers = combineReducers({
 	filters,
 	modals,
 	playlists,
