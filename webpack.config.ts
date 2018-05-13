@@ -9,7 +9,7 @@ const config: webpack.Configuration = {
 
 	output: {
 		path: path.join(__dirname, 'dist'),
-		publicPath: '/',
+		publicPath: process.env.npm_lifecycle_event !== 'prod' ? '/' : '/spotify-organizer/',
 		filename: '[name]-[hash].js'
 	},
 
