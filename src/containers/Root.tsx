@@ -3,6 +3,7 @@ import * as React from 'react'
 import { Provider } from 'react-redux'
 import { ConnectedRouter } from 'react-router-redux'
 import RedBox from 'redbox-react'
+import { Actions } from '../actions'
 import configureStore, { history } from '../configureStore'
 import { State as ReduxState } from '../reducers'
 import App from './App'
@@ -12,6 +13,8 @@ const initialState: Partial<ReduxState> = {
 }
 
 const store = configureStore(initialState)
+
+store.dispatch(Actions.loadUser())
 
 type State = {
 	error: Error | null

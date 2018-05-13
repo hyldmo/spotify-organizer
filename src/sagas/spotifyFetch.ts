@@ -19,14 +19,13 @@ export default function* spotifyFetch (url: string, options: RequestInit = {}, a
 
 	switch (response.status) {
 		case 200:
-		case 302:
+		case 304:
 			return body
 		case 401:
 			yield put(Actions.logout())
 			// window.open(loginLink(), '_self')
 			break
 		case 429: {
-			// TODO: Retry-After header not availible due to CORS settings https://github.com/spotify/web-api/issues/159
 			const waitTime = Number.parseInt(response.headers.get('Retry-After') || '10')
 			yield put(Actions.startTimer(waitTime))
 			yield call(sleep, waitTime * 1000)

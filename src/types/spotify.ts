@@ -33,3 +33,11 @@ export interface Track {
 	duration_ms: SpotifyApi.TrackObjectFull['duration_ms']
 	meta: TrackMeta
 }
+
+export type RemoveTracksRequest = {
+	tracks: Array<{
+		uri: string
+		positions?: number[]
+	}>
+	snapshot_id: string
+}

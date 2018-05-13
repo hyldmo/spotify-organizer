@@ -23,38 +23,6 @@ type State = {
 	filters: Filters
 }
 
-function updateFilters (state: Filters, action: Action): Filters {
-	switch (action.type) {
-		case 'PLAYLISTS_SORT_MODE_CHANGE':
-			return {
-				...state,
-				order: {
-					key: action.meta,
-					mode: action.payload
-				}
-			}
-
-		case 'PLAYLISTS_FILTER_OWNED_CHANGE':
-			return {
-				...state,
-				ownedOnly: action.payload
-			}
-		case 'PLAYLISTS_FILTER_EMPTY_CHANGE':
-			return {
-				...state,
-				hideEmpty: action.payload
-			}
-		case 'PLAYLISTS_FILTER_TEXT_CHANGE':
-			return {
-				...state,
-				text:  action.payload
-			}
-
-		default:
-			return state
-	}
-}
-
 class PullPlaylist extends React.Component<Props, State> {
 	state = {
 		selectedPlaylists: [],

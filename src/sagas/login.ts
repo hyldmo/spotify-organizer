@@ -1,8 +1,7 @@
 import { replace } from 'react-router-redux'
 import { call, put, takeLatest } from 'redux-saga/effects'
-import spotifyApi from './spotifyFetch'
-
 import { Actions } from '../actions'
+import spotifyApi from './spotifyFetch'
 
 export default function * watchUser () {
 	yield takeLatest(Actions.tokenAquired.type, getUserDetails)

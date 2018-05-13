@@ -107,8 +107,14 @@ class PlaylistsManager extends React.Component<Props, State> {
 							</div>
 							<div className="row">
 								{Object.keys(CompareType).filter(key => isNaN(Number(key))).map(key =>
-									<Input key={key} name="comparetype" type="radio" value={key} onClick={() => this.setState({ compareType: key as CompareType })}
+									<Input
+										key={key}
+										name="comparetype"
+										type="radio"
+										value={key}
+										checked={compareType === key}
 										label={key.replace(/([A-Z])/g, ' $1').trimLeft()}
+										onChange={() => this.setState({ compareType: key as CompareType })}
 									/>
 								)}
 								<Input name="advanced" type="checkbox" label="From another playlist"

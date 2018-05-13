@@ -22,16 +22,19 @@ type Props = {
 }
 
 type State = {
-	playlistToRemoveFrom: Playlist | null
+	playlistToRemoveFrom?: Playlist
 	aFilters: Filters
 	bFilters: Filters
 }
 
 class PullPlaylist extends React.Component<Props, State> {
-	state = {
-		playlistToRemoveFrom: null,
-		aFilters: this.props.filters || initialState.playlists,
-		bFilters: initialState.playlists
+	constructor (props: Props) {
+		super(props)
+
+		this.state = {
+			aFilters: this.props.filters || initialState.playlists,
+			bFilters: initialState.playlists
+		}
 	}
 
 	updateAFilters (action: any) {
@@ -50,9 +53,11 @@ class PullPlaylist extends React.Component<Props, State> {
 
 	render () {
 		const { playlists, select, selectAll, user } = this.props
-		const { aFilters, bFilters } = this.state
+		const { aFilters, bFilters, playlistToRemoveFrom } = this.state
 		const aPlaylists = applyPlaylistsFilters(playlists, aFilters)
-		const bPlaylists = applyPlaylistsFilters(playlists, bFilters).filter(pl => pl.collaborative || pl.owner.id === user.name)
+		const bPlaylists = applyPlaylistsFilters(playlists, bFilters)
+			.filter(pl => pl.collaborative || pl.owner.id === user.name)
+			.filter(pl => !aPlaylists.filter(p => p.selected).some(p => p.id === pl.id))
 		return (
 			<div className="playlists-compare">
 				<div className="playlists">
@@ -111,7 +116,10 @@ class PullPlaylist extends React.Component<Props, State> {
 							{bPlaylists.map(p =>
 								<tr key={p.id}>
 									<td>
-										<input type="radio" name="playlist" value={p.id} onChange={() => this.handleRadioClick(p)} />
+										<input type="radio" name="playlist" value={p.id}
+											checked={playlistToRemoveFrom !== undefined && playlistToRemoveFrom.id === p.id}
+											onChange={() => this.handleRadioClick(p)}
+										/>
 									</td>
 									<td className="images">
 										{p.images.length > 0 ? <img src={p.images.slice().sort(i => i.height as number)[0].url} /> : null}

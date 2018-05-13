@@ -21,6 +21,8 @@ export function compareTrack (trackA: Track, trackB: Track, compareType: Compare
 	const a = simplifyTrack(trackA)
 	const b = simplifyTrack(trackB)
 
+	if (a.id === null || b.id === null)
+		return false
 	if (a.id === b.id)
 		return true
 	if (!isEqual(a.artists, b.artists))
