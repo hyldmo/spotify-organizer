@@ -4,10 +4,14 @@ node_js:
 cache:
   directories:
     - node_modules
+
 script:
-  - npm run lint
-  - npm test
-  - npm run production
+  - yarn lint
+  - yarn stylelint
+  - yarn test:cover
+  - yarn compileConf:dev
+  - yarn prod
+
 deploy:
   provider: pages
   local_dir: dist

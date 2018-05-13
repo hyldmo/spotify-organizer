@@ -1,8 +1,7 @@
 import { replace } from 'react-router-redux'
 import { call, put, takeLatest } from 'redux-saga/effects'
-import spotifyApi from './spotifyFetch'
-
 import { Actions } from '../actions'
+import spotifyApi from './spotifyFetch'
 
 export default function * watchUser () {
 	yield takeLatest(Actions.tokenAquired.type, getUserDetails)
@@ -15,7 +14,7 @@ function* getUserDetails (action: typeof Actions.tokenAquired) {
 
 	try {
 		const body: SpotifyApi.UserObjectPublic = yield call(spotifyApi, 'me', {}, token)
-		const user = { name: body.id, image: body.images[0].url, token }
+		const user = { name: body.id, image: body.images ? body.images[0].url : null, token }
 		yield put(Actions.userLoaded(user))
 		localStorage.setItem('token', token)
 		yield put(Actions.fetchPlaylists())

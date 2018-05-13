@@ -1,30 +1,30 @@
-
 import * as React from 'react'
+import { hot } from 'react-hot-loader'
 import { connect } from 'react-redux'
-import { returntypeof } from 'react-redux-typescript'
 import { Route, Switch, withRouter } from 'react-router'
-
 import ErrorBoundary from '../components/ErrorBoundary'
 import Footer from '../components/Footer'
 import Home from '../components/Home'
 import Navbar from '../components/Navbar'
 import NotFound from '../components/NotFound'
 import { BASE_URL } from '../constants'
+import Notifications from '../containers/Notifications'
 import { State } from '../reducers'
+import '../styles/main.scss'
+import Alerts from './Alerts'
 import Auth from './Auth'
 import TracksRoute from './TracksRoute'
-
 
 const mapStateToProps = (state: State) => ({
 	user: state.user
 })
-const stateProps = returntypeof(mapStateToProps)
 
-type Props = typeof stateProps
+type Props = ReturnType<typeof mapStateToProps>
 
 const App: React.StatelessComponent<Props> = ({ user }) => (
-	<div>
+	<>
 		<Navbar user={user}/>
+		<Alerts />
 		<main>
 			<ErrorBoundary>
 				{user ? (
@@ -39,10 +39,11 @@ const App: React.StatelessComponent<Props> = ({ user }) => (
 			</ErrorBoundary>
 		</main>
 		<Footer />
-	</div>
+		<Notifications />
+	</>
 )
 
-export default withRouter(connect(
+export default hot(module)(withRouter(connect(
 	mapStateToProps,
 	{}
-)(App) as any)
+)(App) as any))

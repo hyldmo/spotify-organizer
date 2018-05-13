@@ -1,16 +1,17 @@
+import * as classnames from 'classnames'
 import * as React from 'react'
+import { createPortal } from 'react-dom'
 import { connect } from 'react-redux'
-import { returntypeof } from 'react-redux-typescript'
-
 import { Actions } from '../actions'
+import Button from '../components/Button'
 import { State } from '../reducers'
-import { } from '../reducers/modals'
-
-import '../styles/modal.pcss'
 
 type OwnProps = {
 	id: string
-	component: any
+	disabled?: boolean
+	centered?: boolean
+	component: React.ReactElement<any>
+	onConfirm?: (e: React.MouseEvent<HTMLButtonElement>) => void
 }
 
 const mapStateToProps = (state: State, ownProps: OwnProps) => {
@@ -26,9 +27,7 @@ const dispatchToProps = {
 	changeModal: Actions.changeModal
 }
 
-const stateProps = returntypeof(mapStateToProps)
-
-type Props = OwnProps & typeof stateProps & typeof dispatchToProps
+type Props = OwnProps & ReturnType<typeof mapStateToProps> & typeof dispatchToProps
 
 class Modal extends React.Component<Props> {
 	componentDidMount () {
@@ -42,18 +41,30 @@ class Modal extends React.Component<Props> {
 	}
 
 	render () {
-		const { id, open, changeModal, children } = this.props
-		const Component = React.cloneElement(this.props.component, { onClick: _ => changeModal(true, id) })
+		const { id, open, centered, disabled, changeModal, children, onConfirm } = this.props
+		const Component = React.cloneElement(this.props.component, { onClick: () => !disabled && changeModal(true, id) })
 		return (
-			<div>
+			<>
 				{Component}
-				{open && <div className="modal">
-					<div className="overlay" onClick={_ => changeModal(false, id)} />
-					<div className="content">
-						{children}
-					</div>
-				</div>}
-			</div>
+				{open && createPortal(
+					<div className={classnames('modal__overlay', { centered })} onClick={_ => changeModal(false, id)}>
+						<div className="modal" onClick={e => e.stopPropagation()}>
+							<div className="content">
+								{children}
+							</div>
+							{onConfirm && <div className="modal__buttons">
+								<Button onClick={_ => changeModal(false, id)}>
+									Cancel
+								</Button>
+								<Button primary onClick={e => { onConfirm(e); changeModal(false, id) }}>
+									Confirm
+								</Button>
+							</div>}
+						</div>
+					</div>,
+					document.getElementById('root') as HTMLElement
+				)}
+			</>
 		)
 	}
 }

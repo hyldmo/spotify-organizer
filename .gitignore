@@ -4,3 +4,10 @@ node_modules
 .vscode/
 *.log
 dist/
+package-lock.json
+webpack.*.js
+compilation-stats.json
+
+src/**/*.scss.d.ts
+
+coverage/

@@ -1,16 +1,17 @@
+import { FontAwesomeIcon, Props as FaProps } from '@fortawesome/react-fontawesome'
+import * as classnames from 'classnames'
 import * as React from 'react'
-
-import '../styles/button.pcss'
 
 type Props = {
 	primary?: boolean
-	icon?: string
-	onClick?: () => void
+	disabled?: boolean
+	icon?: FaProps['icon']
+	onClick?: React.MouseEventHandler<HTMLButtonElement>
 }
 
-const Button: React.StatelessComponent<Props> = ({ primary, icon, children, onClick }) =>  (
-	<button className={`button ${primary ? 'primary' : ''}`} onClick={onClick}>
-		{icon && <i className={`fa fa-${icon}`} aria-hidden="true" />}
+const Button: React.StatelessComponent<Props> = ({ primary, disabled, icon, children, onClick }) =>  (
+	<button className={classnames('button', { primary, disabled })} onClick={e => !disabled && onClick && onClick(e)}>
+		{icon && <FontAwesomeIcon icon={icon} aria-hidden="true" />}
 		{icon && children && <span>&nbsp;</span>}
 		{children}
 	</button>

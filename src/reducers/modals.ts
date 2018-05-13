@@ -2,7 +2,7 @@ import { Action } from '../actions'
 import { Modal } from '../types'
 
 function modal (state: Modal, action: Action): Modal {
-	if (state.id !== action.meta)
+	if (action.meta === undefined || state.id !== action.meta)
 		return state
 
 	switch (action.type) {

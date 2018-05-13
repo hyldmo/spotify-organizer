@@ -1,8 +1,8 @@
 import { Action } from '../actions'
 import { Filters, Sort } from '../types'
 
-const initialState: Filters = {
- 	playlists: {
+export const initialState: Filters = {
+	playlists: {
 		order: {
 			key: 'name',
 			mode: Sort.None
@@ -14,16 +14,16 @@ const initialState: Filters = {
 }
 
 type PlaylistFilters = Filters['playlists']
-function playlists (state: PlaylistFilters, action: Action): PlaylistFilters {
+export function playlists (state: PlaylistFilters, action: Action): PlaylistFilters {
 	switch (action.type) {
 		case 'PLAYLISTS_SORT_MODE_CHANGE':
-		return {
-			...state,
-			order: {
-				key: action.meta,
-				mode: action.payload
+			return {
+				...state,
+				order: {
+					key: action.meta,
+					mode: action.payload
+				}
 			}
-		}
 
 		case 'PLAYLISTS_FILTER_OWNED_CHANGE':
 			return {
@@ -61,4 +61,3 @@ export default function filters (state: Filters = initialState, action: Action):
 			return state
 	}
 }
-

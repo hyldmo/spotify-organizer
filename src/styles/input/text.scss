@@ -1,0 +1,25 @@
+input[type="text"] {
+	background: none;
+	border: none;
+	border-radius: 0.25rem;
+	outline: none;
+	padding: 0.5rem;
+	color: $text-color-inactive;
+
+	&::placeholder {
+		font-family: FontAwesome, sans-serif;
+		&:hover {
+			color: red;
+		}
+	}
+	&:hover::placeholder {
+		color: $text-color;
+	}
+
+	&:focus {
+
+		color: $text-color;
+		background-color: $input-focus;
+	}
+}
+
