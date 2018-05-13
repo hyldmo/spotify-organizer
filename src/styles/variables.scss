@@ -1,9 +1,9 @@
 $header-height: 3rem;
-$max-width: 80rem;
+$max-width: 100rem;
 $grid-columns: auto $max-width auto;
 
 $text-color: #ffffff;
-$text-color-inactive: color($text-color alpha(-30%));
+$text-color-inactive: transparentize($text-color, 0.3);
 
 $background-highlight: #282828;
 $background: #181818;
