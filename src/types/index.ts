@@ -16,6 +16,11 @@ export enum OperationMode {
 	PullTracks
 }
 
+export type Notification = {
+	message: React.ReactNode
+	progress?: true
+}
+
 export * from './filters'
 export * from './modal'
 export * from './scopes'

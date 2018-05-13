@@ -8,6 +8,7 @@ import Home from '../components/Home'
 import Navbar from '../components/Navbar'
 import NotFound from '../components/NotFound'
 import { BASE_URL } from '../constants'
+import Notifications from '../containers/Notifications'
 import { State } from '../reducers'
 import '../styles/main.scss'
 import Alerts from './Alerts'
@@ -38,6 +39,7 @@ const App: React.StatelessComponent<Props> = ({ user }) => (
 			</ErrorBoundary>
 		</main>
 		<Footer />
+		<Notifications />
 	</>
 )
 
