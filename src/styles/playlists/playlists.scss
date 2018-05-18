@@ -6,6 +6,12 @@
 	input[type="checkbox"] {
 		border-color: $border-dark;
 	}
+
+	@include mobile {
+		.owner, .tracks {
+			display: none;
+		}
+	}
 }
 
 .playlists-compare {

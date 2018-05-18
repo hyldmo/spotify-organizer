@@ -1,5 +1,6 @@
 $header-height: 3rem;
 $max-width: 100rem;
+$mobile-width: 425px;
 $grid-columns: auto $max-width auto;
 
 $text-color: #ffffff;
@@ -19,6 +20,12 @@ $primary-light: #1ed760;
 
 @mixin tablet {
 	@media (max-width: $max-width) {
+		@content;
+	}
+}
+
+@mixin mobile {
+	@media (max-width: $mobile-width) {
 		@content;
 	}
 }
