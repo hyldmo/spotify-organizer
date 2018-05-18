@@ -1,3 +1,4 @@
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import * as React from 'react'
 import { Playlist, Sort, User } from '../types'
 export function getNextSortMode (isOwn: boolean, order: Sort): Sort {
@@ -20,9 +21,9 @@ export function getSortIcon (isOwn: boolean, order: Sort) {
 
 	switch (order) {
 		case Sort.Asc:
-			return <i className="fa fa-sort-amount-asc" aria-hidden="true" />
+			return <FontAwesomeIcon icon="sort-amount-up" />
 		case Sort.Desc:
-			return <i className="fa fa-sort-amount-desc" aria-hidden="true" />
+			return <FontAwesomeIcon icon="sort-amount-down" />
 		default:
 			return null
 	}

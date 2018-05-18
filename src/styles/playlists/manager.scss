@@ -28,4 +28,10 @@
 			margin-bottom: 0.5rem;
 		}
 	}
+
+	@include mobile {
+		.row {
+			padding: 0 0.75rem;
+		}
+	}
 }

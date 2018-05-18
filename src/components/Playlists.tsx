@@ -29,7 +29,7 @@ const Playlists: React.StatelessComponent<Props> = ({ playlists, select, selectA
 					<th className="select"><input type="checkbox" onChange={e => selectAll(e.target.checked)}/></th>
 					<th className="image"></th>
 					{headers.map(([name, key]) => (
-						<th key={name} >
+						<th key={name} className={name.toLocaleLowerCase()}>
 							<a onClick={e => changeSortMode(getNextSortMode(filters.order.key === key, filters.order.mode), key)}>
 								{name}
 							</a>
@@ -41,21 +41,21 @@ const Playlists: React.StatelessComponent<Props> = ({ playlists, select, selectA
 			<tbody>
 				{playlists.map(p =>
 					<tr key={p.id}>
-						<td>
+						<td className="select">
 							<input type="checkbox" checked={p.selected} onChange={e => select(e.target.checked, p.id)} />
 						</td>
-						<td className="images">
+						<td className="image">
 							{p.images.length > 0 ? <img src={p.images.slice().sort(i => i.height as number)[0].url} /> : null}
 						</td>
-						<td>
+						<td className="name">
 							<Link to={`${BASE_URL}users/${p.owner.id}/playlists/${p.id}`}>
 								<Highlight text={p.name} term={filters.text} />
 							</Link>
 						</td>
-						<td>
+						<td className="owner">
 							<Highlight text={p.owner.display_name || p.owner.id} term={filters.text} />
 						</td>
-						<td>
+						<td className="tracks">
 							{p.tracks.total}
 						</td>
 					</tr>
