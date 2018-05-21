@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom'
 import { Actions } from '../actions'
 import Highlight from '../components/Highlight'
 import { BASE_URL } from '../constants'
-import { Filters, Playlist } from '../types'
+import { Filters, Playlist, Sort } from '../types'
 import { getNextSortMode, getSortIcon } from '../utils'
 
 const headers = [
@@ -16,9 +16,9 @@ const headers = [
 type Props = {
 	playlists: Playlist[]
 	filters: Filters['playlists']
-	selectAll: typeof Actions.selectPlaylists
-	changeSortMode: typeof Actions.updatePlaylistsSort
-	select: typeof Actions.selectPlaylist
+	selectAll?: typeof Actions.selectPlaylists // If omitted, select will be a radio component
+	changeSortMode: (payload: Sort, meta: string) => void
+	select: (checked: boolean, id: string) => void
 }
 
 const Playlists: React.StatelessComponent<Props> = ({ playlists, select, selectAll, changeSortMode, filters }) => (
@@ -26,7 +26,7 @@ const Playlists: React.StatelessComponent<Props> = ({ playlists, select, selectA
 		<table className="playlists">
 			<thead>
 				<tr>
-					<th className="select"><input type="checkbox" onChange={e => selectAll(e.target.checked)}/></th>
+					<th className="select">{selectAll && <input type="checkbox" onChange={e => selectAll(e.target.checked)}/>}</th>
 					<th className="image"></th>
 					{headers.map(([name, key]) => (
 						<th key={name} className={name.toLocaleLowerCase()}>
@@ -41,9 +41,12 @@ const Playlists: React.StatelessComponent<Props> = ({ playlists, select, selectA
 			<tbody>
 				{playlists.map(p =>
 					<tr key={p.id}>
-						<td className="select">
+						<td className="select">{selectAll ? (
 							<input type="checkbox" checked={p.selected} onChange={e => select(e.target.checked, p.id)} />
-						</td>
+						) : (
+							<input type="radio" name="playlist" value={p.id} checked={p.selected} onChange={() => select(true, p.id)}
+							/>
+						)}</td>
 						<td className="image">
 							{p.images.length > 0 ? <img src={p.images.slice().sort(i => i.height as number)[0].url} /> : null}
 						</td>

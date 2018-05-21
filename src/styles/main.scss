@@ -59,4 +59,9 @@ main {
 
 footer {
 	grid-area: footer;
+	padding-top: 1rem;
+	border-top: $border-separator;
+	display: flex;
+	flex-flow: row wrap;
+	justify-content: space-between;
 }
