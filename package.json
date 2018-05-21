@@ -1,7 +1,7 @@
 {
     "name": "spotify-organizer",
     "repository": "https://github.com/hyldmo/spotify-organizer",
-    "version": "0.4.3",
+    "version": "0.4.4",
     "scripts": {
         "dev": "npm run compileConf:dev && webpack-dev-server --config webpack.development.config.js --progress --colors --hot",
         "prod": "npm run compileConf:prod && webpack --config webpack.production.config.js --progress --colors",
