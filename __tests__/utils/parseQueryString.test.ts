@@ -11,7 +11,6 @@ it('parses query string without url', () => {
 	})
 })
 
-
 it('parses normal url', () => {
 	const url = 'https://example.com?one=1&two=2&three=3'
 	const result = parseQueryString(url)

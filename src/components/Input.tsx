@@ -1,16 +1,15 @@
 import * as React from 'react'
 
-import '../styles/input.pcss'
-
 // tslint:disable-next-line:no-empty-interface
 interface Props extends React.HTMLProps<HTMLInputElement> {
+	label: string
 }
 
-export default class Input extends React.Component<Props> {
+const Input: React.StatelessComponent<Props> = ({ label, ...props }) => (
+	<label className={`input ${props.type}`}>
+		<input {...props} />
+		<span className="label">{label}</span>
+	</label>
+)
 
-	render () {
-		return (
-			<input {...this.props} />
-		)
-	}
-}
+export default Input

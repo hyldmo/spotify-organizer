@@ -4,10 +4,14 @@ node_js:
 cache:
   directories:
     - node_modules
+
 script:
-  - npm run lint
-  - npm test
-  - npm run production
+  - yarn lint
+  - yarn stylelint
+  - yarn test:cover
+  - yarn compileConf:dev
+  - yarn prod
+
 deploy:
   provider: pages
   local_dir: dist
@@ -18,3 +22,7 @@ deploy:
 
 notifications:
   email: false
+
+before_install: yarn global add greenkeeper-lockfile@1
+before_script: greenkeeper-lockfile-update
+after_script: greenkeeper-lockfile-upload

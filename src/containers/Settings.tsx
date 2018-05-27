@@ -1,22 +1,18 @@
 import * as React from 'react'
 import { connect } from 'react-redux'
-import { returntypeof } from 'react-redux-typescript'
 import { Actions } from '../actions'
 import { State } from '../reducers'
-
-import '../styles/settings.pcss'
 
 const mapStateToProps = (state: State) => ({
 	filters: state.filters.playlists
 })
-const stateProps = returntypeof(mapStateToProps)
 
 const dispatchToProps = {
 	hideEmpty: Actions.updateHideEmptyFilter,
 	updateOwned: Actions.updateOwnedFilter
 }
 
-type Props = typeof stateProps & typeof dispatchToProps
+type Props = ReturnType<typeof mapStateToProps> & typeof dispatchToProps
 
 class Settings extends React.Component<Props> {
 

@@ -1,0 +1,34 @@
+.playlists {
+	th.select, th.image {
+		width: 2rem;
+	}
+
+	input[type="checkbox"] {
+		border-color: $border-dark;
+	}
+
+	@include mobile {
+		.owner, .tracks {
+			display: none;
+		}
+	}
+}
+
+.playlists-compare {
+	display: flex;
+	flex-flow: row nowrap;
+	justify-content: space-around;
+	align-items: stretch;
+	align-content: stretch;
+	width: 100%;
+
+	.playlists {
+		width: 50%;
+		&:first-child {
+			border-right: 1px solid rgba($text-color, 0.4);
+		}
+		&:last-child {
+			border-left: 1px solid rgba($text-color, 0.6);
+		}
+	}
+}

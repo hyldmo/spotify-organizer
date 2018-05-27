@@ -1,26 +1,12 @@
+import fontawesome from '@fortawesome/fontawesome'
+import solid from '@fortawesome/fontawesome-free-solid'
 import * as React from 'react'
-import * as ReactDOM from 'react-dom'
-
-import App from './containers/App'
+import { render } from 'react-dom'
 import Root from './containers/Root'
 
-import './styles/main.pcss'
+fontawesome.library.add(solid)
 
-const rootDiv = document.getElementById('root')
-
-const render = (Component: any) => {
-	ReactDOM.render(
-		<Root>
-			<Component />
-		</Root>,
-		rootDiv
-	)
-}
-
-if (module.hot) {
-	module.hot.accept('./containers/App', () => {
-		render(require('./containers/App').default)
-	})
-}
-render(App)
-
+render(
+	<Root />,
+	document.getElementById('root')
+)

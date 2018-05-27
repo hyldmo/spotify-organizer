@@ -1,6 +1,6 @@
 import { Playlist, Sort } from './spotify'
 
-type PlaylistKey = keyof Playlist | null | string
+type PlaylistKey = keyof Playlist | string
 export type Filters = {
 	playlists: {
 		order: {

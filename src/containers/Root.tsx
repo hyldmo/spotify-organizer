@@ -1,31 +1,51 @@
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
 import * as React from 'react'
-import { AppContainer } from 'react-hot-loader'
 import { Provider } from 'react-redux'
 import { ConnectedRouter } from 'react-router-redux'
+import RedBox from 'redbox-react'
 import { Actions } from '../actions'
 import configureStore, { history } from '../configureStore'
-import { State } from '../reducers'
+import { State as ReduxState } from '../reducers'
+import App from './App'
 
-const initialState: Partial<State> = {
+const initialState: Partial<ReduxState> = {
 
 }
 
-const store = configureStore(initialState as State)
+const store = configureStore(initialState)
 
 store.dispatch(Actions.loadUser())
 
-const Root: React.StatelessComponent<any> = (props) => (
-	<Provider store={store}>
-		<ConnectedRouter history={history}>
-			{module.hot ? (
-				<AppContainer>
-					{props.children}
-				</AppContainer>
-			) : (
-				props.children
-			)}
-		</ConnectedRouter>
-	</Provider>
-)
+type State = {
+	error: Error | null
+}
 
-export default Root
+export default class Root extends React.Component<{}, State> {
+	state = {
+		error: null
+	}
+
+	componentWillReceiveProps () {
+		this.setState({ error: null })
+	}
+
+	componentDidCatch (error: Error, info: React.ErrorInfo) {
+		this.setState({ error })
+	}
+
+	render () {
+		const { error } = this.state
+		if (error && process.env.NODE_ENV !== 'test') {
+			return <RedBox error={error} />
+		}
+		return (
+			<MuiThemeProvider>
+				<Provider store={store}>
+					<ConnectedRouter history={history}>
+						<App />
+					</ConnectedRouter>
+				</Provider>
+			</MuiThemeProvider>
+		)
+	}
+}

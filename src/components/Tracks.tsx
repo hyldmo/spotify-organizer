@@ -25,7 +25,7 @@ const Tracks: React.StatelessComponent<Props> = ({ tracks }) => (
 						<td>{p.name}</td>
 						<td>{p.artists.map(a => a.name).join(', ')}</td>
 						<td>{p.album.name}</td>
-						<td>{p.meta.added_by.display_name || p.meta.added_by.id}</td>
+						<td>{getDisplayName(p.meta.added_by)}</td>
 						<td>{new Date(p.meta.added_at).toLocaleDateString()}</td>
 						<td>{new Duration(p.duration_ms).toMinutesString()}</td>
 					</tr>
@@ -36,5 +36,11 @@ const Tracks: React.StatelessComponent<Props> = ({ tracks }) => (
 		<div>No tracks.</div>
 	)
 )
+
+function getDisplayName (added_by: Track['meta']['added_by']): string {
+	return added_by === null
+		? 'Spotify'
+		: added_by.display_name || added_by.id
+}
 
 export default Tracks

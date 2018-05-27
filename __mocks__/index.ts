@@ -9,11 +9,11 @@ window.matchMedia = window.matchMedia || function () {
 }
 
 const storageMock: Storage = {
-	key: null,
-	getItem: () => undefined,
+	key: (index: number) => null,
+	getItem: () => '',
 	setItem: () => undefined,
 	removeItem: () => undefined,
-	length: null,
+	length: 0,
 	clear: () => undefined
 };
 

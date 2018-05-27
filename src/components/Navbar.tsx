@@ -4,28 +4,22 @@ import { Link } from 'react-router-dom'
 import { BASE_URL } from '../constants'
 import { User } from '../types'
 
-import '../styles/navbar.pcss'
-
-
 type Props = {
-	user: User
+	user: User | null // TODO
 }
-
-const Navbar: React.StatelessComponent<Props> = ({ user }) => {
-
-	return (
-		<header>
-			<nav>
+// TODO: Handle user not having image
+const Navbar: React.StatelessComponent<Props> = ({ user }) => (
+	<header>
+		<nav>
+			<ul>
+				<li><Link to={BASE_URL}>Home</Link></li>
+			</ul>
+			{user && (
 				<ul>
-					<li><Link to={BASE_URL}>Home</Link></li>
+					<li><img height={20} src={user.image || undefined} /> {user.name}</li>
 				</ul>
-				{user && (
-					<ul>
-						<li><img height={20} src={user.image} /> {user.name}</li>
-					</ul>
-				)}
-			</nav>
-		</header>
-	)
-}
+			)}
+		</nav>
+	</header>
+)
 export default Navbar
