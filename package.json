@@ -66,7 +66,7 @@
         "@types/history": "^4.6.0",
         "@types/jest": "^23.0.0",
         "@types/lodash": "^4.14.74",
-        "@types/material-ui": "^0.20.8",
+        "@types/material-ui": "^0.21.3",
         "@types/memoizee": "^0.4.2",
         "@types/node": "^10.3.1",
         "@types/react": "16.1.0",
