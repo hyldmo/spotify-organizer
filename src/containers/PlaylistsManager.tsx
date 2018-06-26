@@ -7,7 +7,7 @@ import Playlists from '../components/Playlists'
 import PullPlaylist from '../components/PullPlaylist'
 import { State as ReduxState } from '../reducers'
 import { OperationMode, Playlist } from '../types'
-import { applyPlaylistsFilters, canModifyPlaylist, CompareType } from '../utils'
+import { applyPlaylistsFilters, CompareType, getDeduplicateErrors } from '../utils'
 import Modal from './Modal'
 import Settings from './Settings'
 
@@ -63,6 +63,9 @@ class PlaylistsManager extends React.Component<Props, State> {
 		const playlists = applyPlaylistsFilters(this.props.playlists, filters, user)
 		const selectedPlaylists = playlists.filter(p => p.selected)
 		const removeTracks = mode === OperationMode.Duplicates || mode === OperationMode.PullTracks
+
+		const error = getDeduplicateErrors(mode, selectedPlaylists, secondPlaylist, user)
+
 		return (
 			<div className="manager">
 				<div className="header row">
@@ -80,15 +83,14 @@ class PlaylistsManager extends React.Component<Props, State> {
 							Cancel
 						</Button>
 						<Button primary
-							disabled={selectedPlaylists.length === 0 || mode === OperationMode.PullTracks
-								? secondPlaylist === null
-								: !selectedPlaylists.every(pl => canModifyPlaylist(pl, user))}
+							disabled={error !== null}
+							title={error || ''}
 							onClick={e => removeTracks && deduplicate({ source: playlists.filter(pl => pl.selected), target: secondPlaylist }, compareType)}
 						>
 							Confirm
 						</Button>
 					</> :
-						<Button primary disabled={selectedPlaylists.length === 0} onClick={e => this.changeMode(OperationMode.Duplicates)}>
+						<Button primary disabled={selectedPlaylists.length === 0} onClick={e => this.changeMode(OperationMode.Duplicates)} title={error || ''}>
 							Remove duplicates
 						</Button>
 					}
