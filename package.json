@@ -51,7 +51,7 @@
         "lodash": "^4.17.4",
         "material-ui": "^0.20.0",
         "memoizee": "^0.4.11",
-        "normalize.css": "^5.0.0",
+        "normalize.css": "^8.0.1",
         "react": "^16.3.2",
         "react-dom": "^16.3.2",
         "react-redux": "^5.0.6",
