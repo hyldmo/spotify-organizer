@@ -1,4 +1,4 @@
-import * as React from 'react'
+import React from 'react'
 
 // tslint:disable-next-line:no-empty-interface
 interface Props extends React.HTMLProps<HTMLInputElement> {

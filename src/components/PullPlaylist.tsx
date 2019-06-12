@@ -1,4 +1,4 @@
-import * as React from 'react'
+import React from 'react'
 import { Actions } from '../actions'
 import { initialState, playlists as updateFilters } from '../reducers/filters'
 import { Filters as PlaylistFilters, Playlist, User } from '../types'

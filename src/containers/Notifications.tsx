@@ -1,6 +1,6 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import Snackbar from 'material-ui/Snackbar'
-import * as React from 'react'
+import React from 'react'
 import { connect } from 'react-redux'
 import { State } from '../reducers'
 

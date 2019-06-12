@@ -1,5 +1,5 @@
 // Based on react-highlight-words by https://github.com/bvaughn
-import * as React from 'react'
+import React from 'react'
 
 type Props = {
 	text: string,

@@ -1,4 +1,4 @@
-import * as React from 'react'
+import React from 'react'
 import { Action, Actions } from '../actions'
 import Highlight from '../components/Highlight'
 import { initialState, playlists as updateFilters } from '../reducers/filters'

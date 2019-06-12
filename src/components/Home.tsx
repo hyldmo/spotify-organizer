@@ -1,4 +1,4 @@
-import * as React from 'react'
+import React from 'react'
 import PlaylistsManager from '../containers/PlaylistsManager'
 
 const App: React.StatelessComponent = (props) =>  (

@@ -1,6 +1,6 @@
-import * as React from 'react'
+import { replace } from 'connected-react-router'
+import React from 'react'
 import { connect } from 'react-redux'
-import { replace } from 'react-router-redux'
 
 import { BASE_URL } from '../constants'
 import { State } from '../reducers'
