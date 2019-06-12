@@ -1,4 +1,4 @@
-import { replace } from 'react-router-redux'
+import { replace } from 'connected-react-router'
 import { call, put, takeLatest } from 'redux-saga/effects'
 import { Actions } from '../actions'
 import spotifyApi from './spotifyFetch'

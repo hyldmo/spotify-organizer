@@ -1,5 +1,5 @@
+import { routerMiddleware } from 'connected-react-router'
 import createHistory from 'history/createBrowserHistory'
-import { routerMiddleware } from 'react-router-redux'
 import { applyMiddleware, compose, createStore } from 'redux'
 import createSagaMiddleware from 'redux-saga'
 import rootReducer, { State } from './reducers'
@@ -14,7 +14,7 @@ const composeEnhancers: typeof compose = (window as any).__REDUX_DEVTOOLS_EXTENS
 
 export default function configureStore (initialState?: Partial<State>) {
 	const store = createStore(
-		rootReducer,
+		rootReducer(history),
 		initialState || {},
 		composeEnhancers(
 			applyMiddleware(...middlewares)

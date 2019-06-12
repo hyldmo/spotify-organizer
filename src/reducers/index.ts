@@ -1,4 +1,5 @@
-import { routerReducer as routing } from 'react-router-redux'
+import { connectRouter } from 'connected-react-router'
+import { History } from 'history'
 import { combineReducers } from 'redux'
 import filters from './filters'
 import modals from './modals'
@@ -7,14 +8,14 @@ import playlists from './playlists'
 import timer from './timer'
 import user from './user'
 
-export type State = ReturnType<typeof reducers>
+export type State = ReturnType<ReturnType<typeof reducers>>
 
-const reducers = combineReducers({
+const reducers = (history: History) => combineReducers({
 	filters,
 	modals,
 	notifications,
 	playlists,
-	routing,
+	router: connectRouter(history),
 	timer,
 	user
 })

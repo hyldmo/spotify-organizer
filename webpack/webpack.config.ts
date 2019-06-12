@@ -1,11 +1,13 @@
-import * as HtmlWebpackPlugin from 'html-webpack-plugin'
-import * as path from 'path'
-import * as webpack from 'webpack'
+import HtmlWebpackPlugin from 'html-webpack-plugin'
+import path from 'path'
+import webpack from 'webpack'
+import packageJSON from '../package.json'
 
-const packageJSON = require('./package.json')
+const context = path.resolve(__dirname, '../')
 
 const config: webpack.Configuration = {
 	entry: './src/index.tsx',
+	context,
 
 	output: {
 		path: path.join(__dirname, 'dist'),

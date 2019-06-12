@@ -6,7 +6,7 @@ export function getDeduplicateErrors (mode: OperationMode, selectedPlaylists: Pl
 		return 'You must select a playlist'
 	switch (mode) {
 		case OperationMode.Duplicates:
-			if (selectedPlaylists.every(pl => canModifyPlaylist(pl, user)))
+			if (selectedPlaylists.some(pl => !canModifyPlaylist(pl, user)))
 				return 'You do not have permission to edit one or more of the selected playlists.'
 			break
 		case OperationMode.PullTracks:

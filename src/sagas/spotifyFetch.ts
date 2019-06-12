@@ -26,7 +26,7 @@ export default function* spotifyFetch (url: string, options: RequestInit = {}, a
 			// window.open(loginLink(), '_self')
 			break
 		case 429: {
-			const waitTime = Number.parseInt(response.headers.get('Retry-After') || '10')
+			const waitTime = Number.parseInt(response.headers.get('Retry-After') || '10', 10)
 			yield put(Actions.startTimer(waitTime))
 			yield call(sleep, waitTime * 1000)
 			return yield call(spotifyFetch, url, options, token)

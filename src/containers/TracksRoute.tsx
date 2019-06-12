@@ -1,7 +1,7 @@
-import * as React from 'react'
+import { replace } from 'connected-react-router'
+import React from 'react'
 import { connect } from 'react-redux'
 import { RouteComponentProps, withRouter } from 'react-router'
-import { replace } from 'react-router-redux'
 
 import { Actions } from '../actions'
 import Loading from '../components/Loading'

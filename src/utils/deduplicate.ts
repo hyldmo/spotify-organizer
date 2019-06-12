@@ -1,5 +1,5 @@
 import { isEqual } from 'lodash'
-import * as memoize from 'memoizee'
+import memoize from 'memoizee'
 import { Track } from '../types'
 
 export enum CompareType {
@@ -47,12 +47,15 @@ export function compareTrack (trackA: Track, trackB: Track, compareType: Compare
  */
 export function deduplicate (tracks: Track[], compareType = CompareType.SongId): Track[] {
 	tracks = tracks.slice()
-	return tracks
+	tracks = tracks
 		.sort((a, b) => a.meta.index - b.meta.index)
 		.filter((a, i) => {
 			const track = tracks.find(b => compareTrack(a, b, compareType))
 			return track !== undefined && track.meta.index !== i
 		})
+	// tslint:disable-next-line:no-console
+	console.info('Duplicate tracks:', tracks)
+	return tracks
 }
 
 /**
