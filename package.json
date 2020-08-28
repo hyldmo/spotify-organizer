@@ -47,7 +47,7 @@
         "connected-react-router": "^6.4.0",
         "cross-env": "^5.2.0",
         "history": "^4.6.3",
-        "lodash": "^4.17.11",
+        "lodash": "^4.17.17",
         "material-ui": "^0.20.0",
         "memoizee": "^0.4.11",
         "normalize.css": "^5.0.0",
