@@ -26,7 +26,7 @@ const App: React.FC<Props> = ({ user }) => (
 	<>
 		<Navbar user={user} />
 		<Alerts />
-		<main>
+		<main className="bg-inherit">
 			<ErrorBoundary>
 				{user ? (
 					<Switch>

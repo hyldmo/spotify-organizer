@@ -4,10 +4,12 @@ import notifications from './notifications'
 import playlists from './playlists'
 import timer from './timer'
 import user from './user'
+import playback from './playback'
 
 export const Actions = {
 	...modals,
 	...notifications,
+	...playback,
 	...playlists,
 	...timer,
 	...user

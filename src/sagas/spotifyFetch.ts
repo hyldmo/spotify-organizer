@@ -22,7 +22,7 @@ export function* spotifyFetch(url: string, options: RequestInit = {}, apiToken?:
 			return body
 
 		case 401:
-			yield* put(Actions.logout())
+			// yield* put(Actions.logout())
 			// window.open(loginLink(), '_self')
 			break
 		case 429: {

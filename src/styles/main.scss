@@ -1,4 +1,4 @@
-@import '~normalize.css';
+@import './vendor.scss';
 @import './variables.scss';
 @import './components/index.scss';
 @import './input/index.scss';
@@ -26,12 +26,6 @@ body,
 	color: $text-color;
 }
 
-nav,
-main,
-footer {
-	padding: 0 40px 0 20px;
-}
-
 @include mobile {
 	main {
 		padding: 0;
@@ -47,7 +41,7 @@ footer {
 		'alert alert  alert'
 		'left  main   right'
 		'left  footer right';
-	grid-template-rows: $header-height auto 1fr 4rem;
+	grid-template-rows: $header-height auto 1fr auto;
 	/* stylelint-disable-next-line declaration-block-no-redundant-longhand-properties */
 	grid-template-columns: $grid-columns;
 }
@@ -66,9 +60,9 @@ main {
 
 footer {
 	grid-area: footer;
-	padding-top: 1rem;
 	border-top: $border-separator;
-	display: flex;
-	flex-flow: row wrap;
-	justify-content: space-between;
+
+	svg {
+		fill: currentColor;
+	}
 }

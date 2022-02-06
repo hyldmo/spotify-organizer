@@ -1,3 +1,8 @@
+export type Playback = SpotifyApi.CurrentPlaybackResponse &
+	SpotifyApi.CurrentlyPlayingObject & {
+		item?: SpotifyApi.TrackObjectFull
+	}
+
 export interface Playlist extends SpotifyApi.PlaylistObjectSimplified {
 	selected: boolean
 	description: SpotifyApi.PlaylistObjectFull['description']

@@ -12,6 +12,12 @@
 		"selector-type-no-unknown": null,
 		"property-no-unknown": null,
 		"scss/dollar-variable-no-missing-interpolation": true,
-		"scss/at-import-partial-extension": null
+		"scss/at-import-partial-extension": null,
+		"value-keyword-case": [
+			"lower",
+			{
+				"camelCaseSvgKeywords": true
+			}
+		]
 	}
 }

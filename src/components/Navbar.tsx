@@ -9,7 +9,7 @@ type Props = {
 }
 // TODO: Handle user not having image
 const Navbar: React.FC<Props> = ({ user }) => (
-	<header>
+	<header className="px-4">
 		<nav>
 			<ul>
 				<li>
@@ -19,7 +19,8 @@ const Navbar: React.FC<Props> = ({ user }) => (
 			{user && (
 				<ul>
 					<li>
-						<img height={20} src={user.image || undefined} /> {user.name}
+						<img className="inline align-bottom h-6 rounded-full" src={user.image || undefined} />{' '}
+						{user.name}
 					</li>
 				</ul>
 			)}

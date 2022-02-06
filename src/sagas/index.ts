@@ -4,10 +4,11 @@ import { cancel, fork, take } from 'typed-redux-saga'
 import { State } from '../types'
 import loginSaga from './login'
 import notificationsSaga from './notifications'
+import nowPlayingSaga from './nowPlaying'
 import playlistsSaga from './playlists'
 import timer from './timer'
 
-const sagas = [loginSaga, notificationsSaga, playlistsSaga, timer]
+const sagas = [loginSaga, nowPlayingSaga, notificationsSaga, playlistsSaga, timer]
 
 export const CANCEL_SAGAS_HMR = 'CANCEL_SAGAS_HMR'
 

@@ -63,83 +63,88 @@ class PlaylistsManager extends React.Component<Props, State> {
 		const error = getDeduplicateErrors(mode, selectedPlaylists, secondPlaylist, user)
 
 		return (
-			<div className="manager">
-				<div className="header row">
-					<h1>Playlists</h1>
-					<input type="text" placeholder="&#xF002; Filter" onChange={e => updateFilterText(e.target.value)} />
-					<span className="filler" />
+			<div className="manager bg-inherit">
+				<div className="sticky top-0 pt-2 pb-3 px-4 z-10 bg-inherit border-b border-b-gray-600">
+					<div className="header row ">
+						<h1>Playlists</h1>
+						<input
+							type="text"
+							placeholder="&#xF002; Filter"
+							onChange={e => updateFilterText(e.target.value)}
+						/>
+						<span className="filler" />
 
-					<Modal id="settings" centered component={<Button icon="cog" />}>
-						<Settings />
-					</Modal>
-				</div>
-				<div className="row">
-					{removeTracks ? (
-						<>
-							<Button onClick={_ => this.changeMode(OperationMode.None)}>Cancel</Button>
+						<Modal id="settings" centered component={<Button icon="cog" />}>
+							<Settings />
+						</Modal>
+					</div>
+					<div className="row">
+						{removeTracks ? (
+							<>
+								<Button onClick={_ => this.changeMode(OperationMode.None)}>Cancel</Button>
+								<Button
+									primary
+									disabled={error !== null}
+									title={error || ''}
+									onClick={_ =>
+										removeTracks &&
+										deduplicate(
+											{ source: playlists.filter(pl => pl.selected), target: secondPlaylist },
+											compareType
+										)
+									}
+								>
+									Confirm
+								</Button>
+							</>
+						) : (
 							<Button
 								primary
-								disabled={error !== null}
+								disabled={selectedPlaylists.length === 0}
+								onClick={_ => this.changeMode(OperationMode.Duplicates)}
 								title={error || ''}
-								onClick={_ =>
-									removeTracks &&
-									deduplicate(
-										{ source: playlists.filter(pl => pl.selected), target: secondPlaylist },
-										compareType
-									)
-								}
 							>
-								Confirm
+								Remove duplicates
 							</Button>
-						</>
-					) : (
-						<Button
-							primary
-							disabled={selectedPlaylists.length === 0}
-							onClick={_ => this.changeMode(OperationMode.Duplicates)}
-							title={error || ''}
-						>
-							Remove duplicates
-						</Button>
-					)}
-					<span className="filler" />
-					<ul className="stats right-menu">
-						<li>{playlists.length} Playlists</li>
-						<li>{playlists.reduce((a, b) => a + b.tracks.total, 0)} Tracks</li>
-					</ul>
-				</div>
-				{removeTracks && (
-					<div className="row">
-						<form className="horizontal">
-							<div className="row">
-								<strong>Select duplicate criteria</strong>
-								<em>&nbsp;(tracks are always compared by song id and artist)</em>
-							</div>
-							<div className="row">
-								{Object.keys(CompareType)
-									.filter(key => isNaN(Number(key)))
-									.map(key => (
-										<Input
-											key={key}
-											name="comparetype"
-											type="radio"
-											value={key}
-											checked={compareType === key}
-											label={key.replace(/([A-Z])/g, ' $1').trimLeft()}
-											onChange={() => this.setState({ compareType: key as CompareType })}
-										/>
-									))}
-								<Input
-									name="advanced"
-									type="checkbox"
-									label="From another playlist"
-									onChange={e => this.handleInputChange(e)}
-								/>
-							</div>
-						</form>
+						)}
+						<span className="filler" />
+						<ul className="stats right-menu flex gap-2">
+							<li>{playlists.length} Playlists</li>
+							<li>{playlists.reduce((a, b) => a + b.tracks.total, 0)} Tracks</li>
+						</ul>
 					</div>
-				)}
-				<hr />
+					{removeTracks && (
+						<div className="row">
+							<form className="horizontal">
+								<div className="row">
+									<strong>Select duplicate criteria</strong>
+									<em>&nbsp;(tracks are always compared by song id and artist)</em>
+								</div>
+								<div className="row">
+									{Object.keys(CompareType)
+										.filter(key => isNaN(Number(key)))
+										.map(key => (
+											<Input
+												key={key}
+												name="comparetype"
+												type="radio"
+												value={key}
+												checked={compareType === key}
+												label={key.replace(/([A-Z])/g, ' $1').trimLeft()}
+												onChange={() => this.setState({ compareType: key as CompareType })}
+											/>
+										))}
+									<Input
+										name="advanced"
+										type="checkbox"
+										label="From another playlist"
+										onChange={e => this.handleInputChange(e)}
+									/>
+								</div>
+							</form>
+						</div>
+					)}
+				</div>
 				{mode !== OperationMode.PullTracks ? (
 					<Playlists
 						changeSortMode={changeSortMode}
