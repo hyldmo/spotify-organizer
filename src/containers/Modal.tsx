@@ -4,7 +4,7 @@ import { createPortal } from 'react-dom'
 import { connect } from 'react-redux'
 import { Actions } from '../actions'
 import Button from '../components/Button'
-import { State } from '../reducers'
+import { State } from '../types'
 
 type OwnProps = {
 	id: string
@@ -12,6 +12,7 @@ type OwnProps = {
 	centered?: boolean
 	component: React.ReactElement<any>
 	onConfirm?: (e: React.MouseEvent<HTMLButtonElement>) => void
+	children?: React.ReactNode
 }
 
 const mapStateToProps = (state: State, ownProps: OwnProps) => {

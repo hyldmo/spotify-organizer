@@ -2,7 +2,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import Snackbar from 'material-ui/Snackbar'
 import React from 'react'
 import { connect } from 'react-redux'
-import { State } from '../reducers'
+import { State } from '../types'
 
 const mapStateToProps = (state: State) => ({
 	notification: state.notifications

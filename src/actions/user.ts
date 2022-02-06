@@ -1,9 +1,9 @@
 import { User } from '../types'
-import { createAction } from './actionCreator'
+import { makeActionCreator } from '../utils/actionCreator'
 
 export default {
-	tokenAquired: createAction<'TOKEN_AQUIRED', string, string | null>('TOKEN_AQUIRED'),
-	loadUser: createAction<'LOAD_USER'>('LOAD_USER'),
-	userLoaded: createAction<'USER_LOADED', User>('USER_LOADED'),
-	logout: createAction<'USER_LOGOUT'>('USER_LOGOUT')
+	tokenAquired: makeActionCreator<string, string | null>()('TOKEN_AQUIRED'),
+	loadUser: makeActionCreator()('LOAD_USER'),
+	userLoaded: makeActionCreator<User>()('USER_LOADED'),
+	logout: makeActionCreator()('USER_LOGOUT')
 }

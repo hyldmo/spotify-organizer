@@ -1,16 +1,18 @@
 /* eslint-disable camelcase */
 import { all, call, put, select, takeLatest } from 'typed-redux-saga'
-import { Actions } from '../actions'
-import { State } from '../reducers'
-import { Playlist, Track } from '../types'
+import { Action, Actions } from '../actions'
+import { Playlist, State, Track } from 'types'
 import { deduplicate, partition, pullTracks } from '../utils'
 import { sleep } from '../utils/sleep'
 import { spotifyFetch } from './spotifyFetch'
 
 export default function* () {
-	yield* takeLatest<typeof Actions.fetchPlaylists>(Actions.fetchPlaylists.type, getPlaylists)
-	yield* takeLatest<typeof Actions.fetchTracks>(Actions.fetchTracks.type, getTracks)
-	yield* takeLatest<typeof Actions.deduplicatePlaylists>(Actions.deduplicatePlaylists.type, deduplicateTracks)
+	yield* takeLatest<Action<typeof Actions.fetchPlaylists.type>>(Actions.fetchPlaylists.type, getPlaylists)
+	yield* takeLatest<Action<typeof Actions.fetchTracks.type>>(Actions.fetchTracks.type, getTracks)
+	yield* takeLatest<Action<typeof Actions.deduplicatePlaylists.type>>(
+		Actions.deduplicatePlaylists.type,
+		deduplicateTracks
+	)
 }
 
 function* getPlaylists() {
@@ -26,7 +28,7 @@ function* getPlaylists() {
 	yield* put(Actions.playlistsFetched(playlists))
 }
 
-function* getTracks(action: typeof Actions.fetchTracks) {
+function* getTracks(action: Action<typeof Actions.fetchTracks.type>) {
 	const { owner, id } = action.payload
 	let tracks: Track[] = []
 	let response: SpotifyApi.PlaylistTrackResponse
@@ -70,7 +72,7 @@ function* getTracks(action: typeof Actions.fetchTracks) {
 	yield* put(Actions.tracksFetched(tracks, id))
 }
 
-function* deduplicateTracks(action: typeof Actions.deduplicatePlaylists) {
+function* deduplicateTracks(action: Action<typeof Actions.deduplicatePlaylists.type>) {
 	const {
 		payload: { source, target },
 		meta: compareMode

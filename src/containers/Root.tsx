@@ -5,7 +5,7 @@ import { Provider } from 'react-redux'
 import RedBox from 'redbox-react'
 import { Actions } from '../actions'
 import configureStore, { history } from '../configureStore'
-import { State as ReduxState } from '../reducers'
+import { State as ReduxState } from 'types'
 import App from './App'
 
 const initialState: Partial<ReduxState> = {}

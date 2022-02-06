@@ -2,7 +2,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { Actions } from '../actions'
 
-import { State } from '../reducers'
+import { State } from '../types'
 
 const mapStateToProps = (state: State) => ({
 	timer: state.timer

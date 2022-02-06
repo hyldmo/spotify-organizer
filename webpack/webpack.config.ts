@@ -2,6 +2,8 @@ import HtmlWebpackPlugin from 'html-webpack-plugin'
 import path from 'path'
 import webpack from 'webpack'
 import packageJSON from '../package.json'
+import { getFolders } from './utils'
+import tsConfig from '../tsconfig.json'
 
 const context = path.resolve(__dirname, '../')
 
@@ -18,7 +20,8 @@ const config: webpack.Configuration = {
 
 	resolve: {
 		alias: {
-			styles: path.resolve(__dirname, 'src/styles')
+			styles: path.resolve(__dirname, 'src/styles'),
+			...getFolders(path.join(context, tsConfig.compilerOptions.baseUrl))
 		},
 		extensions: packageJSON.jest.moduleFileExtensions.map(ext => `.${ext}`)
 	},

@@ -1,7 +1,7 @@
-import { Action } from '../actions'
+import { Action, MetaAction } from '../actions'
 import { Playlist } from '../types'
 
-function playlist(state: Playlist, action: Action): Playlist {
+function playlist(state: Playlist, action: MetaAction): Playlist {
 	if (state.id !== action.meta) return state
 
 	switch (action.type) {

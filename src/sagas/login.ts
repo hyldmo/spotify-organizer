@@ -1,6 +1,6 @@
 import { replace } from 'connected-react-router'
 import { call, put, takeLatest } from 'typed-redux-saga'
-import { Actions } from '../actions'
+import { Action, Actions } from '../actions'
 import { spotifyFetch } from './spotifyFetch'
 
 export default function* () {
@@ -8,7 +8,7 @@ export default function* () {
 	yield* takeLatest('LOAD_USER', loadUser)
 }
 
-function* getUserDetails(action: typeof Actions.tokenAquired) {
+function* getUserDetails(action: Action<typeof Actions.tokenAquired.type>) {
 	const token = action.payload
 	const redirect = action.meta
 
@@ -24,7 +24,7 @@ function* getUserDetails(action: typeof Actions.tokenAquired) {
 	}
 }
 
-function* loadUser(_: typeof Actions.loadUser) {
+function* loadUser(_: Action<typeof Actions.loadUser.type>) {
 	const token = localStorage.getItem('token')
 	if (token) yield* put(Actions.tokenAquired(token, null))
 }

@@ -1,21 +1,18 @@
 import { SagaIterator } from 'redux-saga'
 import { call, put, select } from 'typed-redux-saga'
-
 import { Actions } from '../actions'
-import { State } from '../reducers'
+import { State } from '../types'
 import { sleep } from '../utils'
 
 // TODO: Remove any
 export function* spotifyFetch(url: string, options: RequestInit = {}, apiToken?: string): SagaIterator {
 	const token = apiToken !== undefined ? apiToken : yield* select((state: State) => state.user && state.user.token)
 	if (!token) {
-		console.error(`${spotifyFetch.name}:Token not found`)
+		console.info(`${spotifyFetch.name}:Token not found`)
 		return
 	}
 
-	const headers = new Headers({
-		Authorization: `Bearer ${token}`
-	})
+	const headers = new Headers({ Authorization: `Bearer ${token}` })
 	const response: Response = yield* call(fetch, `https://api.spotify.com/v1/${url}`, { headers, ...options })
 	const body = yield* call(response.json.bind(response))
 
@@ -23,6 +20,7 @@ export function* spotifyFetch(url: string, options: RequestInit = {}, apiToken?:
 		case 200:
 		case 304:
 			return body
+
 		case 401:
 			yield* put(Actions.logout())
 			// window.open(loginLink(), '_self')

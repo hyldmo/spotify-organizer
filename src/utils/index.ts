@@ -1,3 +1,4 @@
+export * from './actionCreator'
 export * from './deduplicate'
 export * from './duration'
 export * from './filterPlaylists'

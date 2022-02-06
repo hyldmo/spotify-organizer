@@ -1,7 +1,7 @@
 import { Store } from 'redux'
 import { SagaMiddleware } from 'redux-saga'
 import { cancel, fork, take } from 'typed-redux-saga'
-import { State } from '../reducers'
+import { State } from '../types'
 import loginSaga from './login'
 import notificationsSaga from './notifications'
 import playlistsSaga from './playlists'

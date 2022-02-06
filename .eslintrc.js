@@ -91,7 +91,8 @@ module.exports = {
 			enabled,
 			{
 				paths: [
-					'lodash' // use `import { x } from 'lodash/fp'` instead
+					'lodash', // use `import { x } from 'lodash/fp'` instead
+					'redux-saga/effects' // use typed-redux-saga
 				]
 			}
 		],

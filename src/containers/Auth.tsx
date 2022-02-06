@@ -3,7 +3,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { Actions } from '../actions'
 import { BASE_URL, loginLink } from '../constants'
-import { State } from '../reducers'
+import { State } from '../types'
 import { parseQueryString } from '../utils/parseQueryString'
 
 const mapStateToProps = (state: State) => ({

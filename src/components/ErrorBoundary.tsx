@@ -3,7 +3,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 
 import { BASE_URL } from '../constants'
-import { State } from '../reducers'
+import { State } from '../types'
 
 const mapStateToProps = (_: State) => ({})
 
@@ -11,7 +11,9 @@ const dispatchToProps = {
 	replace
 }
 
-type Props = typeof dispatchToProps
+type Props = typeof dispatchToProps & {
+	children?: React.ReactNode
+}
 
 class ErrorBoundary extends React.Component<Props> {
 	state = {

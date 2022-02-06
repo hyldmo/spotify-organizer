@@ -2,12 +2,11 @@ import { replace } from 'connected-react-router'
 import React from 'react'
 import { connect } from 'react-redux'
 import { RouteComponentProps, withRouter } from 'react-router'
-
 import { Actions } from '../actions'
 import Loading from '../components/Loading'
 import Tracks from '../components/Tracks'
-import { State as ReduxState } from '../reducers'
 import { Duration } from '../utils'
+import { State as ReduxState } from '../types'
 
 const mapStateToProps = (state: ReduxState) => ({
 	playlists: state.playlists

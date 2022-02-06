@@ -8,8 +8,6 @@ import playlists from './playlists'
 import timer from './timer'
 import user from './user'
 
-export type State = ReturnType<ReturnType<typeof reducers>>
-
 const reducers = (history: History) =>
 	combineReducers({
 		filters,
