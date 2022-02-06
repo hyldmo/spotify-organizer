@@ -1,9 +1,11 @@
 import React from 'react'
 import { RouteComponentProps } from 'react-router'
 
-const NotFound: React.StatelessComponent<RouteComponentProps<string>> = ({ location }) => (
+const NotFound: React.FC<RouteComponentProps<string>> = ({ location }) => (
 	<div>
-		<h1>No match for <code>{location.pathname}</code></h1>
+		<h1>
+			No match for <code>{location.pathname}</code>
+		</h1>
 	</div>
 )
 

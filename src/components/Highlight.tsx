@@ -2,19 +2,22 @@
 import React from 'react'
 
 type Props = {
-	text: string,
+	text: string
 	term: string
 }
 
-const Highlight: React.StatelessComponent<Props> = ({ text, term }) => {
+const Highlight: React.FC<Props> = ({ text, term }) => {
 	const chunks = highlightSuggestion(text, term)
 	return (
 		<span>
 			{chunks.map(chunk => {
 				if (chunk.highlighted)
-					return <span className="highlighted" key={chunk.text}>{chunk.text}</span>
-				else
-					return chunk.text
+					return (
+						<span className="highlighted" key={chunk.text}>
+							{chunk.text}
+						</span>
+					)
+				else return chunk.text
 			})}
 		</span>
 	)
@@ -25,13 +28,13 @@ class Chunk {
 	highlighted: boolean
 	text: any
 
-	constructor (text: string, isHighlighed = false) {
+	constructor(text: string, isHighlighed = false) {
 		this.text = text
 		this.highlighted = isHighlighed
 	}
 }
 
-function highlightSuggestion (suggestion = '', query = ''): Chunk[] {
+function highlightSuggestion(suggestion = '', query = ''): Chunk[] {
 	const terms = query.toLowerCase().split(' ')
 	const chunks = new Array<Chunk>(terms.length)
 

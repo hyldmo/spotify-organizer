@@ -8,9 +8,7 @@ import configureStore, { history } from '../configureStore'
 import { State as ReduxState } from '../reducers'
 import App from './App'
 
-const initialState: Partial<ReduxState> = {
-
-}
+const initialState: Partial<ReduxState> = {}
 
 const store = configureStore(initialState)
 
@@ -20,20 +18,20 @@ type State = {
 	error: Error | null
 }
 
-export default class Root extends React.Component<{}, State> {
+export default class Root extends React.Component<unknown, State> {
 	state: State = {
 		error: null
 	}
 
-	componentWillReceiveProps () {
-		this.setState({ error: null })
+	static getDerivedStateFromError(error: Error) {
+		return { error }
 	}
 
-	componentDidCatch (error: Error, info: React.ErrorInfo) {
-		this.setState({ error })
+	componentDidCatch(error: Error, info: React.ErrorInfo) {
+		console.error(error, info)
 	}
 
-	render () {
+	render() {
 		const { error } = this.state
 		if (error !== null && process.env.NODE_ENV !== 'test') {
 			return <RedBox error={error} />

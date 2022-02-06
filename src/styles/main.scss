@@ -1,8 +1,8 @@
-@import "~normalize.css";
-@import "./variables.scss";
-@import "./components/index.scss";
-@import "./input/index.scss";
-@import "./playlists/index.scss";
+@import '~normalize.css';
+@import './variables.scss';
+@import './components/index.scss';
+@import './input/index.scss';
+@import './playlists/index.scss';
 
 * {
 	box-sizing: border-box;
@@ -17,14 +17,18 @@ a {
 	}
 }
 
-html, body, #root {
+html,
+body,
+#root {
 	height: 100%;
 	overflow-y: overlay;
 	background-color: $background;
 	color: $text-color;
 }
 
-nav, main, footer {
+nav,
+main,
+footer {
 	padding: 0 40px 0 20px;
 }
 
@@ -38,23 +42,26 @@ nav, main, footer {
 	display: grid;
 	width: 100%;
 	height: 100%;
-	grid-template-areas: "nav   nav    nav"
-		"alert alert  alert"
-		"left  main   right"
-		"left  footer right";
-
+	grid-template:
+		'nav   nav    nav'
+		'alert alert  alert'
+		'left  main   right'
+		'left  footer right';
 	grid-template-rows: $header-height auto 1fr 4rem;
+	/* stylelint-disable-next-line declaration-block-no-redundant-longhand-properties */
 	grid-template-columns: $grid-columns;
 }
 
 @include tablet {
-	#root, #root > header {
+	#root,
+	#root > header {
 		grid-template-columns: 0 100% 0;
 	}
 }
 
 main {
 	grid-area: main;
+	overflow-y: scroll;
 }
 
 footer {

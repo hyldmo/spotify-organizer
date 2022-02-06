@@ -8,15 +8,19 @@ type Props = {
 	user: User | null // TODO
 }
 // TODO: Handle user not having image
-const Navbar: React.StatelessComponent<Props> = ({ user }) => (
+const Navbar: React.FC<Props> = ({ user }) => (
 	<header>
 		<nav>
 			<ul>
-				<li><Link to={BASE_URL}>Home</Link></li>
+				<li>
+					<Link to={BASE_URL}>Home</Link>
+				</li>
 			</ul>
 			{user && (
 				<ul>
-					<li><img height={20} src={user.image || undefined} /> {user.name}</li>
+					<li>
+						<img height={20} src={user.image || undefined} /> {user.name}
+					</li>
 				</ul>
 			)}
 		</nav>

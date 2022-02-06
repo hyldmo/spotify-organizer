@@ -15,4 +15,6 @@ const scopes = [
 	Scopes.USER_LIBRARY_MODIFY
 ]
 export const loginLink = () =>
-	urlEscape`https://accounts.spotify.com/authorize?client_id=${id}&response_type=token&redirect_uri=${REDIRECT_URI}&scope=${scopes.join(' ')}&state=${window.location.pathname}`
+	urlEscape`https://accounts.spotify.com/authorize?client_id=${id}&response_type=token&redirect_uri=${REDIRECT_URI}&scope=${scopes.join(
+		' '
+	)}&state=${window.location.pathname}`

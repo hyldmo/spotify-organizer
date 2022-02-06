@@ -1,4 +1,4 @@
-input[type="text"] {
+input[type='text'] {
 	background: none;
 	border: none;
 	border-radius: 0.25rem;
@@ -17,9 +17,7 @@ input[type="text"] {
 	}
 
 	&:focus {
-
 		color: $text-color;
 		background-color: $input-focus;
 	}
 }
-

@@ -1,9 +1,8 @@
 import { Action } from '../actions'
 import { Playlist } from '../types'
 
-function playlist (state: Playlist, action: Action): Playlist {
-	if (state.id !== action.meta)
-		return state
+function playlist(state: Playlist, action: Action): Playlist {
+	if (state.id !== action.meta) return state
 
 	switch (action.type) {
 		case 'FETCH_TRACKS_PROGRESS':
@@ -30,7 +29,7 @@ function playlist (state: Playlist, action: Action): Playlist {
 	}
 }
 
-export default function playlists (state: Playlist[] = [], action: Action): Playlist[] {
+export default function playlists(state: Playlist[] = [], action: Action): Playlist[] {
 	switch (action.type) {
 		case 'FETCH_PLAYLISTS_SUCCESS':
 			return action.payload.map(p => ({ ...p, tracks: { ...p.tracks, loaded: 0 }, selected: false }))

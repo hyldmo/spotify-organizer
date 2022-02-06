@@ -7,8 +7,8 @@ export type Filters = {
 			key: PlaylistKey
 			mode: Sort
 		}
-		text: string,
-		ownedOnly: boolean,
+		text: string
+		ownedOnly: boolean
 		hideEmpty: boolean
 	}
 }

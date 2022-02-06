@@ -3,9 +3,10 @@ table {
 	width: 100%;
 	border-collapse: collapse;
 
-	th, td {
+	th,
+	td {
 		text-align: left;
-		padding: 0 .75rem;
+		padding: 0 0.75rem;
 		border: none;
 	}
 
@@ -13,7 +14,8 @@ table {
 		line-height: 0.7;
 	}
 
-	tr, td {
+	tr,
+	td {
 		height: $size;
 	}
 

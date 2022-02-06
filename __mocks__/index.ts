@@ -1,12 +1,14 @@
 // tslint:disable-next-line:only-arrow-functions
-window.matchMedia = window.matchMedia || function () {
-	return {
-		media: '',
-		matches: false,
-		addListener: () => undefined,
-		removeListener: () => undefined
+window.matchMedia =
+	window.matchMedia ||
+	function () {
+		return {
+			media: '',
+			matches: false,
+			addListener: () => undefined,
+			removeListener: () => undefined
+		}
 	}
-}
 
 const storageMock: Storage = {
 	key: (index: number) => null,
@@ -15,6 +17,6 @@ const storageMock: Storage = {
 	removeItem: () => undefined,
 	length: 0,
 	clear: () => undefined
-};
+}
 
-(window as any).localStorage = window.localStorage || storageMock
+;(window as any).localStorage = window.localStorage || storageMock

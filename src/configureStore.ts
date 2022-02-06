@@ -1,24 +1,22 @@
 import { routerMiddleware } from 'connected-react-router'
-import createHistory from 'history/createBrowserHistory'
+import { createBrowserHistory } from 'history'
 import { applyMiddleware, compose, createStore } from 'redux'
 import createSagaMiddleware from 'redux-saga'
 import rootReducer, { State } from './reducers'
-import SagaManager from './sagas/SagaManager'
+import SagaManager from './sagas'
 
 const __DEV__ = process.env.NODE_ENV === 'development'
 const sagaMiddleware = createSagaMiddleware()
-export const history = createHistory()
+export const history = createBrowserHistory()
 const middlewares = [sagaMiddleware, routerMiddleware(history)]
 
 const composeEnhancers: typeof compose = (window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose
 
-export default function configureStore (initialState?: Partial<State>) {
+export default function configureStore(initialState?: Partial<State>) {
 	const store = createStore(
 		rootReducer(history),
 		initialState || {},
-		composeEnhancers(
-			applyMiddleware(...middlewares)
-		)
+		composeEnhancers(applyMiddleware(...middlewares))
 	)
 
 	// run sagas
@@ -26,13 +24,15 @@ export default function configureStore (initialState?: Partial<State>) {
 
 	if (__DEV__ && module.hot) {
 		// Hot reload reducers (requires Webpack or Browserify HMR to be enabled)
-		module.hot.accept('./reducers', () =>
-			store.replaceReducer(require('./reducers').default)
-		)
+		module.hot.accept('./reducers', async () => {
+			const reducers = await import('./reducers')
+			store.replaceReducer(reducers.default as any)
+		})
 
-		module.hot.accept('./sagas/SagaManager', () => {
-			SagaManager.cancelSagas(store)
-			require('./sagas/SagaManager').default.startSagas(sagaMiddleware)
+		module.hot.accept('./sagas', async () => {
+			const newSagaManager = await import('./sagas')
+			SagaManager.cancelSagas(store as any)
+			newSagaManager.default.startSagas(sagaMiddleware)
 		})
 	}
 

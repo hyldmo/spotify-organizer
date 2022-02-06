@@ -10,12 +10,23 @@ const mapStateToProps = (state: State) => ({
 
 type Props = ReturnType<typeof mapStateToProps>
 
-const Notifications: React.StatelessComponent<Props> = ({ notification }) => (
+const Notifications: React.FC<Props> = ({ notification }) => (
 	<Snackbar
 		open={notification !== null}
-		message={notification ? notification.progress
-			? <span><FontAwesomeIcon icon="spinner" pulse />&nbsp;&nbsp;{notification.message}...</span>
-			: notification.message : ''}
+		message={
+			notification ? (
+				notification.progress ? (
+					<span>
+						<FontAwesomeIcon icon="spinner" pulse />
+						&nbsp;&nbsp;{notification.message}...
+					</span>
+				) : (
+					notification.message
+				)
+			) : (
+				''
+			)
+		}
 	/>
 )
 

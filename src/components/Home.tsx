@@ -1,7 +1,7 @@
 import React from 'react'
 import PlaylistsManager from '../containers/PlaylistsManager'
 
-const App: React.StatelessComponent = (props) =>  (
+const App: React.FC = () => (
 	<div>
 		<PlaylistsManager />
 	</div>

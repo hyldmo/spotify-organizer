@@ -5,7 +5,7 @@ import { connect } from 'react-redux'
 import { BASE_URL } from '../constants'
 import { State } from '../reducers'
 
-const mapStateToProps = (state: State) => ({})
+const mapStateToProps = (_: State) => ({})
 
 const dispatchToProps = {
 	replace
@@ -18,11 +18,16 @@ class ErrorBoundary extends React.Component<Props> {
 		hasError: false
 	}
 
-	componentDidCatch (error: Error, info: React.ErrorInfo) {
-		this.setState({ hasError: true })
+	static getDerivedStateFromError() {
+		// Update state so the next render will show the fallback UI.
+		return { hasError: true }
 	}
 
-	render () {
+	componentDidCatch(error: Error, info: React.ErrorInfo) {
+		console.error(error, info)
+	}
+
+	render() {
 		const { hasError } = this.state
 		if (hasError) {
 			if (location.pathname !== BASE_URL) {
@@ -34,7 +39,4 @@ class ErrorBoundary extends React.Component<Props> {
 	}
 }
 
-export default connect(
-	mapStateToProps,
-	dispatchToProps
-)(ErrorBoundary)
+export default connect(mapStateToProps, dispatchToProps)(ErrorBoundary)

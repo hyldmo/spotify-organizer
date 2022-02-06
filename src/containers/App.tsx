@@ -10,10 +10,11 @@ import NotFound from '../components/NotFound'
 import { BASE_URL } from '../constants'
 import Notifications from '../containers/Notifications'
 import { State } from '../reducers'
-import '../styles/main.scss'
 import Alerts from './Alerts'
 import Auth from './Auth'
 import TracksRoute from './TracksRoute'
+
+import '../styles/main.scss'
 
 const mapStateToProps = (state: State) => ({
 	user: state.user
@@ -21,9 +22,9 @@ const mapStateToProps = (state: State) => ({
 
 type Props = ReturnType<typeof mapStateToProps>
 
-const App: React.StatelessComponent<Props> = ({ user }) => (
+const App: React.FC<Props> = ({ user }) => (
 	<>
-		<Navbar user={user}/>
+		<Navbar user={user} />
 		<Alerts />
 		<main>
 			<ErrorBoundary>
@@ -31,7 +32,7 @@ const App: React.StatelessComponent<Props> = ({ user }) => (
 					<Switch>
 						<Route exact path={BASE_URL} component={Home} />
 						<Route exact path={`${BASE_URL}users/:user/playlists/:id`} component={TracksRoute} />
-						<Route component={NotFound}/>
+						<Route component={NotFound} />
 					</Switch>
 				) : (
 					<Auth />
@@ -43,7 +44,4 @@ const App: React.StatelessComponent<Props> = ({ user }) => (
 	</>
 )
 
-export default hot(module)(withRouter(connect(
-	mapStateToProps,
-	{}
-)(App) as any))
+export default hot(module)(withRouter(connect(mapStateToProps, {})(App) as any))

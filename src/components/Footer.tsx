@@ -1,10 +1,17 @@
 import React from 'react'
 
-const Navbar: React.StatelessComponent = (props) =>  (
+const Navbar: React.FC = () => (
 	<footer>
-		<span><a href={process.env.PACKAGE_REPOSITORY} target="_blank">Spotify Organizer v{process.env.PACKAGE_VERSION}</a></span>
-		<span><a href={`${process.env.PACKAGE_REPOSITORY}/issues/new`} target="_blank">Feedback</a></span>
-
+		<span>
+			<a href={process.env.PACKAGE_REPOSITORY} target="_blank" rel="noreferrer">
+				Spotify Organizer v{process.env.PACKAGE_VERSION}
+			</a>
+		</span>
+		<span>
+			<a href={`${process.env.PACKAGE_REPOSITORY}/issues/new`} target="_blank" rel="noreferrer">
+				Feedback
+			</a>
+		</span>
 	</footer>
 )
 

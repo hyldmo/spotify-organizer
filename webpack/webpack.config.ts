@@ -7,6 +7,7 @@ const context = path.resolve(__dirname, '../')
 
 const config: webpack.Configuration = {
 	entry: './src/index.tsx',
+	devtool: 'source-map',
 	context,
 
 	output: {
@@ -27,14 +28,14 @@ const config: webpack.Configuration = {
 			{
 				test: /\.tsx?$/,
 				loader: 'ts-loader',
-				exclude: /node_modules/
+				exclude: /node_modules/,
+				options: {
+					onlyCompileBundledFiles: true
+				}
 			},
 			{
 				test: /\.scss$/,
-				use: ['css-loader', 'postcss-loader', 'sass-loader'].map(loader => ({
-					loader,
-					options: { sourceMap: true }
-				}))
+				use: ['css-loader', 'postcss-loader', 'sass-loader']
 			}
 		]
 	},
@@ -43,7 +44,7 @@ const config: webpack.Configuration = {
 		new HtmlWebpackPlugin({
 			title: packageJSON.name
 				.split('-')
-				.map((name) => name.charAt(0).toUpperCase() + name.slice(1))
+				.map(name => name.charAt(0).toUpperCase() + name.slice(1))
 				.join(' '),
 			version: packageJSON.version,
 			template: 'static/index.ejs'
@@ -56,28 +57,24 @@ const config: webpack.Configuration = {
 	],
 
 	optimization: {
+		runtimeChunk: 'single',
 		splitChunks: {
 			cacheGroups: {
-				vendor: {
-					chunks: 'initial',
-					test: path.resolve(__dirname, 'node_modules'),
+				chunks: 'initial',
+				commons: {
+					test: /[\\/]node_modules[\\/]/,
 					name: 'vendor',
+					chunks: 'all'
+				},
+				styles: {
+					test: /vendor/,
+					name: 'vendor-styles',
+					type: 'css/mini-extract',
+					chunks: 'all',
 					enforce: true
 				}
 			}
 		}
-	},
-
-	stats: {
-		assets: true,
-		children: false,
-		chunks: false,
-		hash: false,
-		modules: false,
-		publicPath: true,
-		timings: false,
-		version: false,
-		warnings: true
 	}
 }
 

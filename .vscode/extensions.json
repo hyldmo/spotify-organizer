@@ -1,0 +1,15 @@
+{
+	"recommendations": [
+		"dbaeumer.vscode-eslint",
+		"esbenp.prettier-vscode",
+		"stylelint.vscode-stylelint",
+		"oderwat.indent-rainbow",
+		"eg2.vscode-npm-script",
+		"christian-kohler.npm-intellisense",
+		"redhat.vscode-yaml",
+		"graphql.vscode-graphql",
+		"vscode-icons-team.vscode-icons",
+		"bradlc.vscode-tailwindcss",
+		"eamodio.gitlens"
+	]
+}

@@ -1,17 +1,12 @@
 import { Duration } from '../../src/utils'
 
-function makeMsDuration (days: number, hours = 0, minutes = 0, seconds = 0): number {
+function makeMsDuration(days: number, hours = 0, minutes = 0, seconds = 0): number {
 	const secondInMs = 1000
 	const minuteInMs = secondInMs * 60
 	const hourInMs = minuteInMs * 60
 	const dayInMs = hourInMs * 24
 
-	return (
-		days * dayInMs +
-		hours * hourInMs +
-		minutes * minuteInMs +
-		seconds * secondInMs
-	)
+	return days * dayInMs + hours * hourInMs + minutes * minuteInMs + seconds * secondInMs
 }
 
 it('parses 82.423 days to 82 days 10 hours 9 minutes 7 seconds', () => {

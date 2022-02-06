@@ -3,9 +3,18 @@ import { compareTrack, CompareType, deduplicate, pullTracks } from '../../src/ut
 
 // Used for originalPosition of tracks (deduplicate uses it to make sure you don't remove all duplicate version of track, keeping the original)
 let i = 0
-beforeEach(() => { i = 0 })
+beforeEach(() => {
+	i = 0
+})
 
-function makeTrack (name: string, artists: string | string[], album: string, duration = 180000, id?: string, order?: number): Track {
+function makeTrack(
+	name: string,
+	artists: string | string[],
+	album: string,
+	duration = 180000,
+	id?: string,
+	order?: number
+): Track {
 	return {
 		id: id || (Math.random() * 9999999999).toString(),
 		name,
@@ -13,9 +22,7 @@ function makeTrack (name: string, artists: string | string[], album: string, dur
 			id: '',
 			name: album
 		},
-		artists: artists instanceof Array
-			? artists.map(a => ({ id: a, name: a }))
-			: [{ id: artists, name: artists }],
+		artists: artists instanceof Array ? artists.map(a => ({ id: a, name: a })) : [{ id: artists, name: artists }],
 		duration_ms: duration,
 		meta: {
 			added_at: '',
@@ -44,7 +51,7 @@ describe(compareTrack, () => {
 		expect(result).toBe(true)
 	})
 
-	it('returns false when compareType is SongId and everything but IDs are equal' , () => {
+	it('returns false when compareType is SongId and everything but IDs are equal', () => {
 		const a = makeTrack('song', 'artist', 'album', 0)
 		const b = makeTrack('song', 'artist', 'album', 0)
 
@@ -53,7 +60,7 @@ describe(compareTrack, () => {
 		expect(result).toBe(false)
 	})
 
-	it('returns false when compareType is Name and everything but ID and Artist are equal' , () => {
+	it('returns false when compareType is Name and everything but ID and Artist are equal', () => {
 		const a = makeTrack('song', 'artist', 'album', 100)
 		const b = makeTrack('song', 'artist2', 'album', 0)
 
@@ -99,7 +106,7 @@ describe(compareTrack, () => {
 	})
 
 	it('returns true when compareType is NameAndDuration and duration is within 1s difference', () => {
-		const a = makeTrack('song', 'artist', 'album',  4400, 'id1')
+		const a = makeTrack('song', 'artist', 'album', 4400, 'id1')
 		const b = makeTrack('song', 'artist', 'album5', 5300, 'id2')
 
 		const result = compareTrack(a, b, CompareType.NameAndDuration)
@@ -118,7 +125,6 @@ describe(compareTrack, () => {
 })
 
 describe(deduplicate, () => {
-
 	it('removes tracks with same id', () => {
 		const tracks: Track[] = [
 			makeTrack('song', 'artist', 'album', 0, 'id'),
@@ -144,10 +150,7 @@ describe(deduplicate, () => {
 	})
 
 	it('removes tracks with same name when compareType is Name', () => {
-		const tracks: Track[] = [
-			makeTrack('song', 'artist', 'album', 0),
-			makeTrack('song', 'artist', 'album2', 1000)
-		]
+		const tracks: Track[] = [makeTrack('song', 'artist', 'album', 0), makeTrack('song', 'artist', 'album2', 1000)]
 
 		const deduplicatedTracks = deduplicate(tracks, CompareType.Name)
 
@@ -197,14 +200,12 @@ describe(pullTracks.name, () => {
 	})
 	it('removes tracks with same name and duration when compareType is NameAndDuration', () => {
 		const tracks: Track[] = [
-			makeTrack('song', 'artist', 'album',  8000, 'id1'),
+			makeTrack('song', 'artist', 'album', 8000, 'id1'),
 			makeTrack('song', 'artist', 'album2', 4000, 'id2'),
 			makeTrack('song', 'artist', 'album3', 4000, 'id3')
 		]
 
-		const tracksToRemove: Track[] = [
-			makeTrack('song', 'artist', 'album5', 4000)
-		]
+		const tracksToRemove: Track[] = [makeTrack('song', 'artist', 'album5', 4000)]
 
 		const deduplicatedTracks = pullTracks(tracks, CompareType.NameAndDuration, tracksToRemove)
 		expect(deduplicatedTracks.map(t => t.id)).toEqual([tracks[1].id, tracks[2].id])
