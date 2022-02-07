@@ -9,7 +9,7 @@ const Notifications: React.FC = () => {
 
 	if (!notification) return null
 	return createPortal(
-		<div className="absolute bottom-20 left-2/4 -translate-x-2/4 px-20 py-2 rounded-lg bg-green-600">
+		<div className="absolute bottom-32 left-2/4 -translate-x-2/4 px-20 py-2 rounded-lg bg-green-600">
 			{notification.progress ? (
 				<span>
 					<FontAwesomeIcon icon="spinner" pulse />
