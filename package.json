@@ -1,7 +1,7 @@
 {
 	"name": "spotify-organizer",
 	"repository": "https://github.com/hyldmo/spotify-organizer",
-	"version": "0.4.6",
+	"version": "0.5.0",
 	"scripts": {
 		"dev": "env-cmd webpack serve --config webpack/webpack.development.config.ts",
 		"prod": "env-cmd webpack --config webpack/webpack.production.config.ts --progress",
