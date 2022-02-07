@@ -1,7 +1,7 @@
 {
-	"name": "spotify-organizer",
+	"name": "spotify-organiser",
 	"repository": "https://github.com/hyldmo/spotify-organizer",
-	"version": "0.5.2",
+	"version": "0.5.3",
 	"scripts": {
 		"dev": "env-cmd webpack serve --config webpack/webpack.development.config.ts",
 		"prod": "env-cmd webpack --config webpack/webpack.production.config.ts --progress",
@@ -90,6 +90,7 @@
 		"eslint": "^8.3.0",
 		"eslint-plugin-react": "^7.27.1",
 		"eslint-plugin-react-hooks": "^4.3.0",
+		"firebase-tools": "^10.1.4",
 		"html-webpack-plugin": "^5.5.0",
 		"jest": "^24.8.0",
 		"mini-css-extract-plugin": "^2.5.3",

@@ -1,6 +1,6 @@
+import { startCase } from 'lodash/fp'
 import React from 'react'
 import { Link } from 'react-router-dom'
-import { BASE_URL } from '../constants'
 import { User } from '../types'
 
 type Props = {
@@ -12,11 +12,13 @@ const Navbar: React.FC<Props> = ({ user }) => (
 		<nav>
 			<ul>
 				<li>
-					<Link to={BASE_URL}>Home</Link>
+					<Link to={'/'}>{startCase(process.env.PACKAGE_NAME || 'Home')}</Link>
 				</li>
-				<li>
-					<Link to={`${BASE_URL}skips`}>Skips</Link>
-				</li>
+				{user && (
+					<li>
+						<Link to={'/skips'}>Skips</Link>
+					</li>
+				)}
 			</ul>
 			{user && (
 				<ul>

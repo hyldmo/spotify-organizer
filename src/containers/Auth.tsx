@@ -2,7 +2,7 @@ import { replace } from 'connected-react-router'
 import React from 'react'
 import { connect } from 'react-redux'
 import { Actions } from '../actions'
-import { BASE_URL, loginLink } from '../constants'
+import { loginLink } from '../constants'
 import { State } from '../types'
 import { parseQueryString } from '../utils/parseQueryString'
 
@@ -26,7 +26,7 @@ class Login extends React.Component<Props> {
 	}
 
 	componentDidUpdate() {
-		if (this.props.user) this.props.replace(BASE_URL)
+		if (this.props.user) this.props.replace('/')
 	}
 
 	render() {

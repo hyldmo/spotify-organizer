@@ -7,7 +7,6 @@ import { Footer } from '../components/Footer'
 import PlaylistsManager from '../pages/PlaylistsManager'
 import Navbar from '../components/Navbar'
 import NotFound from '../pages/NotFound'
-import { BASE_URL } from '../constants'
 import Notifications from '../containers/Notifications'
 import { State } from '../types'
 import Alerts from './Alerts'
@@ -31,9 +30,9 @@ const App: React.FC<Props> = ({ user }) => (
 			<ErrorBoundary>
 				{user ? (
 					<Switch>
-						<Route exact path={BASE_URL} component={PlaylistsManager} />
-						<Route exact path={`${BASE_URL}skips`} component={Skips} />
-						<Route exact path={`${BASE_URL}users/:user/playlists/:id`} component={TracksRoute} />
+						<Route exact path={'/'} component={PlaylistsManager} />
+						<Route exact path={'/skips'} component={Skips} />
+						<Route exact path={'/users/:user/playlists/:id'} component={TracksRoute} />
 						<Route component={NotFound} />
 					</Switch>
 				) : (

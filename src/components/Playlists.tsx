@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom'
 
 import { Actions } from '../actions'
 import Highlight from '../components/Highlight'
-import { BASE_URL } from '../constants'
 import { Filters, Playlist, Sort } from '../types'
 import { getNextSortMode, getSortIcon } from '../utils'
 
@@ -71,7 +70,7 @@ const Playlists: React.FC<Props> = ({ playlists, select, selectAll, changeSortMo
 							) : null}
 						</td>
 						<td className="name">
-							<Link to={`${BASE_URL}users/${p.owner.id}/playlists/${p.id}`}>
+							<Link to={`/users/${p.owner.id}/playlists/${p.id}`}>
 								<Highlight text={p.name} term={filters.text} />
 							</Link>
 						</td>

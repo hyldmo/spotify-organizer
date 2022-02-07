@@ -1,8 +1,6 @@
 import { replace } from 'connected-react-router'
 import React from 'react'
 import { connect } from 'react-redux'
-
-import { BASE_URL } from '../constants'
 import { State } from '../types'
 
 const mapStateToProps = (_: State) => ({})
@@ -32,8 +30,8 @@ class ErrorBoundary extends React.Component<Props> {
 	render() {
 		const { hasError } = this.state
 		if (hasError) {
-			if (location.pathname !== BASE_URL) {
-				this.props.replace(BASE_URL)
+			if (location.pathname !== '/') {
+				this.props.replace('/')
 			}
 			return null
 		}

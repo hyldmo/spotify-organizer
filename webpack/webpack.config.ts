@@ -14,7 +14,7 @@ const config: webpack.Configuration = {
 
 	output: {
 		path: path.join(__dirname, 'dist'),
-		publicPath: process.env.npm_lifecycle_event !== 'prod' ? '/' : '/spotify-organizer/',
+		publicPath: process.env.npm_lifecycle_event !== 'prod' ? '/' : '/spotify-organiser/',
 		filename: '[name]-[hash].js'
 	},
 

@@ -13,6 +13,8 @@ header {
 		flex-flow: row nowrap;
 		justify-content: space-between;
 		ul {
+			display: flex;
+			flex-flow: row nowrap;
 			list-style: none;
 			margin: math.div($header-height, 3) 0;
 			padding: 0;
