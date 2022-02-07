@@ -1,3 +1,4 @@
+import { loginLink } from '../constants'
 import { SagaIterator } from 'redux-saga'
 import { call, put, select } from 'typed-redux-saga'
 import { Actions } from '../actions'
@@ -22,8 +23,8 @@ export function* spotifyFetch(url: string, options: RequestInit = {}, apiToken?:
 			return body
 
 		case 401:
-			// yield* put(Actions.logout())
-			// window.open(loginLink(), '_self')
+			yield* put(Actions.logout())
+			window.open(loginLink(), '_self')
 			break
 		case 429: {
 			const waitTime = Number.parseInt(response.headers.get('Retry-After') || '10', 10)

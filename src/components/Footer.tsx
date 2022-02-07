@@ -12,7 +12,6 @@ export const Footer: React.FC = () => {
 	const [progress, setProgress] = useState(playback?.progress_ms || 0)
 	const song = playback?.item
 	const currentPlaylist = playlists.find(pl => pl.uri == context?.uri)
-	console.log(playback)
 
 	useEffect(() => {
 		// Update music counter every second

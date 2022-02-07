@@ -13,6 +13,7 @@ import { State } from '../types'
 import Alerts from './Alerts'
 import Auth from './Auth'
 import TracksRoute from '../pages/TracksRoute'
+import { Skips } from '../pages/Skips'
 
 import '../styles/main.scss'
 
@@ -31,6 +32,7 @@ const App: React.FC<Props> = ({ user }) => (
 				{user ? (
 					<Switch>
 						<Route exact path={BASE_URL} component={PlaylistsManager} />
+						<Route exact path={`${BASE_URL}skips`} component={Skips} />
 						<Route exact path={`${BASE_URL}users/:user/playlists/:id`} component={TracksRoute} />
 						<Route component={NotFound} />
 					</Switch>

@@ -1,9 +1,9 @@
 /* eslint-disable camelcase */
 import { Action, Actions } from '../actions'
-import { call, cancelled, put, takeLatest } from 'typed-redux-saga'
-import { sleep } from '../utils'
+import { call, cancelled, fork, put, select } from 'typed-redux-saga'
+import { sleep } from 'utils'
 import { spotifyFetch } from './spotifyFetch'
-import { Playback } from 'types'
+import { Playback, State } from 'types'
 
 window.onSpotifyWebPlaybackSDKReady = () => {
 	const token = localStorage.getItem('token')
@@ -44,21 +44,26 @@ window.onSpotifyWebPlaybackSDKReady = () => {
 		console.error(message)
 	})
 
-	player.connect()
+	// player.connect()
 }
 
 export default function* () {
-	yield* takeLatest(Actions.userLoaded.type, watchPlayback)
+	yield* fork(watchPlayback)
 }
 
-function* watchPlayback(_action: Action<'USER_LOADED'>) {
-	let timeout = 5000
+const initialTimeout = 3000
+
+function* watchPlayback() {
+	let timeout = initialTimeout
 	while (true) {
 		try {
 			const body: SpotifyApi.CurrentPlaybackResponse = yield* call(spotifyFetch, 'me/player')
-			yield* put(Actions.updatePlayback(body as Playback))
-			timeout = 5000
-			yield
+			if (body) {
+				const action = Actions.updatePlayback(body as Playback)
+				yield* call(watchSongSkips, action)
+				yield* put(action)
+				timeout = initialTimeout
+			}
 		} catch (e) {
 			console.warn(`${watchPlayback.name}:`, e)
 			timeout *= 2
@@ -67,6 +72,23 @@ function* watchPlayback(_action: Action<'USER_LOADED'>) {
 			break
 		} else {
 			yield* call(sleep, timeout)
+		}
+	}
+}
+
+function* watchSongSkips(action: Action<'PLAYBACK_UPDATED'>) {
+	const Old = yield* select((s: State) => s.playback.nowPlaying)
+	const New = action.payload
+
+	if (Old && New.item.id !== Old.item.id) {
+		const percent = ((Old.progress_ms || 0) / Old.item.duration_ms) * 100
+
+		const { item: song, context } = Old
+		yield* put(
+			Actions.createNotification({ message: `${song.name} skipped ${percent.toFixed(0)}% in`, duration: 10000 })
+		)
+		if (percent < 80) {
+			yield put(Actions.songSkipped(song, context))
 		}
 	}
 }

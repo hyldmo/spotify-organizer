@@ -1,6 +1,5 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-
 import { BASE_URL } from '../constants'
 import { User } from '../types'
 
@@ -14,6 +13,9 @@ const Navbar: React.FC<Props> = ({ user }) => (
 			<ul>
 				<li>
 					<Link to={BASE_URL}>Home</Link>
+				</li>
+				<li>
+					<Link to={`${BASE_URL}skips`}>Skips</Link>
 				</li>
 			</ul>
 			{user && (
