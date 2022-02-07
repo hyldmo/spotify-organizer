@@ -1,6 +1,6 @@
 import React from 'react'
-import { connect } from 'react-redux'
-import { Route, Switch, withRouter } from 'react-router'
+import { useSelector } from 'react-redux'
+import { Route, Routes } from 'react-router'
 import ErrorBoundary from '../components/ErrorBoundary'
 import { Footer } from '../components/Footer'
 import PlaylistsManager from '../pages/PlaylistsManager'
@@ -15,33 +15,31 @@ import { Skips } from '../pages/Skips'
 
 import '../styles/main.scss'
 
-const mapStateToProps = (state: State) => ({
-	user: state.user
-})
+const App: React.FC = () => {
+	const user = useSelector((s: State) => s.user)
 
-type Props = ReturnType<typeof mapStateToProps>
+	return (
+		<>
+			<Navbar user={user} />
+			<Alerts />
+			<main className="bg-inherit">
+				<ErrorBoundary>
+					{user ? (
+						<Routes>
+							<Route path="/" element={<PlaylistsManager />} />
+							<Route path="/skips" element={<Skips />} />
+							<Route path="/users/:user/playlists/:id" element={<TracksRoute />} />
+							<Route element={NotFound} />
+						</Routes>
+					) : (
+						<Auth />
+					)}
+				</ErrorBoundary>
+			</main>
+			<Footer />
+			<Notifications />
+		</>
+	)
+}
 
-const App: React.FC<Props> = ({ user }) => (
-	<>
-		<Navbar user={user} />
-		<Alerts />
-		<main className="bg-inherit">
-			<ErrorBoundary>
-				{user ? (
-					<Switch>
-						<Route exact path={'/'} component={PlaylistsManager} />
-						<Route exact path={'/skips'} component={Skips} />
-						<Route exact path={'/users/:user/playlists/:id'} component={TracksRoute} />
-						<Route component={NotFound} />
-					</Switch>
-				) : (
-					<Auth />
-				)}
-			</ErrorBoundary>
-		</main>
-		<Footer />
-		<Notifications />
-	</>
-)
-
-export default withRouter(connect(mapStateToProps, {})(App) as any)
+export default App

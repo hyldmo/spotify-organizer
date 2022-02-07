@@ -31,10 +31,6 @@ module.exports = {
 				multiline: {
 					delimiter: 'none',
 					requireLast: true
-				},
-				singleline: {
-					delimiter: 'comma',
-					requireLast: false
 				}
 			}
 		],

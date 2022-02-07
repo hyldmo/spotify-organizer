@@ -1,14 +1,9 @@
-import { ConnectedRouter } from 'connected-react-router'
+import { HistoryRouter } from 'redux-first-history/rr6'
 import React from 'react'
 import { Provider } from 'react-redux'
 import { Actions } from '../actions'
-import configureStore, { history } from '../configureStore'
-import { State as ReduxState } from 'types'
+import { history, store } from '../configureStore'
 import App from './App'
-
-const initialState: Partial<ReduxState> = {}
-
-const store = configureStore(initialState)
 
 store.dispatch(Actions.loadUser())
 
@@ -33,13 +28,14 @@ export default class Root extends React.Component<unknown, State> {
 		const { error } = this.state
 		if (error !== null && process.env.NODE_ENV !== 'test') {
 			return <div>{JSON.stringify(error)}</div>
+		} else {
+			return (
+				<Provider store={store}>
+					<HistoryRouter history={history}>
+						<App />
+					</HistoryRouter>
+				</Provider>
+			)
 		}
-		return (
-			<Provider store={store}>
-				<ConnectedRouter history={history}>
-					<App />
-				</ConnectedRouter>
-			</Provider>
-		)
 	}
 }

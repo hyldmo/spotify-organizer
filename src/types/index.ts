@@ -1,5 +1,5 @@
-import reducers from 'reducers'
-export type State = ReturnType<ReturnType<typeof reducers>>
+import { State as ReduxState } from '../configureStore'
+export type State = ReduxState
 
 export * from './filters'
 export * from './modal'

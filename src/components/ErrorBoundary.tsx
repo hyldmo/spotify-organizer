@@ -1,4 +1,4 @@
-import { replace } from 'connected-react-router'
+import { replace } from 'redux-first-history'
 import React from 'react'
 import { connect } from 'react-redux'
 import { State } from '../types'

@@ -1,4 +1,4 @@
-import { replace } from 'connected-react-router'
+import { replace } from 'redux-first-history'
 import { call, put, takeLatest } from 'typed-redux-saga'
 import { Action, Actions } from '../actions'
 import { spotifyFetch } from './spotifyFetch'
@@ -10,7 +10,6 @@ export default function* () {
 
 function* getUserDetails(action: Action<typeof Actions.tokenAquired.type>) {
 	const token = action.payload
-	const redirect = action.meta
 
 	try {
 		const body: SpotifyApi.UserObjectPublic = yield* call(spotifyFetch, 'me', {}, token)
@@ -18,7 +17,8 @@ function* getUserDetails(action: Action<typeof Actions.tokenAquired.type>) {
 		yield* put(Actions.userLoaded(user))
 		localStorage.setItem('token', token)
 		yield* put(Actions.fetchPlaylists())
-		if (redirect) yield* put(replace(redirect))
+		const redirect = action.meta
+		if (redirect) yield* put(replace({ pathname: redirect }))
 	} catch (e) {
 		console.error(`${getUserDetails.name}:`, e)
 	}

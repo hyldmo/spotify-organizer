@@ -1,6 +1,6 @@
 import { startCase } from 'lodash/fp'
 import React from 'react'
-import { Link } from 'react-router-dom'
+import { Link, NavLink } from 'react-router-dom'
 import { User } from '../types'
 
 type Props = {
@@ -18,6 +18,18 @@ const Navbar: React.FC<Props> = ({ user }) => (
 					<li>
 						<Link to={'/skips'}>Skips</Link>
 					</li>
+				</ul>
+			)}
+			<ul className="justify-self-start">
+				{user && (
+					<>
+						<li>
+							<NavLink to="/">Home</NavLink>
+						</li>
+						<li>
+							<NavLink to="/skips">Skips</NavLink>
+						</li>
+					</>
 				)}
 			</ul>
 			{user && (

@@ -1,73 +1,55 @@
-import { replace } from 'connected-react-router'
-import React from 'react'
-import { connect } from 'react-redux'
-import { RouteComponentProps, withRouter } from 'react-router'
+import React, { useEffect } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 import { Actions } from '../actions'
 import Loading from '../components/Loading'
 import Tracks from '../components/Tracks'
 import { Duration } from '../utils'
-import { State as ReduxState } from '../types'
+import { State } from '../types'
+import { useParams } from 'react-router'
 
-const mapStateToProps = (state: ReduxState) => ({
-	playlists: state.playlists
-})
+const TracksRoute: React.FC = () => {
+	const dispatch = useDispatch()
+	const params = useParams<{ id: string; user: string }>()
 
-const dispatchToProps = {
-	fetchTracks: Actions.fetchTracks,
-	replace
-}
+	useEffect(() => {
+		if (params.id && params.user) dispatch(Actions.fetchTracks({ id: params.id, owner: params.user }))
+	}, [dispatch, params.id, params.user])
 
-type Props = ReturnType<typeof mapStateToProps> &
-	typeof dispatchToProps &
-	RouteComponentProps<{
-		id: string
-		user: string
-	}>
+	const playlist = useSelector((s: State) => s.playlists.find(p => p.id === params.id))
+	if (playlist === undefined) return <Loading />
+	if (playlist.tracks.loaded < playlist.tracks.total || playlist.tracks.items === undefined)
+		return <Loading progress={{ current: playlist.tracks.loaded, total: playlist.tracks.total }} />
 
-class TracksRoute extends React.Component<Props> {
-	componentDidMount() {
-		const { fetchTracks, match } = this.props
-		fetchTracks({ id: match.params.id, owner: match.params.user })
-	}
-
-	render() {
-		const { match, playlists } = this.props
-		const playlist = playlists.find(p => p.id === match.params.id)
-		if (playlist === undefined) return <Loading />
-		if (playlist.tracks.loaded < playlist.tracks.total || playlist.tracks.items === undefined)
-			return <Loading progress={{ current: playlist.tracks.loaded, total: playlist.tracks.total }} />
-
-		const tracks = playlist.tracks.items
-		const duration = tracks.reduce((a, b) => a + b.duration_ms, 0)
-		return (
-			<div className="manager tracks">
-				<div className="header row">
-					{playlist.images.length > 0 ? (
-						<img src={playlist.images.reduce((a, b) => (a.height || 0 > (b.height || 0) ? a : b)).url} />
-					) : null}
-					<div className="info">
-						{playlist.collaborative && (
-							<p>
-								<strong>Collaborative Playlist</strong>
-							</p>
-						)}
-						<h1>{playlist.name}</h1>
-						<p>TODO: Fetch description{playlist.description}</p>
+	const tracks = playlist.tracks.items
+	const duration = tracks.reduce((a, b) => a + b.duration_ms, 0)
+	return (
+		<div className="manager tracks">
+			<div className="header row">
+				{playlist.images.length > 0 ? (
+					<img src={playlist.images.reduce((a, b) => (a.height || 0 > (b.height || 0) ? a : b)).url} />
+				) : null}
+				<div className="info">
+					{playlist.collaborative && (
 						<p>
-							Created by: <strong>{playlist.owner.display_name || playlist.owner.id}</strong>
+							<strong>Collaborative Playlist</strong>
 						</p>
-					</div>
-					<span className="filler" />
-					<ul className="stats right-menu">
-						<li>{tracks.length} Tracks</li>
-						<li>{new Duration(duration).toString()}</li>
-					</ul>
+					)}
+					<h1>{playlist.name}</h1>
+					<p>TODO: Fetch description{playlist.description}</p>
+					<p>
+						Created by: <strong>{playlist.owner.display_name || playlist.owner.id}</strong>
+					</p>
 				</div>
-				<hr />
-				<Tracks tracks={tracks} />
+				<span className="filler" />
+				<ul className="stats right-menu">
+					<li>{tracks.length} Tracks</li>
+					<li>{new Duration(duration).toString()}</li>
+				</ul>
 			</div>
-		)
-	}
+			<hr />
+			<Tracks tracks={tracks} />
+		</div>
+	)
 }
 
-export default withRouter(connect(mapStateToProps, dispatchToProps)(TracksRoute) as any)
+export default TracksRoute
