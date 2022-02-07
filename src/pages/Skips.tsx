@@ -71,9 +71,9 @@ export const Skips: React.FC = () => {
 													{entry.uri !== 'unknown' ? (
 														<>
 															<a href={entry.uri}>{playlist?.name || entry.uri}</a>
-															{playlist?.owner == user?.name && (
+															{playlist?.owner.id == user?.id && (
 																<button className="opacity-80 hover:opacity-100">
-																	Remove song from list
+																	Remove song from this list
 																</button>
 															)}
 														</>

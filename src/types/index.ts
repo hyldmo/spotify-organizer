@@ -12,8 +12,8 @@ export interface Tuple<T1, T2> extends Array<any> {
 	[1]: T2
 }
 
-export type User = {
-	name: string
+export type User = Omit<SpotifyApi.UserObjectPublic, 'display_name'> & {
+	name: string | null
 	image: string | null
 	token: string
 }

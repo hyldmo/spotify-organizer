@@ -1,5 +1,6 @@
 import { replace } from 'redux-first-history'
 import { call, put, takeLatest } from 'typed-redux-saga'
+import { User } from 'types'
 import { Action, Actions } from '../actions'
 import { spotifyFetch } from './spotifyFetch'
 
@@ -13,7 +14,12 @@ function* getUserDetails(action: Action<typeof Actions.tokenAquired.type>) {
 
 	try {
 		const body: SpotifyApi.UserObjectPublic = yield* call(spotifyFetch, 'me', {}, token)
-		const user = { name: body.id, image: body.images ? body.images[0].url : null, token }
+		const user: User = {
+			...body,
+			name: body.display_name || null,
+			image: body.images ? body.images[0].url : null,
+			token
+		}
 		yield* put(Actions.userLoaded(user))
 		localStorage.setItem('token', token)
 		yield* put(Actions.fetchPlaylists())

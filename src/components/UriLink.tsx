@@ -1,7 +1,7 @@
 import React from 'react'
 
 type UriObject = {
-	name?: string
+	name?: string | null
 	uri: string
 }
 

@@ -17,7 +17,7 @@ export function applyPlaylistsFilters(
 				p.selected
 			)
 		})
-		.filter(p => (user ? (filters.ownedOnly ? p.owner.id === user.name : true) : true))
+		.filter(p => (user ? (filters.ownedOnly ? p.owner.id === user.id : true) : true))
 		.filter(p => (filters.hideEmpty ? p.tracks.total > 0 : true))
 
 	return filters.order.mode !== Sort.None

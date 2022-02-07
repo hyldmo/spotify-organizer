@@ -56,7 +56,7 @@ class PullPlaylist extends React.Component<Props, State> {
 		const bPlaylists = applyPlaylistsFilters(playlists, bFilters)
 			.filter(
 				pl =>
-					(pl.collaborative || pl.owner.id === user.name) &&
+					(pl.collaborative || pl.owner.id === user.id) &&
 					!aPlaylists.filter(p => p.selected).some(p => p.id === pl.id)
 			)
 			.map(pl => ({ ...pl, selected: playlistToRemoveFrom ? pl.id === playlistToRemoveFrom.id : false }))

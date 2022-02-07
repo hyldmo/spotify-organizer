@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux'
 import { State } from 'types'
 import { isPlaylist } from 'utils'
 import { Time } from './Time'
+import { ArtistLinks } from './UriLink'
 
 export const Footer: React.FC = () => {
 	const playback = useSelector((s: State) => s.playback.nowPlaying)
@@ -35,18 +36,7 @@ export const Footer: React.FC = () => {
 					<span className="col-start-2 row-start-1 self-end ellipsis">
 						<a href={song.album.uri}>{song.name}</a>
 					</span>
-					<span className="col-start-2 row-start-2 self-start text-xs">
-						{song.album.artists.map((artist, i) => (
-							<React.Fragment key={artist.id}>
-								<a className="opacity-70 hover:opacity-100" href={artist.uri}>
-									{artist.name}
-								</a>
-								{i < song.album.artists.length - 1 && (
-									<span className="opacity-70 pointer-events-none">, </span>
-								)}
-							</React.Fragment>
-						))}
-					</span>
+					<ArtistLinks artists={song.album.artists} className="col-start-2 row-start-2 self-start text-xs" />
 					<button className="col-start-3 row-span-2" type="button" role="switch">
 						<svg height="16" viewBox="0 0 16 16" className="text-transparent hover:text-white">
 							<path fill="none" d="M0 0h16v16H0z"></path>
