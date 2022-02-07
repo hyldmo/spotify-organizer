@@ -47,12 +47,12 @@ jobs:
 
       - name: Build application
         run: yarn prod
-        if: ${{ steps.semver.outputs.VERSION != '' }}
 
       - run: yarn release
         if: ${{ steps.semver.outputs.VERSION != '' }}
 
       - uses: FirebaseExtended/action-hosting-deploy@v0
+        if: ${{ steps.semver.outputs.VERSION != '' }}
         with:
           repoToken: '${{ secrets.GITHUB_TOKEN }}'
           firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_SPOTIFY_ORGANISER }}'
