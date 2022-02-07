@@ -4,20 +4,11 @@ header {
 	grid-area: nav;
 	border-bottom: $border-separator;
 
-	display: grid;
-	grid-template-columns: $grid-columns;
-
 	nav {
-		grid-column: 2 / 3;
-		display: flex;
-		flex-flow: row nowrap;
-		justify-content: space-between;
 		ul {
 			display: flex;
 			flex-flow: row nowrap;
-			list-style: none;
 			margin: math.div($header-height, 3) 0;
-			padding: 0;
 
 			li {
 				display: inline-block;

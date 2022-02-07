@@ -13,6 +13,7 @@
 		"property-no-unknown": null,
 		"scss/dollar-variable-no-missing-interpolation": true,
 		"scss/at-import-partial-extension": null,
+		"scss/at-rule-no-unknown": null,
 		"value-keyword-case": [
 			"lower",
 			{

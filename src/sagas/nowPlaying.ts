@@ -84,11 +84,17 @@ function* watchSongSkips(action: Action<'PLAYBACK_UPDATED'>) {
 		const percent = ((Old.progress_ms || 0) / Old.item.duration_ms) * 100
 
 		const { item: song, context } = Old
-		yield* put(
-			Actions.createNotification({ message: `${song.name} skipped ${percent.toFixed(0)}% in`, duration: 10000 })
-		)
+
 		if (percent < 80) {
 			yield put(Actions.songSkipped(song, context))
+		}
+		if (percent < 95) {
+			yield* put(
+				Actions.createNotification({
+					message: `${song.name} skipped ${percent.toFixed(0)}% in`,
+					duration: 10000
+				})
+			)
 		}
 	}
 }

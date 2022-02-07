@@ -9,14 +9,11 @@ type Props = {
 // TODO: Handle user not having image
 const Navbar: React.FC<Props> = ({ user }) => (
 	<header className="px-4">
-		<nav>
-			<ul>
-				<li>
-					<Link to={'/'}>{startCase(process.env.PACKAGE_NAME || 'Home')}</Link>
-				</li>
-				{user && (
+		<nav className="grid grid-cols-[auto,1fr,1fr] gap-4">
+			{process.env.PACKAGE_NAME && (
+				<ul>
 					<li>
-						<Link to={'/skips'}>Skips</Link>
+						<Link to="/">{startCase(process.env.PACKAGE_NAME)}</Link>
 					</li>
 				</ul>
 			)}
@@ -33,7 +30,7 @@ const Navbar: React.FC<Props> = ({ user }) => (
 				)}
 			</ul>
 			{user && (
-				<ul>
+				<ul className="justify-self-end">
 					<li>
 						<img className="inline align-bottom h-6 rounded-full" src={user.image || undefined} />{' '}
 						{user.name}
