@@ -1,5 +1,4 @@
 import { ConnectedRouter } from 'connected-react-router'
-import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
 import React from 'react'
 import { Provider } from 'react-redux'
 import RedBox from 'redbox-react'
@@ -37,13 +36,11 @@ export default class Root extends React.Component<unknown, State> {
 			return <RedBox error={error} />
 		}
 		return (
-			<MuiThemeProvider>
-				<Provider store={store}>
-					<ConnectedRouter history={history}>
-						<App />
-					</ConnectedRouter>
-				</Provider>
-			</MuiThemeProvider>
+			<Provider store={store}>
+				<ConnectedRouter history={history}>
+					<App />
+				</ConnectedRouter>
+			</Provider>
 		)
 	}
 }
