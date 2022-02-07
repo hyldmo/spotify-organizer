@@ -17,7 +17,7 @@ export const Skips: React.FC = () => {
 	return (
 		<div className="px-4 pt-4">
 			<header className="pb-4 grid grid-cols-[auto, auto] justify-between items-start">
-				<h2 className="col-start-1 text-2xl ">Most skipped songs</h2>
+				<h2 className="col-start-1 text-2xl self-end">Most skipped songs</h2>
 				<ul className="col-start-2">
 					<li>
 						<label className="flex items-center gap-x-2">
