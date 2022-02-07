@@ -1,0 +1,48 @@
+on:
+  push:
+    branches: [master]
+
+jobs:
+  deploy_source:
+    name: Build and test
+    strategy:
+      matrix:
+        node-version: [16.x]
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Install dependencies
+        run: yarn --immutable
+
+      - name: Lint Typescript
+        run: yarn lint
+
+      - name: Lint CSS
+        run: yarn stylelint
+
+      - name: Check formatting
+        run: yarn format:check
+
+      # - name: Run unit tests
+      #   run: yarn test:cover
+
+      # - name: Upload code coverage
+      #   uses: coverallsapp/github-action@master
+      #   with:
+      #     github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build application
+        run: yarn prod
+
+      - name: Deploy to GH Pages
+        uses: JamesIves/github-pages-deploy-action@v4.2.3
+        with:
+          branch: gh-pages # The branch the action should deploy to.
+          folder: dist # The folder the action should deploy.

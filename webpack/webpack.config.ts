@@ -65,16 +65,9 @@ const config: webpack.Configuration = {
 			cacheGroups: {
 				chunks: 'initial',
 				commons: {
-					test: /[\\/]node_modules[\\/]/,
+					test: /node_modules/,
 					name: 'vendor',
 					chunks: 'all'
-				},
-				styles: {
-					test: /vendor/,
-					name: 'vendor-styles',
-					type: 'css/mini-extract',
-					chunks: 'all',
-					enforce: true
 				}
 			}
 		}

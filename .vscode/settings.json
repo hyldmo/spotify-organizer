@@ -32,9 +32,6 @@
 	"[javascript]": {
 		"editor.defaultFormatter": "esbenp.prettier-vscode"
 	},
-	"[yaml]": {
-		"editor.formatOnSave": false
-	},
 	"yaml.schemas": {
 		"https://json.schemastore.org/github-workflow": "/.github/workflows/**/*.yml",
 		"https://www.graphql-code-generator.com/config.schema.json": "${workspaceFolder}/.graphql.config.yml"

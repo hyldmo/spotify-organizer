@@ -10,7 +10,7 @@ const config: webpack.Configuration = {
 	...baseConfig,
 
 	output: {
-		path: path.join(baseConfig.context, 'assets'),
+		path: path.join(baseConfig.context, 'dist'),
 		filename: '[name].js',
 		chunkFilename: '[name].chunk.js'
 	},

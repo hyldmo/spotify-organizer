@@ -9,13 +9,14 @@
 		"test:cover": "jest --coverage && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js",
 		"lint": "eslint *.js src webpack --ext .ts,.tsx --ignore-path .gitignore",
 		"stylelint": "stylelint src/**/*.scss",
-		"format": "prettier --check . --ignore-path .gitignore",
+		"format": "prettier --write . --ignore-path .gitignore",
+		"format:check": "prettier --check . --ignore-path .gitignore",
 		"stats": "env-cmd webpack/.env webpack --config webpack/webpack.production.config.js --profile --json > compilation-stats.json"
 	},
 	"pre-commit": [
 		"lint",
 		"stylelint",
-		"format"
+		"format:check"
 	],
 	"jest": {
 		"transform": {
