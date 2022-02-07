@@ -1,13 +1,11 @@
 import MiniCssExtractPlugin from 'mini-css-extract-plugin'
 import path from 'path'
-import webpack from 'webpack'
+import { Configuration } from './types'
 import baseConfig from './webpack.config'
-;((baseConfig.module.rules[1] as webpack.RuleSetRule).use as webpack.RuleSetUseItem[]).unshift(
-	MiniCssExtractPlugin.loader
-)
 
-const config: webpack.Configuration = {
+const config: Configuration = {
 	...baseConfig,
+	mode: 'production',
 
 	output: {
 		path: path.join(baseConfig.context, 'dist'),
@@ -15,7 +13,23 @@ const config: webpack.Configuration = {
 		chunkFilename: '[name].chunk.js'
 	},
 
-	mode: 'production',
+	module: {
+		rules: [
+			{
+				test: /\.tsx?$/,
+				loader: 'ts-loader',
+				exclude: /node_modules/,
+				options: {
+					onlyCompileBundledFiles: true
+				}
+			},
+			{
+				test: /\.scss$/,
+				use: [MiniCssExtractPlugin.loader, 'css-loader', 'postcss-loader', 'sass-loader']
+			}
+		]
+	},
+
 	plugins: [
 		new MiniCssExtractPlugin({
 			filename: '[name].css',

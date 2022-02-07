@@ -1,5 +1,4 @@
 import React from 'react'
-import { hot } from 'react-hot-loader'
 import { connect } from 'react-redux'
 import { Route, Switch, withRouter } from 'react-router'
 import ErrorBoundary from '../components/ErrorBoundary'
@@ -45,4 +44,4 @@ const App: React.FC<Props> = ({ user }) => (
 	</>
 )
 
-export default hot(module)(withRouter(connect(mapStateToProps, {})(App) as any))
+export default withRouter(connect(mapStateToProps, {})(App) as any)

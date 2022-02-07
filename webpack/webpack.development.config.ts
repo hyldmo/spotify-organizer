@@ -1,31 +1,47 @@
-﻿import webpack from 'webpack'
+﻿// eslint-disable-next-line spaced-comment
 import baseConfig from './webpack.config'
-;((baseConfig.module.rules[1] as webpack.RuleSetRule).use as webpack.RuleSetUseItem[]).unshift('style-loader')
+import ReactRefreshWebpackPlugin from '@pmmmwh/react-refresh-webpack-plugin'
+import ReactRefreshTypeScript from 'react-refresh-typescript'
+import { Configuration } from './types'
 
-const config: webpack.Configuration = {
+const config: Configuration = {
 	...baseConfig,
 	mode: 'development',
-
-	resolve: {
-		...baseConfig.resolve,
-		alias: {
-			...baseConfig.resolve.alias,
-			'react-dom': '@hot-loader/react-dom'
-		}
-	},
 
 	output: {
 		publicPath: 'http://localhost:1337/',
 		filename: '[name].js'
 	},
 
+	module: {
+		rules: [
+			{
+				test: /\.tsx?$/,
+				loader: 'ts-loader',
+				exclude: /node_modules/,
+				options: {
+					compilerOptions: {
+						jsx: 'react-jsxdev'
+					},
+					getCustomTransformers: () => ({
+						before: [ReactRefreshTypeScript()]
+					})
+				}
+			},
+			{
+				test: /\.scss$/,
+				use: ['style-loader', 'css-loader', 'postcss-loader', 'sass-loader']
+			}
+		]
+	},
+
+	plugins: [new ReactRefreshWebpackPlugin(), ...baseConfig.plugins],
+
 	devServer: {
 		hot: true,
-		compress: true,
-		historyApiFallback: true,
 		port: 1337,
-		overlay: true,
-		disableHostCheck: true,
+		historyApiFallback: true,
+		allowedHosts: 'all',
 
 		headers: {
 			'Access-Control-Allow-Origin': '*'

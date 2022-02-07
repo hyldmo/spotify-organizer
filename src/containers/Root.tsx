@@ -1,7 +1,6 @@
 import { ConnectedRouter } from 'connected-react-router'
 import React from 'react'
 import { Provider } from 'react-redux'
-import RedBox from 'redbox-react'
 import { Actions } from '../actions'
 import configureStore, { history } from '../configureStore'
 import { State as ReduxState } from 'types'
@@ -33,7 +32,7 @@ export default class Root extends React.Component<unknown, State> {
 	render() {
 		const { error } = this.state
 		if (error !== null && process.env.NODE_ENV !== 'test') {
-			return <RedBox error={error} />
+			return <div>{JSON.stringify(error)}</div>
 		}
 		return (
 			<Provider store={store}>

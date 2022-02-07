@@ -2,6 +2,8 @@
 import { lstatSync, readdirSync } from 'fs'
 import { join, parse } from 'path'
 
+export const __DEV__ = process.env.NODE_ENV !== 'production'
+
 /**
  * Scans a directory and returns all the folders it contains as an object
  * @param path Absolute path to folder

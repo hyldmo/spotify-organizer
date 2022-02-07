@@ -1,13 +1,14 @@
 import HtmlWebpackPlugin from 'html-webpack-plugin'
 import path from 'path'
-import webpack from 'webpack'
+import { DefinePlugin } from 'webpack'
 import packageJSON from '../package.json'
 import { getFolders } from './utils'
 import tsConfig from '../tsconfig.json'
+import { Configuration } from './types'
 
 const context = path.resolve(__dirname, '../')
 
-const config: webpack.Configuration = {
+const config: Configuration = {
 	entry: './src/index.tsx',
 	devtool: 'source-map',
 	context,
@@ -26,23 +27,6 @@ const config: webpack.Configuration = {
 		extensions: packageJSON.jest.moduleFileExtensions.map(ext => `.${ext}`)
 	},
 
-	module: {
-		rules: [
-			{
-				test: /\.tsx?$/,
-				loader: 'ts-loader',
-				exclude: /node_modules/,
-				options: {
-					onlyCompileBundledFiles: true
-				}
-			},
-			{
-				test: /\.scss$/,
-				use: ['css-loader', 'postcss-loader', 'sass-loader']
-			}
-		]
-	},
-
 	plugins: [
 		new HtmlWebpackPlugin({
 			title: packageJSON.name
@@ -52,7 +36,7 @@ const config: webpack.Configuration = {
 			version: packageJSON.version,
 			template: 'static/index.ejs'
 		}),
-		new webpack.DefinePlugin({
+		new DefinePlugin({
 			'process.env.PACKAGE_NAME': JSON.stringify(packageJSON.name),
 			'process.env.PACKAGE_VERSION': JSON.stringify(packageJSON.version),
 			'process.env.PACKAGE_REPOSITORY': JSON.stringify(packageJSON.repository)
