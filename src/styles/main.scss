@@ -6,11 +6,23 @@
 
 * {
 	box-sizing: border-box;
+	background-color: inherit;
 }
 
 a {
-	color: $text-color;
 	text-decoration: none;
+
+	&.active,
+	&:hover {
+		color: $text-color;
+	}
+
+	letter-spacing: 0.04em;
+
+	&.active {
+		letter-spacing: 0;
+		font-weight: bold;
+	}
 
 	&:hover {
 		text-decoration: underline;

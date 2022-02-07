@@ -23,9 +23,22 @@ table {
 		padding: 0;
 	}
 
+	thead.sticky th {
+		// Make border stay visible with sticky and border-collapse: collapse
+		top: -1px;
+		&:after {
+			content: '';
+			position: absolute;
+			left: 0;
+			bottom: 0;
+			width: 100%;
+			border-bottom: 1px solid $border-light;
+		}
+	}
+
 	tbody {
 		tr {
-			border-top: 1px solid $background-highlight;
+			border-bottom: 1px solid $background-highlight;
 			&:hover {
 				background-color: $background-highlight;
 			}

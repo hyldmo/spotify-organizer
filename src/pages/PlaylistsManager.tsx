@@ -66,7 +66,7 @@ class PlaylistsManager extends React.Component<Props, State> {
 			<div className="manager bg-inherit">
 				<div className="sticky top-0 pt-2 pb-3 px-4 z-10 bg-inherit border-b border-b-gray-600">
 					<div className="header row ">
-						<h1>Playlists</h1>
+						<h2>Playlists</h2>
 						<input
 							type="text"
 							placeholder="&#xF002; Filter"
@@ -145,15 +145,7 @@ class PlaylistsManager extends React.Component<Props, State> {
 						</div>
 					)}
 				</div>
-				{mode !== OperationMode.PullTracks ? (
-					<Playlists
-						changeSortMode={changeSortMode}
-						filters={filters}
-						select={select}
-						selectAll={selectAll}
-						playlists={playlists}
-					/>
-				) : (
+				{mode === OperationMode.PullTracks ? (
 					<PullPlaylist
 						user={user}
 						filters={filters}
@@ -161,6 +153,14 @@ class PlaylistsManager extends React.Component<Props, State> {
 						selectAll={selectAll}
 						playlists={playlists}
 						onPlaylistSelect={id => this.setState({ secondPlaylist: id })}
+					/>
+				) : (
+					<Playlists
+						changeSortMode={changeSortMode}
+						filters={filters}
+						select={select}
+						selectAll={selectAll}
+						playlists={playlists}
 					/>
 				)}
 			</div>

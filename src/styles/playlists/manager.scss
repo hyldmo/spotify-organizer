@@ -1,17 +1,10 @@
 .manager {
 	.stats {
-		list-style: none;
-		padding: 0;
-		margin: 0;
 		text-align: right;
 		align-self: flex-end;
 	}
 
 	.header {
-		h1 {
-			margin: 0;
-		}
-
 		input {
 			margin-top: 0.1rem;
 			vertical-align: top;

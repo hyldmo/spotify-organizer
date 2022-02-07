@@ -19,14 +19,26 @@ class Settings extends React.Component<Props> {
 		const { filters, hideEmpty, updateOwned } = this.props
 
 		return (
-			<ul className="settings">
+			<ul>
 				<li>
-					<input type="checkbox" checked={filters.hideEmpty} onChange={e => hideEmpty(e.target.checked)} />{' '}
-					Hide empty playlists{' '}
+					<label className="flex items-center gap-x-2">
+						<input
+							type="checkbox"
+							checked={filters.hideEmpty}
+							onChange={e => hideEmpty(e.target.checked)}
+						/>
+						<span>Hide empty playlists</span>
+					</label>
 				</li>
 				<li>
-					<input type="checkbox" checked={filters.ownedOnly} onChange={e => updateOwned(e.target.checked)} />{' '}
-					Show only own playlists
+					<label className="flex items-center gap-x-2">
+						<input
+							type="checkbox"
+							checked={filters.ownedOnly}
+							onChange={e => updateOwned(e.target.checked)}
+						/>{' '}
+						<span>Show only own playlists</span>
+					</label>
 				</li>
 			</ul>
 		)

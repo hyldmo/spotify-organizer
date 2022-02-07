@@ -24,7 +24,7 @@ const Playlists: React.FC<Props> = ({ playlists, select, selectAll, changeSortMo
 	if (playlists.length == 0) return null
 	return (
 		<table className="playlists">
-			<thead>
+			<thead className="sticky top-0 bg-inherit">
 				<tr>
 					<th className="select">
 						{selectAll && <input type="checkbox" onChange={e => selectAll(e.target.checked)} />}

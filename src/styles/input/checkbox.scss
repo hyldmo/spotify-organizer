@@ -10,11 +10,11 @@ input[type='checkbox'] {
 	cursor: pointer;
 
 	&:checked:after {
-		content: '\2714';
-		font-size: 1.2rem;
+		content: '✓';
+		font-size: 1.8em;
 		position: absolute;
-		top: -2px;
-		left: 1px;
+		top: -0.45em;
+		left: -0.15em;
 		color: $text-color;
 	}
 

@@ -34,7 +34,7 @@ const TracksRoute: React.FC = () => {
 							<strong>Collaborative Playlist</strong>
 						</p>
 					)}
-					<h1>{playlist.name}</h1>
+					<h2>{playlist.name}</h2>
 					<p>TODO: Fetch description{playlist.description}</p>
 					<p>
 						Created by: <strong>{playlist.owner.display_name || playlist.owner.id}</strong>

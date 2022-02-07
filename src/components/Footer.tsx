@@ -127,10 +127,17 @@ export const Footer: React.FC = () => {
 					</div>
 				</div>
 			)}
-			<div className="bg-green-600 px-2 grid grid-cols-3 ">
-				<span className="col-start-1">
+			<div className="bg-green-600 px-2 grid grid-cols-[auto,1fr,auto] ">
+				<span className="col-start-1 space-x-1">
 					<a href={process.env.PACKAGE_REPOSITORY} target="_blank" rel="noreferrer">
-						Spotify Organizer v{process.env.PACKAGE_VERSION}
+						Spotify Organizer
+					</a>
+					<a
+						href={`${process.env.PACKAGE_REPOSITORY}/releases/tag/v${process.env.PACKAGE_VERSION}`}
+						target="_blank"
+						rel="noreferrer"
+					>
+						v{process.env.PACKAGE_VERSION}
 					</a>
 				</span>
 
