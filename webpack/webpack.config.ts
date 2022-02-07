@@ -38,7 +38,7 @@ const config: Configuration = {
 		}),
 		new DefinePlugin({
 			'process.env.PACKAGE_NAME': JSON.stringify(packageJSON.name),
-			'process.env.PACKAGE_VERSION': JSON.stringify(packageJSON.version),
+			'process.env.PACKAGE_VERSION': JSON.stringify(process.env.PACKAGE_VERSION),
 			'process.env.PACKAGE_REPOSITORY': JSON.stringify(packageJSON.repository)
 		})
 	],

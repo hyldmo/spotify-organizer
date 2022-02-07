@@ -18,10 +18,7 @@ const config: Configuration = {
 			{
 				test: /\.tsx?$/,
 				loader: 'ts-loader',
-				exclude: /node_modules/,
-				options: {
-					onlyCompileBundledFiles: true
-				}
+				exclude: /node_modules/
 			},
 			{
 				test: /\.scss$/,

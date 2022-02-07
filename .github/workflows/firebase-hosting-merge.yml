@@ -6,9 +6,13 @@ name: Deploy to Firebase Hosting on merge
   push:
     branches:
       - master
+
 jobs:
   build_and_deploy:
     runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
     steps:
       - uses: actions/checkout@v2
 
@@ -29,6 +33,10 @@ jobs:
       - name: Check formatting
         run: yarn format:check
 
+      - name: Get version number
+        id: semver
+        run: ./scripts/semver.sh
+
       # - name: Run unit tests
       #   run: yarn test:cover
 
@@ -39,6 +47,10 @@ jobs:
 
       - name: Build application
         run: yarn prod
+        if: ${{ steps.semver.outputs.VERSION != '' }}
+
+      - run: yarn release
+        if: ${{ steps.semver.outputs.VERSION != '' }}
 
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
