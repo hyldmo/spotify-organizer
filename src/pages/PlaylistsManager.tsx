@@ -7,8 +7,8 @@ import Playlists from '../components/Playlists'
 import PullPlaylist from '../components/PullPlaylist'
 import { OperationMode, Playlist, State as ReduxState } from 'types'
 import { applyPlaylistsFilters, CompareType, getDeduplicateErrors } from '../utils'
-import Modal from './Modal'
-import Settings from './Settings'
+import Modal from '../containers/Modal'
+import Settings from '../containers/Settings'
 
 const mapStateToProps = (state: ReduxState) => ({
 	playlists: state.playlists,

@@ -6,6 +6,14 @@ const config: webpack.Configuration = {
 	...baseConfig,
 	mode: 'development',
 
+	resolve: {
+		...baseConfig.resolve,
+		alias: {
+			...baseConfig.resolve.alias,
+			'react-dom': '@hot-loader/react-dom'
+		}
+	},
+
 	output: {
 		publicPath: 'http://localhost:1337/',
 		filename: '[name].js'

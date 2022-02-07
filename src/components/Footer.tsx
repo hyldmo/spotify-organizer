@@ -2,29 +2,35 @@
 import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { State } from 'types'
+import { isPlaylist } from 'utils'
 import { Time } from './Time'
 
-const Navbar: React.FC = () => {
+export const Footer: React.FC = () => {
 	const playback = useSelector((s: State) => s.playback.nowPlaying)
+	const playlists = useSelector((s: State) => s.playlists)
+	const context = playback?.context
 	const [progress, setProgress] = useState(playback?.progress_ms || 0)
 	const song = playback?.item
+	const currentPlaylist = playlists.find(pl => pl.uri == context?.uri)
 	console.log(playback)
 
 	useEffect(() => {
-		const progressMs = Math.floor((playback?.progress_ms || 0) / 1000)
+		// Update music counter every second
+		const progressMs = Math.min(Math.floor((playback?.progress_ms || 0) / 1000), playback?.item.duration_ms || 0)
 		setProgress(progressMs * 1000)
-		const interval = setInterval(() => setProgress(p => p + 1000), 1000)
-
-		return () => {
-			clearInterval(interval)
+		if (playback?.is_playing) {
+			const interval = setInterval(() => setProgress(p => p + 1000), 1000)
+			return () => {
+				clearInterval(interval)
+			}
 		}
-	}, [playback?.progress_ms])
+	}, [playback?.progress_ms, playback?.is_playing, playback?.item.duration_ms])
 
 	return (
 		<footer>
 			{playback?.currently_playing_type == 'track' && song && (
 				<div className="grid grid-rows-[1fr,1fr,auto] grid-cols-[auto,auto,auto,1fr,6fr,1fr,auto] px-2 py-3 gap-x-4 items-center">
-					<a className="row-start-1 row-span-2" href={playback.item.uri}>
+					<a className="row-start-1 row-span-2" href={context?.uri || playback.item.uri}>
 						<img className="h-16" src={song.album.images[0]?.url} alt="" />
 					</a>
 					<span className="col-start-2 row-start-1 self-end">
@@ -129,7 +135,20 @@ const Navbar: React.FC = () => {
 					</a>
 				</span>
 
-				{playback && <span className="text-center">Playing on {playback.device.name}</span>}
+				{playback && (
+					<span className="text-center">
+						<span>Playing on {playback.device.name} </span>
+						{isPlaylist(context) && (
+							<span className="text-green-200">
+								(Playlist:{' '}
+								<a className="text-green-200 hover:text-white" href={context.uri}>
+									{currentPlaylist?.name || 'Unknown'}
+								</a>
+								)
+							</span>
+						)}
+					</span>
+				)}
 
 				<span>
 					<a href={`${process.env.PACKAGE_REPOSITORY}/issues/new`} target="_blank" rel="noreferrer">
@@ -140,5 +159,3 @@ const Navbar: React.FC = () => {
 		</footer>
 	)
 }
-
-export default Navbar
