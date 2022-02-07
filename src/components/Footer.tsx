@@ -127,15 +127,15 @@ export const Footer: React.FC = () => {
 					</div>
 				</div>
 			)}
-			<div className="bg-green-600 px-2 flex justify-between ">
-				<span>
+			<div className="bg-green-600 px-2 grid grid-cols-3 ">
+				<span className="col-start-1">
 					<a href={process.env.PACKAGE_REPOSITORY} target="_blank" rel="noreferrer">
 						Spotify Organizer v{process.env.PACKAGE_VERSION}
 					</a>
 				</span>
 
 				{playback && (
-					<span className="text-center">
+					<span className="col-start-2 text-center">
 						<span>Playing on {playback.device.name} </span>
 						{isPlaylist(context) && (
 							<span className="text-green-200">
@@ -149,7 +149,7 @@ export const Footer: React.FC = () => {
 					</span>
 				)}
 
-				<span>
+				<span className="col-start-3 text-right">
 					<a href={`${process.env.PACKAGE_REPOSITORY}/issues/new`} target="_blank" rel="noreferrer">
 						Send Feedback
 					</a>
