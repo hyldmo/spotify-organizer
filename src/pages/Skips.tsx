@@ -12,19 +12,32 @@ export const Skips: React.FC = () => {
 	const playlists = useSelector((s: State) => s.playlists)
 	const user = useSelector((s: State) => s.user)
 	const [nonPlaylists, countNonPlaylists] = useState(true)
+	const [allPlaylists, showAllPlaylists] = useState(false)
 
 	return (
 		<div className="px-4 pt-4">
 			<header className="pb-4 grid grid-cols-[auto, auto] justify-between items-start">
 				<h2 className="col-start-1 text-2xl ">Most skipped songs</h2>
 				<ul className="col-start-2">
-					<li className="flex items-center gap-x-2">
-						<input
-							type="checkbox"
-							checked={nonPlaylists}
-							onChange={e => countNonPlaylists(e.target.checked)}
-						/>
-						Hide non-playlists
+					<li>
+						<label className="flex items-center gap-x-2">
+							<input
+								type="checkbox"
+								checked={nonPlaylists}
+								onChange={e => countNonPlaylists(e.target.checked)}
+							/>
+							Hide non-playlists
+						</label>
+					</li>
+					<li>
+						<label className="flex items-center gap-x-2">
+							<input
+								type="checkbox"
+								checked={allPlaylists}
+								onChange={e => showAllPlaylists(e.target.checked)}
+							/>
+							Show all of the skipped song&apos;s playlists
+						</label>
 					</li>
 				</ul>
 			</header>
@@ -35,7 +48,17 @@ export const Skips: React.FC = () => {
 						const playlistsSkips = value.playlists
 							?.slice()
 							.filter(p => (nonPlaylists ? findPlaylist(p.uri, playlists) : true))
-							.sort((a, b) => b.skips - a.skips)
+
+						if (allPlaylists)
+							playlistsSkips.push(
+								...playlists
+									.filter(pl => playlistsSkips.some(s => s.uri !== pl.uri))
+									.filter(pl => pl.tracks.items?.find(track => track.id == song.id))
+									.map(pl => ({ skips: 0, name: pl.name, uri: pl.uri }))
+							)
+
+						playlistsSkips.sort((a, b) => b.skips - a.skips)
+
 						const filteredSkips = playlistsSkips.reduce((a, b) => a + b.skips, 0)
 						if (filteredSkips == 0) return null
 						return (

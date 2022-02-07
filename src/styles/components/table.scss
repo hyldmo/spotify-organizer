@@ -11,7 +11,7 @@ table {
 	}
 
 	td {
-		line-height: 0.7;
+		line-height: 1.2;
 	}
 
 	tr,
@@ -23,16 +23,19 @@ table {
 		padding: 0;
 	}
 
-	thead.sticky th {
-		// Make border stay visible with sticky and border-collapse: collapse
-		top: -1px;
-		&:after {
-			content: '';
-			position: absolute;
-			left: 0;
-			bottom: 0;
-			width: 100%;
-			border-bottom: 1px solid $border-light;
+	thead.sticky {
+		z-index: 1;
+		th {
+			// Make border stay visible with sticky and border-collapse: collapse
+			top: -1px;
+			&:after {
+				content: '';
+				position: absolute;
+				left: 0;
+				bottom: 0;
+				width: 100%;
+				border-bottom: 1px solid $border-light;
+			}
 		}
 	}
 

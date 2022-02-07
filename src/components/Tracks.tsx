@@ -2,6 +2,7 @@ import React from 'react'
 
 import { Track } from '../types'
 import { Duration } from '../utils'
+import { ArtistLinks, UriLink } from './UriLink'
 
 type Props = {
 	tracks: Track[]
@@ -22,10 +23,18 @@ const Tracks: React.FC<Props> = ({ tracks }) =>
 			<tbody>
 				{tracks.map((p, index) => (
 					<tr key={p.id + index}>
-						<td>{p.name}</td>
-						<td>{p.artists.map(a => a.name).join(', ')}</td>
-						<td>{p.album.name}</td>
-						<td>{getDisplayName(p.meta.added_by)}</td>
+						<td>
+							<UriLink object={p} />
+						</td>
+						<td>
+							<ArtistLinks artists={p.artists} />
+						</td>
+						<td>
+							<UriLink object={p.album} />
+						</td>
+						<td>
+							<UriLink object={p.meta.added_by}>{getDisplayName(p.meta.added_by)}</UriLink>
+						</td>
 						<td>{new Date(p.meta.added_at).toLocaleDateString()}</td>
 						<td>{new Duration(p.duration_ms).toMinutesString()}</td>
 					</tr>

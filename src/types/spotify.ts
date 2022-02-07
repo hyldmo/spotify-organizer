@@ -24,11 +24,14 @@ export interface TrackMeta {
 export interface Track {
 	id: SpotifyApi.TrackObjectFull['id']
 	name: SpotifyApi.TrackObjectFull['name']
+	uri: SpotifyApi.TrackObjectFull['uri']
 	artists: Array<{
+		uri: SpotifyApi.ArtistObjectSimplified['uri']
 		id: SpotifyApi.ArtistObjectSimplified['id']
 		name: SpotifyApi.ArtistObjectSimplified['name']
 	}>
 	album: {
+		uri: SpotifyApi.AlbumObjectSimplified['uri']
 		id: SpotifyApi.AlbumObjectSimplified['id']
 		name: SpotifyApi.AlbumObjectSimplified['name']
 	}

@@ -40,13 +40,16 @@ function* getTracks(action: Action<typeof Actions.fetchTracks.type>) {
 		const mappedTracks = response.items.map<Track>(t => ({
 			id: t.track.id,
 			name: t.track.name,
+			uri: t.track.uri,
 			artists: t.track.artists.map(artist => ({
 				id: artist.id,
-				name: artist.name
+				name: artist.name,
+				uri: artist.uri
 			})),
 			album: {
 				id: t.track.album.id,
-				name: t.track.album.name
+				name: t.track.album.name,
+				uri: t.track.album.uri
 			},
 			duration_ms: t.track.duration_ms,
 			meta: {
