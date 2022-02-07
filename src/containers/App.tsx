@@ -4,7 +4,7 @@ import { Route, Routes } from 'react-router'
 import ErrorBoundary from '../components/ErrorBoundary'
 import { Footer } from '../components/Footer'
 import PlaylistsManager from '../pages/PlaylistsManager'
-import Navbar from '../components/Navbar'
+import { Header } from '../components/Header'
 import NotFound from '../pages/NotFound'
 import Notifications from '../containers/Notifications'
 import { State } from '../types'
@@ -20,7 +20,7 @@ const App: React.FC = () => {
 
 	return (
 		<>
-			<Navbar user={user} />
+			<Header user={user} />
 			<Alerts />
 			<main className="bg-inherit">
 				<ErrorBoundary>

@@ -1,4 +1,5 @@
 /* eslint-disable max-len */
+import { startCase } from 'lodash/fp'
 import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { State } from 'types'
@@ -120,7 +121,7 @@ export const Footer: React.FC = () => {
 			<div className="bg-green-600 px-2 grid grid-cols-[auto,1fr,auto] ">
 				<span className="col-start-1 space-x-1">
 					<a href={process.env.PACKAGE_REPOSITORY} target="_blank" rel="noreferrer">
-						Spotify Organizer
+						{startCase(process.env.PACKAGE_NAME)}
 					</a>
 					<a
 						href={`${process.env.PACKAGE_REPOSITORY}/releases/tag/v${process.env.PACKAGE_VERSION}`}
