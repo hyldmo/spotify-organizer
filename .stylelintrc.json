@@ -1,10 +1,9 @@
 {
 	"extends": [
 		"stylelint-config-recommended",
-		"stylelint-config-recommended-scss"
-	],
-	"plugins": [
-		"stylelint-scss"
+		"stylelint-config-recommended-scss",
+		"stylelint-config-standard-scss",
+		"stylelint-config-prettier-scss"
 	],
 	"rules": {
 		"indentation": "tab",
@@ -12,6 +11,13 @@
 		"no-eol-whitespace": true,
 		"selector-type-no-unknown": null,
 		"property-no-unknown": null,
-		"scss/dollar-variable-no-missing-interpolation": true
+		"scss/dollar-variable-no-missing-interpolation": true,
+		"scss/at-import-partial-extension": null,
+		"value-keyword-case": [
+			"lower",
+			{
+				"camelCaseSvgKeywords": true
+			}
+		]
 	}
 }

@@ -1,4 +1,4 @@
-import { FontAwesomeIcon, Props as FaProps } from '@fortawesome/react-fontawesome'
+import { Props as FaProps, FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import classnames from 'classnames'
 import React from 'react'
 
@@ -10,8 +10,12 @@ type Props = {
 	title?: HTMLButtonElement['title']
 }
 
-const Button: React.StatelessComponent<Props> = ({ primary, disabled, icon, children, onClick, title }) =>  (
-	<button className={classnames('button', { primary, disabled })} onClick={e => !disabled && onClick && onClick(e)} title={title}>
+const Button: React.FC<Props> = ({ primary, disabled, icon, children, onClick, title }) => (
+	<button
+		className={classnames('button', { primary, disabled })}
+		onClick={e => !disabled && onClick && onClick(e)}
+		title={title}
+	>
 		{icon && <FontAwesomeIcon icon={icon} aria-hidden="true" />}
 		{icon && children && <span>&nbsp;</span>}
 		{children}

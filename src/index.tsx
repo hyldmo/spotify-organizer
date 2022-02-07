@@ -6,7 +6,4 @@ import Root from './containers/Root'
 
 fontawesome.library.add(solid)
 
-render(
-	<Root />,
-	document.getElementById('root')
-)
+render(<Root />, document.getElementById('root'))

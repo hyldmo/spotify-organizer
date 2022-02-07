@@ -1,7 +1,7 @@
 import { Notification } from '../types'
-import { createAction } from './actionCreator'
+import { makeActionCreator } from '../utils/actionCreator'
 
 export default {
-	createNotification: createAction<'CREATE_NOTIFICATION', Notification & { duration?: number }>('CREATE_NOTIFICATION'),
-	clearNotification: createAction<'CLEAR_NOTIFICATION'>('CLEAR_NOTIFICATION')
+	createNotification: makeActionCreator<Notification & { duration?: number }>()('CREATE_NOTIFICATION'),
+	clearNotification: makeActionCreator()('CLEAR_NOTIFICATION')
 }

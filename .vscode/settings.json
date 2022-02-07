@@ -1,0 +1,48 @@
+{
+	"files.associations": {
+		".prettierrc": "yaml",
+		".env": "ini"
+	},
+	"vsicons.associations.folders": [
+		{
+			"icon": "graphql",
+			"extensions": ["gql"]
+		}
+	],
+	"editor.formatOnSave": true,
+	"yaml.format.printWidth": 120,
+	"editor.rulers": [120],
+	"eslint.packageManager": "yarn",
+	"eslint.rules.customizations": [
+		{
+			"rule": "*",
+			"severity": "downgrade"
+		}
+	],
+	"editor.defaultFormatter": "esbenp.prettier-vscode",
+	"[html]": {
+		"editor.defaultFormatter": null
+	},
+	"[typescript]": {
+		"editor.defaultFormatter": "esbenp.prettier-vscode"
+	},
+	"[typescriptreact]": {
+		"editor.defaultFormatter": "esbenp.prettier-vscode"
+	},
+	"[javascript]": {
+		"editor.defaultFormatter": "esbenp.prettier-vscode"
+	},
+	"[yaml]": {
+		"editor.formatOnSave": false
+	},
+	"yaml.schemas": {
+		"https://json.schemastore.org/github-workflow": "/.github/workflows/**/*.yml",
+		"https://www.graphql-code-generator.com/config.schema.json": "${workspaceFolder}/.graphql.config.yml"
+	},
+	"typescript.tsdk": "node_modules/typescript/lib",
+	"explorer.sortOrder": "type",
+	"workbench.iconTheme": "vscode-icons",
+	"[xml]": {
+		"editor.defaultFormatter": "DotJoshJohnson.xml"
+	}
+}

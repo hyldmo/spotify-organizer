@@ -1,7 +1,6 @@
 node_modules
 .idea/
 *.iml
-.vscode/
 *.log
 dist/
 package-lock.json
@@ -11,3 +10,5 @@ compilation-stats.json
 src/**/*.scss.d.ts
 
 coverage/
+
+assets/

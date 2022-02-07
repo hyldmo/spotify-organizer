@@ -1,6 +1,6 @@
-import { createAction } from './actionCreator'
+import { makeActionCreator } from '../utils/actionCreator'
 
 export default {
-	startTimer: createAction<'TIMER_START', number>('TIMER_START'),
-	updateTimer: createAction<'TIMER_UPDATE', number>('TIMER_UPDATE')
+	startTimer: makeActionCreator<number>()('TIMER_START'),
+	updateTimer: makeActionCreator<number>()('TIMER_UPDATE')
 }

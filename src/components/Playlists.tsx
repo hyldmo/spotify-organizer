@@ -21,16 +21,23 @@ type Props = {
 	select: (checked: boolean, id: string) => void
 }
 
-const Playlists: React.StatelessComponent<Props> = ({ playlists, select, selectAll, changeSortMode, filters }) => (
-	playlists.length > 0 ? (
+const Playlists: React.FC<Props> = ({ playlists, select, selectAll, changeSortMode, filters }) => {
+	if (playlists.length == 0) return null
+	return (
 		<table className="playlists">
 			<thead>
 				<tr>
-					<th className="select">{selectAll && <input type="checkbox" onChange={e => selectAll(e.target.checked)}/>}</th>
+					<th className="select">
+						{selectAll && <input type="checkbox" onChange={e => selectAll(e.target.checked)} />}
+					</th>
 					<th className="image"></th>
 					{headers.map(([name, key]) => (
 						<th key={name} className={name.toLocaleLowerCase()}>
-							<a onClick={e => changeSortMode(getNextSortMode(filters.order.key === key, filters.order.mode), key)}>
+							<a
+								onClick={_ =>
+									changeSortMode(getNextSortMode(filters.order.key === key, filters.order.mode), key)
+								}
+							>
 								{name}
 							</a>
 							&nbsp;{getSortIcon(filters.order.key === key, filters.order.mode)}
@@ -39,16 +46,29 @@ const Playlists: React.StatelessComponent<Props> = ({ playlists, select, selectA
 				</tr>
 			</thead>
 			<tbody>
-				{playlists.map(p =>
+				{playlists.map(p => (
 					<tr key={p.id}>
-						<td className="select">{selectAll ? (
-							<input type="checkbox" checked={p.selected} onChange={e => select(e.target.checked, p.id)} />
-						) : (
-							<input type="radio" name="playlist" value={p.id} checked={p.selected} onChange={() => select(true, p.id)}
-							/>
-						)}</td>
+						<td className="select">
+							{selectAll ? (
+								<input
+									type="checkbox"
+									checked={p.selected}
+									onChange={e => select(e.target.checked, p.id)}
+								/>
+							) : (
+								<input
+									type="radio"
+									name="playlist"
+									value={p.id}
+									checked={p.selected}
+									onChange={() => select(true, p.id)}
+								/>
+							)}
+						</td>
 						<td className="image">
-							{p.images.length > 0 ? <img src={p.images.slice().sort(i => i.height as number)[0].url} /> : null}
+							{p.images.length > 0 ? (
+								<img src={p.images.slice().sort(i => i.height as number)[0].url} />
+							) : null}
 						</td>
 						<td className="name">
 							<Link to={`${BASE_URL}users/${p.owner.id}/playlists/${p.id}`}>
@@ -58,14 +78,12 @@ const Playlists: React.StatelessComponent<Props> = ({ playlists, select, selectA
 						<td className="owner">
 							<Highlight text={p.owner.display_name || p.owner.id} term={filters.text} />
 						</td>
-						<td className="tracks">
-							{p.tracks.total}
-						</td>
+						<td className="tracks">{p.tracks.total}</td>
 					</tr>
-				)}
+				))}
 			</tbody>
 		</table>
-	) : null
-)
+	)
+}
 
 export default Playlists

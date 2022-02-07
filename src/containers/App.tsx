@@ -3,17 +3,19 @@ import { hot } from 'react-hot-loader'
 import { connect } from 'react-redux'
 import { Route, Switch, withRouter } from 'react-router'
 import ErrorBoundary from '../components/ErrorBoundary'
-import Footer from '../components/Footer'
-import Home from '../components/Home'
+import { Footer } from '../components/Footer'
+import PlaylistsManager from '../pages/PlaylistsManager'
 import Navbar from '../components/Navbar'
-import NotFound from '../components/NotFound'
+import NotFound from '../pages/NotFound'
 import { BASE_URL } from '../constants'
 import Notifications from '../containers/Notifications'
-import { State } from '../reducers'
-import '../styles/main.scss'
+import { State } from '../types'
 import Alerts from './Alerts'
 import Auth from './Auth'
-import TracksRoute from './TracksRoute'
+import TracksRoute from '../pages/TracksRoute'
+import { Skips } from '../pages/Skips'
+
+import '../styles/main.scss'
 
 const mapStateToProps = (state: State) => ({
 	user: state.user
@@ -21,17 +23,18 @@ const mapStateToProps = (state: State) => ({
 
 type Props = ReturnType<typeof mapStateToProps>
 
-const App: React.StatelessComponent<Props> = ({ user }) => (
+const App: React.FC<Props> = ({ user }) => (
 	<>
-		<Navbar user={user}/>
+		<Navbar user={user} />
 		<Alerts />
-		<main>
+		<main className="bg-inherit">
 			<ErrorBoundary>
 				{user ? (
 					<Switch>
-						<Route exact path={BASE_URL} component={Home} />
+						<Route exact path={BASE_URL} component={PlaylistsManager} />
+						<Route exact path={`${BASE_URL}skips`} component={Skips} />
 						<Route exact path={`${BASE_URL}users/:user/playlists/:id`} component={TracksRoute} />
-						<Route component={NotFound}/>
+						<Route component={NotFound} />
 					</Switch>
 				) : (
 					<Auth />
@@ -43,7 +46,4 @@ const App: React.StatelessComponent<Props> = ({ user }) => (
 	</>
 )
 
-export default hot(module)(withRouter(connect(
-	mapStateToProps,
-	{}
-)(App) as any))
+export default hot(module)(withRouter(connect(mapStateToProps, {})(App) as any))

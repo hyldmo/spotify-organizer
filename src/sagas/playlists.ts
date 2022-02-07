@@ -1,31 +1,34 @@
-import { all, call, put, select, takeLatest } from 'redux-saga/effects'
-import { Actions } from '../actions'
-import { State } from '../reducers/index'
-import { Playlist, RemoveTracksRequest, Track } from '../types'
+/* eslint-disable camelcase */
+import { all, call, put, select, takeLatest } from 'typed-redux-saga'
+import { Action, Actions } from '../actions'
+import { Playlist, State, Track } from 'types'
 import { deduplicate, partition, pullTracks } from '../utils'
 import { sleep } from '../utils/sleep'
-import spotifyApi from './spotifyFetch'
+import { spotifyFetch } from './spotifyFetch'
 
 export default function* () {
-	yield takeLatest<typeof Actions.fetchPlaylists>(Actions.fetchPlaylists.type, getPlaylists),
-	yield takeLatest<typeof Actions.fetchTracks>(Actions.fetchTracks.type, getTracks)
-	yield takeLatest<typeof Actions.deduplicatePlaylists>(Actions.deduplicatePlaylists.type, deduplicateTracks)
+	yield* takeLatest<Action<typeof Actions.fetchPlaylists.type>>(Actions.fetchPlaylists.type, getPlaylists)
+	yield* takeLatest<Action<typeof Actions.fetchTracks.type>>(Actions.fetchTracks.type, getTracks)
+	yield* takeLatest<Action<typeof Actions.deduplicatePlaylists.type>>(
+		Actions.deduplicatePlaylists.type,
+		deduplicateTracks
+	)
 }
 
-function* getPlaylists () {
+function* getPlaylists() {
 	let playlists: SpotifyApi.ListOfCurrentUsersPlaylistsResponse['items'] = []
 	let response: SpotifyApi.ListOfCurrentUsersPlaylistsResponse
 	const limit = 50
 	let offset = 0
 	do {
-		response = yield call(spotifyApi, `me/playlists?offset=${offset}&limit=${limit}`)
+		response = yield* call(spotifyFetch, `me/playlists?offset=${offset}&limit=${limit}`)
 		playlists = playlists.concat(response.items)
 		offset += limit
 	} while (response.next !== null)
-	yield put(Actions.playlistsFetched(playlists))
+	yield* put(Actions.playlistsFetched(playlists))
 }
 
-function* getTracks (action: typeof Actions.fetchTracks) {
+function* getTracks(action: Action<typeof Actions.fetchTracks.type>) {
 	const { owner, id } = action.payload
 	let tracks: Track[] = []
 	let response: SpotifyApi.PlaylistTrackResponse
@@ -33,7 +36,7 @@ function* getTracks (action: typeof Actions.fetchTracks) {
 	let offset = 0
 	let index = 0
 	do {
-		response = yield call(spotifyApi, `users/${owner}/playlists/${id}/tracks?offset=${offset}&limit=${limit}`)
+		response = yield* call(spotifyFetch, `users/${owner}/playlists/${id}/tracks?offset=${offset}&limit=${limit}`)
 		const mappedTracks = response.items.map<Track>(t => ({
 			id: t.track.id,
 			name: t.track.name,
@@ -55,65 +58,80 @@ function* getTracks (action: typeof Actions.fetchTracks) {
 		}))
 		tracks = tracks.concat(mappedTracks)
 		offset += limit
-		yield put(Actions.fetchTracksProgress(tracks.length, id))
+		yield* put(Actions.fetchTracksProgress(tracks.length, id))
 	} while (response.next !== null)
 
-	function* waitForPlaylists (): IterableIterator<any> {
-		const playlist: Playlist = yield select<State>(s => s.playlists.find(p => p.id === id))
-		if (playlist)
-			return
-		yield call(sleep, 50)
-		yield call(waitForPlaylists)
+	function* waitForPlaylists(): IterableIterator<any> {
+		const playlist: Playlist | undefined = yield* select((s: State) => s.playlists.find(p => p.id === id))
+		if (playlist) return
+		yield* call(sleep, 50)
+		yield* call(waitForPlaylists)
 	}
 
-	yield call(waitForPlaylists)
-	yield put(Actions.tracksFetched(tracks, id))
+	yield* call(waitForPlaylists)
+	yield* put(Actions.tracksFetched(tracks, id))
 }
 
-function* deduplicateTracks (action: typeof Actions.deduplicatePlaylists) {
-	const { payload: { source, target }, meta: compareMode } = action
-	yield put(Actions.createNotification({ message: 'Loading tracks', progress: true }))
-	yield all((target ? source.concat(target) : source).map(pl => call(getTracks, Actions.fetchTracks({ id: pl.id, owner: pl.owner.id }))))
-	const playlists: Playlist[] = yield select((state: State) => state.playlists.filter(pl => source.map(p => p.id).includes(pl.id)))
+function* deduplicateTracks(action: Action<typeof Actions.deduplicatePlaylists.type>) {
+	const {
+		payload: { source, target },
+		meta: compareMode
+	} = action
+	yield* put(Actions.createNotification({ message: 'Loading tracks', progress: true }))
+	yield* all(
+		(target ? source.concat(target) : source).map(pl =>
+			call(getTracks, Actions.fetchTracks({ id: pl.id, owner: pl.owner.id }) as any)
+		)
+	)
+	const playlists: Playlist[] = yield* select((state: State) =>
+		state.playlists.filter(pl => source.map(p => p.id).includes(pl.id))
+	)
 	let result
 	try {
 		if (target === null) {
-			result = playlists.map(playlist => ({ ...playlist, tracks: deduplicate(playlist.tracks.items as Track[], compareMode) }))
+			result = playlists.map(playlist => ({
+				...playlist,
+				tracks: deduplicate(playlist.tracks.items as Track[], compareMode)
+			}))
 		} else {
-			const targetPlaylist: Playlist = yield select((state: State) => state.playlists.find(pl => pl.id === target.id))
+			const targetPlaylist = yield* select((state: State) => state.playlists.find(pl => pl.id === target.id))
 			const tracks = playlists.reduce<Track[]>((a, b) => a.concat(b.tracks.items as Track[]), [])
-			result = [{
-				...targetPlaylist,
-				tracks: pullTracks(tracks, compareMode, targetPlaylist.tracks.items as Track[])
-			}]
+			result = [
+				{
+					...targetPlaylist,
+					tracks: pullTracks(tracks, compareMode, targetPlaylist?.tracks.items || [])
+				}
+			]
 		}
 		const totalTracks = result.reduce((a, b) => a + b.tracks.length, 0)
-		const confirm = window.confirm(`Are you sure? This will remove ${totalTracks} track(s) from ${result.map(p => p.name).join()}`)
+		const confirm = window.confirm(
+			`Are you sure? This will remove ${totalTracks} track(s) from ${result.map(p => p.name).join()}`
+		)
 		if (confirm) {
-			yield put(Actions.createNotification({ message: 'Removing tracks', progress: true }))
+			yield* put(Actions.createNotification({ message: 'Removing tracks', progress: true }))
 			for (const playlist of result) {
 				for (const tracks of partition(playlist.tracks, 100)) {
-					const body: RemoveTracksRequest = {
+					const body = {
 						tracks: tracks.map(track => ({
 							uri: `spotify:track:${track.id}`,
 							positions: target === null ? [track.meta.index] : undefined
 						})),
 						snapshot_id: playlist.snapshot_id
 					}
-					yield call(spotifyApi, `users/${playlist.owner.id}/playlists/${playlist.id}/tracks`, {
+					yield* call(spotifyFetch, `users/${playlist.owner?.id}/playlists/${playlist.id}/tracks`, {
 						method: 'DELETE',
 						body: JSON.stringify(body)
 					})
 				}
 			}
 		} else {
-			yield put(Actions.clearNotification())
+			yield* put(Actions.clearNotification())
 			return
 		}
 
-		yield put(Actions.createNotification({ message: 'Success!' }))
-		yield put(Actions.fetchPlaylists())
+		yield* put(Actions.createNotification({ message: 'Success!' }))
+		yield* put(Actions.fetchPlaylists())
 	} catch (err) {
-		yield put(Actions.createNotification({ message: err.message }))
+		yield* put(Actions.createNotification({ message: (err as Error).message }))
 	}
 }

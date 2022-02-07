@@ -3,26 +3,33 @@ import React from 'react'
 import { connect } from 'react-redux'
 
 import { BASE_URL } from '../constants'
-import { State } from '../reducers'
+import { State } from '../types'
 
-const mapStateToProps = (state: State) => ({})
+const mapStateToProps = (_: State) => ({})
 
 const dispatchToProps = {
 	replace
 }
 
-type Props = typeof dispatchToProps
+type Props = typeof dispatchToProps & {
+	children?: React.ReactNode
+}
 
 class ErrorBoundary extends React.Component<Props> {
 	state = {
 		hasError: false
 	}
 
-	componentDidCatch (error: Error, info: React.ErrorInfo) {
-		this.setState({ hasError: true })
+	static getDerivedStateFromError() {
+		// Update state so the next render will show the fallback UI.
+		return { hasError: true }
 	}
 
-	render () {
+	componentDidCatch(error: Error, info: React.ErrorInfo) {
+		console.error(error, info)
+	}
+
+	render() {
 		const { hasError } = this.state
 		if (hasError) {
 			if (location.pathname !== BASE_URL) {
@@ -34,7 +41,4 @@ class ErrorBoundary extends React.Component<Props> {
 	}
 }
 
-export default connect(
-	mapStateToProps,
-	dispatchToProps
-)(ErrorBoundary)
+export default connect(mapStateToProps, dispatchToProps)(ErrorBoundary)

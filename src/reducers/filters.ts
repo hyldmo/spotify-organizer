@@ -14,7 +14,7 @@ export const initialState: Filters = {
 }
 
 type PlaylistFilters = Filters['playlists']
-export function playlists (state: PlaylistFilters, action: Action): PlaylistFilters {
+export function playlists(state: PlaylistFilters, action: Action): PlaylistFilters {
 	switch (action.type) {
 		case 'PLAYLISTS_SORT_MODE_CHANGE':
 			return {
@@ -38,7 +38,7 @@ export function playlists (state: PlaylistFilters, action: Action): PlaylistFilt
 		case 'PLAYLISTS_FILTER_TEXT_CHANGE':
 			return {
 				...state,
-				text:  action.payload
+				text: action.payload
 			}
 
 		default:
@@ -46,7 +46,7 @@ export function playlists (state: PlaylistFilters, action: Action): PlaylistFilt
 	}
 }
 
-export default function filters (state: Filters = initialState, action: Action): Filters {
+export default function filters(state: Filters = initialState, action: Action): Filters {
 	switch (action.type) {
 		case 'PLAYLISTS_FILTER_OWNED_CHANGE':
 		case 'PLAYLISTS_FILTER_EMPTY_CHANGE':

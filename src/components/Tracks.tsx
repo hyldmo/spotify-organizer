@@ -6,7 +6,7 @@ import { Duration } from '../utils'
 type Props = {
 	tracks: Track[]
 }
-const Tracks: React.StatelessComponent<Props> = ({ tracks }) => (
+const Tracks: React.FC<Props> = ({ tracks }) =>
 	tracks.length > 0 ? (
 		<table className="playlists">
 			<thead>
@@ -20,7 +20,7 @@ const Tracks: React.StatelessComponent<Props> = ({ tracks }) => (
 				</tr>
 			</thead>
 			<tbody>
-				{tracks.map((p, index) =>
+				{tracks.map((p, index) => (
 					<tr key={p.id + index}>
 						<td>{p.name}</td>
 						<td>{p.artists.map(a => a.name).join(', ')}</td>
@@ -29,18 +29,15 @@ const Tracks: React.StatelessComponent<Props> = ({ tracks }) => (
 						<td>{new Date(p.meta.added_at).toLocaleDateString()}</td>
 						<td>{new Duration(p.duration_ms).toMinutesString()}</td>
 					</tr>
-				)}
+				))}
 			</tbody>
 		</table>
 	) : (
 		<div>No tracks.</div>
 	)
-)
 
-function getDisplayName (added_by: Track['meta']['added_by']): string {
-	return added_by === null
-		? 'Spotify'
-		: added_by.display_name || added_by.id
+function getDisplayName(addedBy: Track['meta']['added_by']): string {
+	return addedBy === null ? 'Spotify' : addedBy.display_name || addedBy.id
 }
 
 export default Tracks

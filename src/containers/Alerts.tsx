@@ -2,7 +2,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { Actions } from '../actions'
 
-import { State } from '../reducers'
+import { State } from '../types'
 
 const mapStateToProps = (state: State) => ({
 	timer: state.timer
@@ -14,15 +14,10 @@ const dispatchToProps = {
 
 type Props = ReturnType<typeof mapStateToProps> & typeof dispatchToProps
 
-const Alerts: React.StatelessComponent<Props> = ({ timer, startTimer }) => (
+const Alerts: React.FC<Props> = ({ timer, startTimer }) => (
 	<ul className="alerts" onClick={() => startTimer(10)}>
-		{timer > 0 && <li className="alert">
-			Spotify API Limit Exceeded. Please wait {timer} seconds
-		</li>}
+		{timer > 0 && <li className="alert">Spotify API Limit Exceeded. Please wait {timer} seconds</li>}
 	</ul>
 )
 
-export default connect(
-	mapStateToProps,
-	dispatchToProps
-)(Alerts)
+export default connect(mapStateToProps, dispatchToProps)(Alerts)

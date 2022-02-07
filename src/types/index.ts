@@ -1,3 +1,11 @@
+import reducers from 'reducers'
+export type State = ReturnType<ReturnType<typeof reducers>>
+
+export * from './filters'
+export * from './modal'
+export * from './scopes'
+export * from './playback'
+export * from './spotify'
 
 export interface Tuple<T1, T2> extends Array<any> {
 	[0]: T1
@@ -15,13 +23,3 @@ export enum OperationMode {
 	Duplicates,
 	PullTracks
 }
-
-export type Notification = {
-	message: React.ReactNode
-	progress?: true
-}
-
-export * from './filters'
-export * from './modal'
-export * from './scopes'
-export * from './spotify'

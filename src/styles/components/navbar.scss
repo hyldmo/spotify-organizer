@@ -1,3 +1,5 @@
+@use 'sass:math';
+
 header {
 	grid-area: nav;
 	border-bottom: $border-separator;
@@ -12,13 +14,13 @@ header {
 		justify-content: space-between;
 		ul {
 			list-style: none;
-			margin: $header-height / 3 0;
+			margin: math.div($header-height, 3) 0;
 			padding: 0;
 
 			li {
 				display: inline-block;
 				&:not(:last-child)::after {
-					content: "|";
+					content: '|';
 					margin: 0.3rem;
 				}
 			}

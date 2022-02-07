@@ -10,6 +10,7 @@ a.button:hover {
 	outline: 0;
 	border: 1px solid transparentize($text-color, 0.2);
 	border-radius: 3rem;
+	line-height: 1;
 	padding: 0.5rem;
 	color: $text-color;
 	text-align: center;

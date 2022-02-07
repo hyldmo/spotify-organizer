@@ -2,7 +2,7 @@ import React from 'react'
 import { Action, Actions } from '../actions'
 import Highlight from '../components/Highlight'
 import { initialState, playlists as updateFilters } from '../reducers/filters'
-import { Filters as PlaylistFilters, Playlist } from '../types'
+import { Playlist, Filters as PlaylistFilters } from '../types'
 import { applyPlaylistsFilters, getNextSortMode, getSortIcon } from '../utils'
 
 const headers = [
@@ -28,17 +28,17 @@ class PullPlaylist extends React.Component<Props, State> {
 		selectedPlaylists: [],
 		filters: this.props.filters || initialState.playlists
 	}
-	updateFilters (action: Action) {
+	updateFilters(action: Action) {
 		const newState = updateFilters(this.state.filters, action)
 		this.setState({ filters: newState })
 	}
 
-	selectAll (action: Action) {
+	selectAll(action: Action) {
 		const newState = updateFilters(this.state.filters, action)
 		this.setState({ filters: newState })
 	}
 
-	render () {
+	render() {
 		const { playlists: initialPlaylists } = this.props
 		const { filters } = this.state
 		const playlists = applyPlaylistsFilters(initialPlaylists, filters)
@@ -47,11 +47,25 @@ class PullPlaylist extends React.Component<Props, State> {
 				<table>
 					<thead>
 						<tr>
-							<th className="select"><input type="checkbox" onChange={e => this.updateFilters(Actions.selectPlaylists(e.target.checked))}/></th>
+							<th className="select">
+								<input
+									type="checkbox"
+									onChange={e => this.updateFilters(Actions.selectPlaylists(e.target.checked))}
+								/>
+							</th>
 							<th className="image"></th>
 							{headers.map(([name, key]) => (
-								<th key={name} >
-									<a onClick={() => this.updateFilters(Actions.updatePlaylistsSort(getNextSortMode(filters.order.key === key, filters.order.mode), key))}>
+								<th key={name}>
+									<a
+										onClick={() =>
+											this.updateFilters(
+												Actions.updatePlaylistsSort(
+													getNextSortMode(filters.order.key === key, filters.order.mode),
+													key
+												)
+											)
+										}
+									>
 										{name}
 									</a>
 									&nbsp;{getSortIcon(filters.order.key === key, filters.order.mode)}
@@ -60,13 +74,19 @@ class PullPlaylist extends React.Component<Props, State> {
 						</tr>
 					</thead>
 					<tbody>
-						{playlists.map(p =>
+						{playlists.map(p => (
 							<tr key={p.id}>
 								<td>
-									<input type="checkbox" checked={p.selected} onChange={e => select(e.target.checked, p.id)} />
+									<input
+										type="checkbox"
+										checked={p.selected}
+										onChange={e => select(e.target.checked, p.id)}
+									/>
 								</td>
 								<td className="images">
-									{p.images.length > 0 ? <img src={p.images.slice().sort(i => i.height as number)[0].url} /> : null}
+									{p.images.length > 0 ? (
+										<img src={p.images.slice().sort(i => i.height as number)[0].url} />
+									) : null}
 								</td>
 								<td>
 									<Highlight text={p.name} term={filters.text} />
@@ -74,11 +94,9 @@ class PullPlaylist extends React.Component<Props, State> {
 								<td>
 									<Highlight text={p.owner.display_name || p.owner.id} term={filters.text} />
 								</td>
-								<td>
-									{p.tracks.total}
-								</td>
+								<td>{p.tracks.total}</td>
 							</tr>
-						)}
+						))}
 					</tbody>
 				</table>
 			</div>

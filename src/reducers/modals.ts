@@ -1,9 +1,8 @@
-import { Action } from '../actions'
+import { Action, MetaAction } from '../actions'
 import { Modal } from '../types'
 
-function modal (state: Modal, action: Action): Modal {
-	if (action.meta === undefined || state.id !== action.meta)
-		return state
+function modal(state: Modal, action: MetaAction): Modal {
+	if (action.meta === undefined || state.id !== action.meta) return state
 
 	switch (action.type) {
 		case 'MODAL_CHANGE':
@@ -13,7 +12,7 @@ function modal (state: Modal, action: Action): Modal {
 	}
 }
 
-export default function modals (state: Modal[] = [], action: Action): Modal[] {
+export default function modals(state: Modal[] = [], action: Action): Modal[] {
 	switch (action.type) {
 		case 'MODAL_REGISTER':
 			return [...state, { id: action.payload, open: false }]

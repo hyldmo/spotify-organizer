@@ -1,6 +1,6 @@
 export interface Playlist extends SpotifyApi.PlaylistObjectSimplified {
 	selected: boolean
-	description?: SpotifyApi.PlaylistObjectFull['description']
+	description: SpotifyApi.PlaylistObjectFull['description']
 	tracks: SpotifyApi.PlaylistObjectSimplified['tracks'] & {
 		loaded: number
 		items?: Track[]
@@ -8,12 +8,14 @@ export interface Playlist extends SpotifyApi.PlaylistObjectSimplified {
 }
 
 export enum Sort {
-	Asc, Desc, None
+	Asc,
+	Desc,
+	None
 }
 
 export interface TrackMeta {
-	added_at: SpotifyApi.PlaylistTrackObject['added_at'],
-	added_by: SpotifyApi.PlaylistTrackObject['added_by'],
+	added_at: SpotifyApi.PlaylistTrackObject['added_at']
+	added_by: SpotifyApi.PlaylistTrackObject['added_by']
 	is_local: SpotifyApi.PlaylistTrackObject['is_local']
 	// Position of track in playlist
 	index: number
