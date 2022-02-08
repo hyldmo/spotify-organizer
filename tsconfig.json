@@ -7,7 +7,7 @@
 		"checkJs": false,
 		"resolveJsonModule": true,
 		"downlevelIteration": true,
-		"module": "esnext",
+		"module": "ESNext",
 		"moduleResolution": "node",
 		"target": "es6",
 		"esModuleInterop": true,
@@ -15,5 +15,13 @@
 		"baseUrl": "src"
 	},
 	"files": ["./src/types/globals.ts", "./node_modules/@types/spotify-api/index.d.ts"],
-	"include": ["./src/*"]
+	"include": ["./src/*"],
+	"ts-node": {
+		"comment": "Needed to support .ts on webpack config",
+		"compilerOptions": {
+			"module": "CommonJS",
+			"strict": false,
+			"esModuleInterop": true
+		}
+	}
 }

@@ -2,9 +2,9 @@
 import baseConfig from './webpack.config'
 import ReactRefreshWebpackPlugin from '@pmmmwh/react-refresh-webpack-plugin'
 import ReactRefreshTypeScript from 'react-refresh-typescript'
-import { Configuration } from './types'
+import 'webpack-dev-server' // Add typing to devServer
 
-const config: Configuration = {
+const config: typeof baseConfig = {
 	...baseConfig,
 	mode: 'development',
 
@@ -29,7 +29,7 @@ const config: Configuration = {
 				}
 			},
 			{
-				test: /\.scss$/,
+				test: /\.s?css$/,
 				use: ['style-loader', 'css-loader', 'postcss-loader', 'sass-loader']
 			}
 		]

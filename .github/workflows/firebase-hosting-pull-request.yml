@@ -37,6 +37,8 @@ jobs:
 
       - name: Build application
         run: yarn prod
+        env:
+          PACKAGE_VERSION: '-beta'
 
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:

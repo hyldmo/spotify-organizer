@@ -1,9 +1,8 @@
 import MiniCssExtractPlugin from 'mini-css-extract-plugin'
 import path from 'path'
-import { Configuration } from './types'
 import baseConfig from './webpack.config'
 
-const config: Configuration = {
+const config: typeof baseConfig = {
 	...baseConfig,
 	mode: 'production',
 
@@ -21,7 +20,7 @@ const config: Configuration = {
 				exclude: /node_modules/
 			},
 			{
-				test: /\.scss$/,
+				test: /\.s?css$/,
 				use: [MiniCssExtractPlugin.loader, 'css-loader', 'postcss-loader', 'sass-loader']
 			}
 		]

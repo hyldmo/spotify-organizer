@@ -1,10 +1,9 @@
 import HtmlWebpackPlugin from 'html-webpack-plugin'
 import path from 'path'
-import { DefinePlugin } from 'webpack'
+import { Configuration, DefinePlugin } from 'webpack'
 import packageJSON from '../package.json'
 import { getFolders } from './utils'
 import tsConfig from '../tsconfig.json'
-import { Configuration } from './types'
 
 const context = path.resolve(__dirname, '../')
 
@@ -38,7 +37,8 @@ const config: Configuration = {
 		}),
 		new DefinePlugin({
 			'process.env.PACKAGE_NAME': JSON.stringify(packageJSON.name),
-			'process.env.PACKAGE_VERSION': JSON.stringify(process.env.PACKAGE_VERSION),
+			// process.env.PACKAGE_VERSION is provided by CI, set default for local development
+			'process.env.PACKAGE_VERSION': JSON.stringify(process.env.PACKAGE_VERSION || '-local'),
 			'process.env.PACKAGE_REPOSITORY': JSON.stringify(packageJSON.repository)
 		})
 	],

@@ -47,6 +47,8 @@ jobs:
 
       - name: Build application
         run: yarn prod
+        env:
+          PACKAGE_VERSION: '${{ steps.semver.outputs.VERSION }}'
 
       - run: yarn release
         if: ${{ steps.semver.outputs.VERSION != '' }}
