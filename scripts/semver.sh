@@ -12,5 +12,4 @@ if [ -s .version ]; then
 	echo "::set-output name=VERSION::$VERSION"
 else
 	echo "No new version. Canceling deploy."
-	echo "::set-output name=VERSION::NULL"
 fi
