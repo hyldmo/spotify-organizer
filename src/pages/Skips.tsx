@@ -26,7 +26,7 @@ export const Skips: React.FC = () => {
 								checked={nonPlaylists}
 								onChange={e => countNonPlaylists(e.target.checked)}
 							/>
-							Hide non-playlists
+							Hide skips in non-playlists
 						</label>
 					</li>
 					<li>
@@ -36,11 +36,15 @@ export const Skips: React.FC = () => {
 								checked={allPlaylists}
 								onChange={e => showAllPlaylists(e.target.checked)}
 							/>
-							Show all of the skipped song&apos;s playlists
+							Show all playlists the songs belong to
 						</label>
 					</li>
 				</ul>
 			</header>
+			<p>
+				Keep this app on while listening on Spotify, and it will detect which songs you&apos;re skipping and
+				from which playlists.
+			</p>
 			<ul>
 				{skips
 					.sort((a, b) => b[1].totalSkips - a[1].totalSkips)
