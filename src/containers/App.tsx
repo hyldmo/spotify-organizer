@@ -12,8 +12,14 @@ import Alerts from './Alerts'
 import Auth from './Auth'
 import TracksRoute from '../pages/TracksRoute'
 import { Skips } from '../pages/Skips'
+import { __DEV__ } from '../constants'
 
 import '../styles/main.scss'
+import '../../static/app.webmanifest'
+
+if ('serviceWorker' in navigator && !__DEV__) {
+	navigator.serviceWorker.register('/service-worker.js')
+}
 
 const App: React.FC = () => {
 	const user = useSelector((s: State) => s.user)

@@ -9,12 +9,14 @@ const config: typeof baseConfig = {
 	mode: 'development',
 
 	output: {
+		...baseConfig.output,
 		publicPath: 'http://localhost:1337/',
 		filename: '[name].js'
 	},
 
 	module: {
 		rules: [
+			...baseConfig.module.rules,
 			{
 				test: /\.tsx?$/,
 				loader: 'ts-loader',

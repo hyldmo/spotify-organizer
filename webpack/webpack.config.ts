@@ -13,9 +13,7 @@ const config: Configuration = {
 	context,
 
 	output: {
-		path: path.join(__dirname, 'dist'),
-		publicPath: process.env.npm_lifecycle_event !== 'prod' ? '/' : '/spotify-organiser/',
-		filename: '[name]-[hash].js'
+		assetModuleFilename: '[name][ext]'
 	},
 
 	resolve: {
@@ -26,6 +24,15 @@ const config: Configuration = {
 		extensions: packageJSON.jest.moduleFileExtensions.map(ext => `.${ext}`)
 	},
 
+	module: {
+		rules: [
+			{
+				test: /\.(webmanifest|png|svg)$/i,
+				type: 'asset/resource'
+			}
+		]
+	},
+
 	plugins: [
 		new HtmlWebpackPlugin({
 			title: packageJSON.name
@@ -33,7 +40,8 @@ const config: Configuration = {
 				.map(name => name.charAt(0).toUpperCase() + name.slice(1))
 				.join(' '),
 			version: packageJSON.version,
-			template: 'static/index.ejs'
+			template: 'static/index.ejs',
+			favicon: 'static/favicon.svg'
 		}),
 		new DefinePlugin({
 			'process.env.PACKAGE_NAME': JSON.stringify(packageJSON.name),

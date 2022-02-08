@@ -1,19 +1,22 @@
 import MiniCssExtractPlugin from 'mini-css-extract-plugin'
 import path from 'path'
 import baseConfig from './webpack.config'
+import { GenerateSW } from 'workbox-webpack-plugin'
 
 const config: typeof baseConfig = {
 	...baseConfig,
 	mode: 'production',
 
 	output: {
+		...baseConfig.output,
 		path: path.join(baseConfig.context, 'dist'),
-		filename: '[name].js',
+		filename: '[name].[contenthash].js',
 		chunkFilename: '[name].chunk.js'
 	},
 
 	module: {
 		rules: [
+			...baseConfig.module.rules,
 			{
 				test: /\.tsx?$/,
 				loader: 'ts-loader',
@@ -30,6 +33,9 @@ const config: typeof baseConfig = {
 		new MiniCssExtractPlugin({
 			filename: '[name].css',
 			chunkFilename: '[name].css'
+		}),
+		new GenerateSW({
+			maximumFileSizeToCacheInBytes: 10 * 1024 * 1024
 		}),
 		...baseConfig.plugins
 	]

@@ -10,7 +10,19 @@ quoteProps: preserve
 arrowParens: avoid
 
 overrides:
-    - files: '*.yml'
-      options:
-          useTabs: false
-          tabWidth: 2
+  - files:
+      - '*.yml'
+      - '.prettierrc'
+    options:
+      useTabs: false
+      tabWidth: 2
+  - files:
+      - '*.ejs'
+      - '*.svg'
+    options:
+      parser: html
+  - files:
+      - '*.webmanifest'
+      - '.firebaserc'
+    options:
+      parser: json
