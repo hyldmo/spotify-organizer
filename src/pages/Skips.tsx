@@ -40,11 +40,11 @@ export const Skips: React.FC = () => {
 						</label>
 					</li>
 				</ul>
+				<p>
+					Keep this app on while listening on Spotify, and it will detect which songs you&apos;re skipping and
+					from which playlists.
+				</p>
 			</header>
-			<p>
-				Keep this app on while listening on Spotify, and it will detect which songs you&apos;re skipping and
-				from which playlists.
-			</p>
 			<ul>
 				{skips
 					.sort((a, b) => b[1].totalSkips - a[1].totalSkips)
