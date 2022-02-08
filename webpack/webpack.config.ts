@@ -1,6 +1,6 @@
 import HtmlWebpackPlugin from 'html-webpack-plugin'
 import path from 'path'
-import { Configuration, DefinePlugin } from 'webpack'
+import { Configuration, DefinePlugin, SourceMapDevToolPlugin } from 'webpack'
 import packageJSON from '../package.json'
 import { getFolders } from './utils'
 import tsConfig from '../tsconfig.json'
@@ -9,7 +9,7 @@ const context = path.resolve(__dirname, '../')
 
 const config: Configuration = {
 	entry: './src/index.tsx',
-	devtool: 'source-map',
+	devtool: false, // Added by SourceMapDevToolPlugin
 	context,
 
 	output: {
@@ -51,6 +51,10 @@ const config: Configuration = {
 			// process.env.PACKAGE_VERSION is provided by CI, set default for local development
 			'process.env.PACKAGE_VERSION': JSON.stringify(process.env.PACKAGE_VERSION || '-local'),
 			'process.env.PACKAGE_REPOSITORY': JSON.stringify(packageJSON.repository)
+		}),
+		new SourceMapDevToolPlugin({
+			filename: '[file].map',
+			append: false // Let browser automatically look
 		})
 	],
 
