@@ -1,6 +1,15 @@
-<svg xmlns="http://www.w3.org/2000/svg" height="512" width="512" viewBox="0 0 512 512">
-	<path
-		fill="#16a34a"
-		d="M 256 219.429 C 227.847 219.429 210.252 249.904 224.328 274.286 C 238.405 298.666 273.595 298.666 287.672 274.286 C 290.882 268.725 292.571 262.419 292.571 256 C 292.571 235.803 276.197 219.429 256 219.429 Z M 475.429 0 L 36.571 0 C 16.374 0 0 16.374 0 36.571 L 0 475.429 C 0 495.626 16.374 512 36.571 512 L 475.429 512 C 495.626 512 512 495.626 512 475.429 L 512 36.571 C 512 16.374 495.626 0 475.429 0 Z M 256 438.857 C 115.237 438.857 27.26 286.475 97.641 164.571 C 168.023 42.666 343.977 42.666 414.358 164.571 C 430.408 192.369 438.857 223.902 438.857 256 C 438.857 356.989 356.99 438.857 256 438.857 Z"
-	></path>
+<svg xmlns="http://www.w3.org/2000/svg" height="512" width="512" viewBox="-50 -50 100 100">
+	<defs>
+		<linearGradient id="grad" gradientTransform="rotate(80)">
+			<stop offset="20%" stop-color="#16a34a" />
+			<stop offset="100%" stop-color="#115529" />
+		</linearGradient>
+	</defs>
+	<mask id="m">
+		<rect x="-50" y="-50" rx="20" ry="20" width="100" height="100" fill="white" />
+		<circle cx="0" cy="0" r="36" fill="black" />
+		<polygon points="12,-12 25,-35 35,-25" fill="white" />
+		<circle cx="0" cy="0" r="7.4" fill="white" />
+	</mask>
+	<rect x="-50" y="-50" width="100" height="100" fill="url('#grad')" mask="url(#m)" />
 </svg>

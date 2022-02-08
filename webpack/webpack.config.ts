@@ -13,7 +13,9 @@ const config: Configuration = {
 	context,
 
 	output: {
-		assetModuleFilename: '[name][ext]'
+		assetModuleFilename: 'static/[name][ext]',
+		chunkFilename: 'static/[name].chunk.js',
+		filename: 'static/[name].[contenthash].js'
 	},
 
 	resolve: {
@@ -41,7 +43,8 @@ const config: Configuration = {
 				.join(' '),
 			version: packageJSON.version,
 			template: 'static/index.ejs',
-			favicon: 'static/favicon.svg'
+			favicon: 'static/favicon.svg',
+			minify: false // No need, file is small
 		}),
 		new DefinePlugin({
 			'process.env.PACKAGE_NAME': JSON.stringify(packageJSON.name),

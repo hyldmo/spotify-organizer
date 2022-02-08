@@ -15,6 +15,7 @@ import { Skips } from '../pages/Skips'
 import { __DEV__ } from '../constants'
 
 import '../styles/main.scss'
+import '../../static/app.svg'
 import '../../static/app.webmanifest'
 
 if ('serviceWorker' in navigator && !__DEV__) {

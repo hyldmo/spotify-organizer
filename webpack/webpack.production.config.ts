@@ -9,9 +9,7 @@ const config: typeof baseConfig = {
 
 	output: {
 		...baseConfig.output,
-		path: path.join(baseConfig.context, 'dist'),
-		filename: '[name].[contenthash].js',
-		chunkFilename: '[name].chunk.js'
+		path: path.join(baseConfig.context, 'dist')
 	},
 
 	module: {
@@ -31,10 +29,11 @@ const config: typeof baseConfig = {
 
 	plugins: [
 		new MiniCssExtractPlugin({
-			filename: '[name].css',
-			chunkFilename: '[name].css'
+			filename: baseConfig.output.filename.toString().replace('.js', '.css'),
+			chunkFilename: baseConfig.output.chunkFilename.toString().replace('.js', '.css')
 		}),
 		new GenerateSW({
+			swDest: 'static/service-worker.js',
 			maximumFileSizeToCacheInBytes: 10 * 1024 * 1024
 		}),
 		...baseConfig.plugins

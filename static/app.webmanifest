@@ -10,12 +10,12 @@
 	"scope": "/",
 	"icons": [
 		{
-			"src": "/favicon.svg",
+			"src": "/static/app.svg",
 			"type": "image/svg+xml",
 			"sizes": "96x96"
 		},
 		{
-			"src": "/favicon.svg",
+			"src": "/static/app.svg",
 			"type": "image/svg+xml",
 			"sizes": "512x512"
 		}
