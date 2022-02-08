@@ -54,7 +54,7 @@ const config: Configuration = {
 		}),
 		new SourceMapDevToolPlugin({
 			filename: '[file].map',
-			append: false // Let browser automatically look
+			publicPath: '/'
 		})
 	],
 
