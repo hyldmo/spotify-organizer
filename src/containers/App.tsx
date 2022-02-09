@@ -19,7 +19,7 @@ import '../../static/app.svg'
 import '../../static/app.webmanifest'
 
 if ('serviceWorker' in navigator && !__DEV__) {
-	navigator.serviceWorker.register('/static/service-worker.js')
+	navigator.serviceWorker.register('/service-worker.js')
 }
 
 const App: React.FC = () => {

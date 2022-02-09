@@ -1,6 +1,7 @@
 {
 	"name": "Spotify Organiser",
 	"short_name": "Spotify Organiser",
+	"id": "/?source=pwa",
 	"description": "Various tools to help you organise your Spotify playlists better",
 	"lang": "en",
 	"start_url": "/?source=pwa",

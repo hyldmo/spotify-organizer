@@ -1,7 +1,7 @@
 import MiniCssExtractPlugin from 'mini-css-extract-plugin'
 import path from 'path'
 import baseConfig from './webpack.config'
-import { GenerateSW } from 'workbox-webpack-plugin'
+import { GenerateSW, ManifestEntry } from 'workbox-webpack-plugin'
 
 const config: typeof baseConfig = {
 	...baseConfig,
@@ -33,7 +33,15 @@ const config: typeof baseConfig = {
 			chunkFilename: baseConfig.output.chunkFilename.toString().replace('.js', '.css')
 		}),
 		new GenerateSW({
-			swDest: 'static/service-worker.js',
+			swDest: 'service-worker.js',
+			manifestTransforms: [
+				manifest => ({
+					manifest: manifest.map(m => ({
+						...m,
+						url: m.url.startsWith('/') ? m.url : `/${m.url}`
+					}))
+				})
+			],
 			maximumFileSizeToCacheInBytes: 10 * 1024 * 1024
 		}),
 		...baseConfig.plugins
