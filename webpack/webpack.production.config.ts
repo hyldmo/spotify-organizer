@@ -1,7 +1,7 @@
 import MiniCssExtractPlugin from 'mini-css-extract-plugin'
 import path from 'path'
 import baseConfig from './webpack.config'
-import { GenerateSW, ManifestEntry } from 'workbox-webpack-plugin'
+import { GenerateSW } from 'workbox-webpack-plugin'
 
 const config: typeof baseConfig = {
 	...baseConfig,

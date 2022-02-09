@@ -123,7 +123,7 @@ function* deduplicateTracks(action: Action<typeof Actions.deduplicatePlaylists.t
 			`Are you sure? This will remove ${totalTracks} track(s) from ${result.map(p => p.name).join()}`
 		)
 		if (confirm) {
-			yield* put(Actions.createNotification({ message: 'Removing tracks', progress: true }))
+			yield* put(Actions.createNotification({ id: -1, progress: true, message: 'Removing tracks' }))
 			for (const playlist of result) {
 				for (const tracks of partition(playlist.tracks, 100)) {
 					const body = {
@@ -140,7 +140,7 @@ function* deduplicateTracks(action: Action<typeof Actions.deduplicatePlaylists.t
 				}
 			}
 		} else {
-			yield* put(Actions.clearNotification())
+			yield* put(Actions.clearNotification(-1))
 			return
 		}
 

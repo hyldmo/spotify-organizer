@@ -6,8 +6,15 @@ export default function* () {
 	yield* takeEvery(Actions.createNotification.type, createNotification)
 }
 
+let id = 0
+
 function* createNotification(action: Action<typeof Actions.createNotification.type>) {
+	const notification = {
+		...action.payload,
+		id: id++
+	}
 	if (action.payload.progress) return
-	yield* call(sleep, action.payload.duration || 2000)
-	yield* put(Actions.clearNotification())
+	yield* put(Actions.__notificationCreated(notification))
+	yield* call(sleep, action.payload.duration || 5000)
+	yield* put(Actions.clearNotification(notification.id))
 }

@@ -4,6 +4,8 @@ export type Modal = {
 }
 
 export type Notification = {
+	id: number
 	message: React.ReactNode
-	progress?: true
+	progress?: boolean
+	duration?: number
 }
