@@ -44,7 +44,7 @@ function* watchSongSkips(action: Action<'PLAYBACK_UPDATED'>) {
 		if (percent < 80) {
 			yield put(Actions.songSkipped(song, context))
 		}
-		if (percent < 95) {
+		if (percent < 90) {
 			yield* put(
 				Actions.createNotification({
 					message: `${song.name} skipped ${percent.toFixed(0)}% in`,

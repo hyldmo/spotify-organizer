@@ -6,7 +6,7 @@ interface Props extends React.HTMLProps<HTMLInputElement> {
 }
 
 const Input: React.FC<Props> = ({ label, ...props }) => (
-	<label className={`input ${props.type}`}>
+	<label className={`input ${props.type} inline-flex items-center`}>
 		<input {...props} />
 		<span className="label">{label}</span>
 	</label>
