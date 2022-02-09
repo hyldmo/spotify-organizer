@@ -3,6 +3,7 @@ export interface Playlist extends SpotifyApi.PlaylistObjectSimplified {
 	description: SpotifyApi.PlaylistObjectFull['description']
 	tracks: SpotifyApi.PlaylistObjectSimplified['tracks'] & {
 		loaded: number
+		lastFetched: Date | null
 		items?: Track[]
 	}
 }

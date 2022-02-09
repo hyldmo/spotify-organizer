@@ -3,4 +3,4 @@
 
 yarn lint
 yarn stylelint
-yarn format
+yarn format:check

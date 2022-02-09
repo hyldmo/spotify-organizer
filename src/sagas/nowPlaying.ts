@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 import { Action, Actions } from '../actions'
 import { call, cancelled, fork, put, select } from 'typed-redux-saga'
 import { sleep } from 'utils'
@@ -14,7 +15,7 @@ function* watchPlayback() {
 	let timeout = initialTimeout
 	while (true) {
 		try {
-			const body: SpotifyApi.CurrentPlaybackResponse = yield* call(spotifyFetch, 'me/player')
+			const body: SpotifyApi.CurrentPlaybackResponse | null = yield* call(spotifyFetch, 'me/player')
 			if (body) {
 				const action = Actions.updatePlayback(body as Playback)
 				yield* call(watchSongSkips, action)
@@ -34,13 +35,11 @@ function* watchPlayback() {
 }
 
 function* watchSongSkips(action: Action<'PLAYBACK_UPDATED'>) {
-	const Old = yield* select((s: State) => s.playback.nowPlaying)
-	const New = action.payload
+	const current = yield* select((s: State) => s.playback.nowPlaying)
 
-	if (Old && New.item.id !== Old.item.id) {
-		const percent = ((Old.progress_ms || 0) / Old.item.duration_ms) * 100
-
-		const { item: song, context } = Old
+	if (current && action.payload.item.id !== current.item.id) {
+		const { item: song, context, progress_ms } = current
+		const percent = ((progress_ms || 0) / song.duration_ms) * 100
 
 		if (percent < 80) {
 			yield put(Actions.songSkipped(song, context))

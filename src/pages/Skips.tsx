@@ -1,17 +1,17 @@
 import cn from 'classnames'
 import React, { useState } from 'react'
 import { useSelector } from 'react-redux'
-import { State } from 'types'
+import { SkipEntry, State } from 'types'
 import { ArtistLinks, UriLink } from 'components/UriLink'
 import memoizee from 'memoizee'
 
 const findPlaylist = memoizee((uri: string, playlists: State['playlists']) => playlists.find(pl => pl.uri == uri))
 
 export const Skips: React.FC = () => {
-	const skips = useSelector((s: State) => s.playback.skips).getAll()
+	const skips = useSelector((s: State) => Object.values(s.skips as Record<string, SkipEntry>))
 	const playlists = useSelector((s: State) => s.playlists)
 	const user = useSelector((s: State) => s.user)
-	const [nonPlaylists, countNonPlaylists] = useState(true)
+	const [nonPlaylists, countNonPlaylists] = useState(false)
 	const [allPlaylists, showAllPlaylists] = useState(false)
 
 	return (
@@ -47,8 +47,8 @@ export const Skips: React.FC = () => {
 			</header>
 			<ul>
 				{skips
-					.sort((a, b) => b[1].totalSkips - a[1].totalSkips)
-					.map(([key, { song, ...value }], i) => {
+					.sort((a, b) => b.totalSkips - a.totalSkips)
+					.map(({ song, ...value }, i) => {
 						const playlistsSkips = value.playlists
 							?.slice()
 							.filter(p => (nonPlaylists ? findPlaylist(p.uri, playlists) : true))
@@ -67,7 +67,7 @@ export const Skips: React.FC = () => {
 						if (filteredSkips == 0) return null
 						return (
 							<li
-								key={key}
+								key={song.id}
 								className={cn('py-2', { 'border-b border-b-gray-300': i < skips.length - 1 })}
 							>
 								<div className="grid grid-rows-2 grid-cols-[auto,3fr,2fr,1fr] items-center space-x-2 border-b border-b-gray-600 p-2">

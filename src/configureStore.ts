@@ -4,6 +4,8 @@ import createSagaMiddleware from 'redux-saga'
 import * as rootReducers from './reducers'
 import SagaManager from './sagas'
 import { createReduxHistoryContext } from 'redux-first-history'
+import { persistReducer, persistStore } from 'redux-persist'
+import localforage from 'localforage'
 
 const __DEV__ = process.env.NODE_ENV === 'development'
 const sagaMiddleware = createSagaMiddleware()
@@ -17,10 +19,17 @@ const middlewares = [sagaMiddleware, routerMiddleware]
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose
 
 const reducers = (r: typeof rootReducers) =>
-	combineReducers({
-		router: routerReducer,
-		...r
-	})
+	persistReducer(
+		{
+			key: process.env.PACKAGE_NAME,
+			storage: localforage,
+			whitelist: ['skips', 'playlists', 'user']
+		},
+		combineReducers({
+			router: routerReducer,
+			...r
+		})
+	)
 
 export const initialState = {}
 export const store = createStore(
@@ -28,6 +37,8 @@ export const store = createStore(
 	initialState,
 	composeEnhancers(applyMiddleware(...middlewares))
 )
+export const presistedStore = persistStore(store)
+
 export const history = createReduxHistory(store)
 
 export type State = ReturnType<ReturnType<typeof reducers>>

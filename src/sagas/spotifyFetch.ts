@@ -5,34 +5,47 @@ import { Actions } from '../actions'
 import { State } from '../types'
 import { sleep } from '../utils'
 
-// TODO: Remove any
-export function* spotifyFetch(url: string, options: RequestInit = {}, apiToken?: string): SagaIterator {
-	const token = apiToken !== undefined ? apiToken : yield* select((state: State) => state.user && state.user.token)
+// eslint-disable-next-line @typescript-eslint/no-unnecessary-type-constraint
+export function* spotifyFetch<T extends unknown>(
+	url: string,
+	options: RequestInit = {},
+	apiToken?: string
+): SagaIterator<any | null> {
+	const userToken = yield* select((state: State) => state.user && state.user.token)
+	const token = apiToken || userToken || localStorage.getItem('token')
+
 	if (!token) {
-		console.info(`${spotifyFetch.name}:Token not found`)
-		return
+		throw new Error(`${spotifyFetch.name}:Token not found`)
 	}
 
 	const headers = new Headers({ Authorization: `Bearer ${token}` })
 	const response: Response = yield* call(fetch, `https://api.spotify.com/v1/${url}`, { headers, ...options })
-	const body = yield* call(response.json.bind(response))
+	let body = null
+	if (response.status !== 204) {
+		body = yield* call(response.json.bind(response))
+	}
 
 	switch (response.status) {
 		case 200:
 		case 304:
-			return body
+			return body as T
+
+		case 204:
+			return null
 
 		case 401:
 			yield* put(Actions.logout())
-			window.open(loginLink(), '_self')
+			setTimeout(() => window.open(loginLink(), '_self'), 5000)
 			break
 		case 429: {
 			const waitTime = Number.parseInt(response.headers.get('Retry-After') || '10', 10)
 			yield* put(Actions.startTimer(waitTime))
 			yield* call(sleep, waitTime * 1000)
-			return yield* call(spotifyFetch, url, options, token)
+			const next = yield* call(spotifyFetch, url, options, token)
+			return next as T | null
 		}
 		default:
 			throw new Error(body.error.message)
 	}
+	return null
 }

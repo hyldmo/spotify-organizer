@@ -18,6 +18,7 @@ function playlist(state: Playlist, action: MetaAction): Playlist {
 				...state,
 				tracks: {
 					...state.tracks,
+					lastFetched: new Date(),
 					items: action.payload,
 					loaded: action.payload.length
 				}
@@ -32,7 +33,21 @@ function playlist(state: Playlist, action: MetaAction): Playlist {
 export default function playlists(state: Playlist[] = [], action: Action): Playlist[] {
 	switch (action.type) {
 		case 'FETCH_PLAYLISTS_SUCCESS':
-			return action.payload.map(p => ({ ...p, tracks: { ...p.tracks, loaded: 0 }, selected: false }))
+			return action.payload.map(p => {
+				const existing = state.find(s => s.id == p.id) || {
+					tracks: {
+						lastFetched: null,
+						items: [],
+						loaded: 0
+					}
+				}
+				return {
+					...existing,
+					...p,
+					tracks: { ...existing.tracks, ...p.tracks },
+					selected: false
+				}
+			})
 		case 'PLAYLISTS_SELECT':
 		case 'FETCH_TRACKS_SUCCESS':
 		case 'FETCH_TRACKS_PROGRESS':

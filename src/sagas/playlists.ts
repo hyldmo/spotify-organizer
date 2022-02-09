@@ -1,5 +1,5 @@
 /* eslint-disable camelcase */
-import { all, call, put, select, takeLatest } from 'typed-redux-saga'
+import { all, call, put, select, takeLatest, takeLeading } from 'typed-redux-saga'
 import { Action, Actions } from '../actions'
 import { Playlist, State, Track } from 'types'
 import { deduplicate, partition, pullTracks } from '../utils'
@@ -7,21 +7,32 @@ import { sleep } from '../utils/sleep'
 import { spotifyFetch } from './spotifyFetch'
 
 export default function* () {
-	yield* takeLatest<Action<typeof Actions.fetchPlaylists.type>>(Actions.fetchPlaylists.type, getPlaylists)
-	yield* takeLatest<Action<typeof Actions.fetchTracks.type>>(Actions.fetchTracks.type, getTracks)
-	yield* takeLatest<Action<typeof Actions.deduplicatePlaylists.type>>(
-		Actions.deduplicatePlaylists.type,
-		deduplicateTracks
-	)
+	yield* takeLatest(Actions.fetchPlaylists.type, getPlaylists)
+	yield* takeLatest(Actions.fetchTracks.type, getTracks)
+	yield* takeLatest(Actions.deduplicatePlaylists.type, deduplicateTracks)
+	yield* takeLeading(Actions.playlistsFetched.type, getAllTracks)
+}
+
+function* getAllTracks(action: Action<'FETCH_PLAYLISTS_SUCCESS'>) {
+	for (const playlist of action.payload) {
+		const existingDate = yield* select(
+			(s: State) => s.playlists.find(pl => pl.id === playlist.id)?.tracks.lastFetched
+		)
+		if (existingDate) continue
+
+		yield* call(getTracks, Actions.fetchTracks({ id: playlist.id, owner: playlist.owner.id }))
+		yield* call(sleep, 5000)
+	}
 }
 
 function* getPlaylists() {
 	let playlists: SpotifyApi.ListOfCurrentUsersPlaylistsResponse['items'] = []
-	let response: SpotifyApi.ListOfCurrentUsersPlaylistsResponse
+	let response: SpotifyApi.ListOfCurrentUsersPlaylistsResponse | null
 	const limit = 50
 	let offset = 0
 	do {
 		response = yield* call(spotifyFetch, `me/playlists?offset=${offset}&limit=${limit}`)
+		if (response === null) break
 		playlists = playlists.concat(response.items)
 		offset += limit
 	} while (response.next !== null)
@@ -37,6 +48,7 @@ function* getTracks(action: Action<typeof Actions.fetchTracks.type>) {
 	let index = 0
 	do {
 		response = yield* call(spotifyFetch, `users/${owner}/playlists/${id}/tracks?offset=${offset}&limit=${limit}`)
+		if (response === null) break
 		const mappedTracks = response.items.map<Track>(t => ({
 			id: t.track.id,
 			name: t.track.name,
