@@ -5,6 +5,7 @@ import { Playlist, State, Track } from 'types'
 import { deduplicate, partition, pullTracks } from '../utils'
 import { sleep } from '../utils/sleep'
 import { spotifyFetch } from './spotifyFetch'
+import { __DEV__ } from '../constants'
 
 export default function* () {
 	yield* takeLatest(Actions.fetchPlaylists.type, getPlaylists)
@@ -14,6 +15,7 @@ export default function* () {
 }
 
 function* getAllTracks(action: Action<'FETCH_PLAYLISTS_SUCCESS'>) {
+	if (__DEV__) return // Don't cache tracks in dev mode
 	for (const playlist of action.payload) {
 		const existing = yield* select((s: State) => s.playlists.find(pl => pl.id === playlist.id))
 		if (existing) {

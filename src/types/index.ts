@@ -23,3 +23,5 @@ export enum OperationMode {
 	Duplicates,
 	PullTracks
 }
+
+export type Nullable<T> = T | null | undefined

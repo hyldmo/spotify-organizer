@@ -1,17 +1,19 @@
 import cn from 'classnames'
 import React, { useState } from 'react'
 import { useSelector } from 'react-redux'
-import { SkipEntry, State } from 'types'
+import { Nullable, SkipEntry, State, User } from 'types'
 import { ArtistLinks, UriLink } from 'components/UriLink'
 import memoizee from 'memoizee'
 
-const findPlaylist = memoizee((uri: string, playlists: State['playlists']) => playlists.find(pl => pl.uri == uri))
+const findPlaylist = memoizee((uri: string, playlists: State['playlists'], owner?: Nullable<User>) =>
+	playlists.find(pl => pl.uri == uri && pl.owner.id == owner?.id)
+)
 
 export const Skips: React.FC = () => {
 	const skips = useSelector((s: State) => Object.values(s.skips as Record<string, SkipEntry>))
 	const playlists = useSelector((s: State) => s.playlists)
 	const user = useSelector((s: State) => s.user)
-	const [nonPlaylists, countNonPlaylists] = useState(false)
+	const [nonPlaylists, countNonPlaylists] = useState(true)
 	const [allPlaylists, showAllPlaylists] = useState(false)
 
 	return (
@@ -26,7 +28,7 @@ export const Skips: React.FC = () => {
 								checked={nonPlaylists}
 								onChange={e => countNonPlaylists(e.target.checked)}
 							/>
-							Hide skips in non-playlists
+							Hide skips that are not from your playlists
 						</label>
 					</li>
 					<li>
@@ -51,7 +53,7 @@ export const Skips: React.FC = () => {
 					.map(({ song, ...value }, i) => {
 						const playlistsSkips = value.playlists
 							?.slice()
-							.filter(p => (nonPlaylists ? findPlaylist(p.uri, playlists) : true))
+							.filter(p => (nonPlaylists ? findPlaylist(p.uri, playlists, user) : true))
 
 						if (allPlaylists)
 							playlistsSkips.push(
