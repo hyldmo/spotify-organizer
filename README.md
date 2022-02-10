@@ -6,4 +6,3 @@
 Clean up and organize your Spotify playlists
 
 Live version at https://spotify-organiser.web.app/
-

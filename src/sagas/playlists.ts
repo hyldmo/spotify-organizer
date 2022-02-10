@@ -15,13 +15,17 @@ export default function* () {
 
 function* getAllTracks(action: Action<'FETCH_PLAYLISTS_SUCCESS'>) {
 	for (const playlist of action.payload) {
-		const existingDate = yield* select(
-			(s: State) => s.playlists.find(pl => pl.id === playlist.id)?.tracks.lastFetched
-		)
-		if (existingDate) continue
+		const existing = yield* select((s: State) => s.playlists.find(pl => pl.id === playlist.id))
+		if (existing) {
+			if (existing.snapshot_id === playlist.snapshot_id) {
+				if (existing.tracks.lastFetched) continue
+				console.info(`Playlist '${playlist.name}' has not been cached, loading tracks`)
+			} else {
+				console.info(`Playlist '${playlist.name}' has been updated, fetching new tracks`)
+			}
+		}
 
-		yield* call(getTracks, Actions.fetchTracks({ id: playlist.id, owner: playlist.owner.id }))
-		yield* call(sleep, 5000)
+		yield* call(getTracks, Actions.fetchTracks({ id: playlist.id, owner: playlist.owner.id }), 3000)
 	}
 }
 
@@ -39,7 +43,7 @@ function* getPlaylists() {
 	yield* put(Actions.playlistsFetched(playlists))
 }
 
-function* getTracks(action: Action<typeof Actions.fetchTracks.type>) {
+function* getTracks(action: Action<typeof Actions.fetchTracks.type>, delay?: number) {
 	const { owner, id } = action.payload
 	let tracks: Track[] = []
 	let response: SpotifyApi.PlaylistTrackResponse
@@ -74,6 +78,7 @@ function* getTracks(action: Action<typeof Actions.fetchTracks.type>) {
 		tracks = tracks.concat(mappedTracks)
 		offset += limit
 		yield* put(Actions.fetchTracksProgress(tracks.length, id))
+		if (delay) yield* call(sleep, delay)
 	} while (response.next !== null)
 
 	function* waitForPlaylists(): IterableIterator<any> {

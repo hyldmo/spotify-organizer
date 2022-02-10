@@ -48,7 +48,7 @@ const config: Configuration = {
 		}),
 		new DefinePlugin({
 			'process.env.PACKAGE_NAME': JSON.stringify(packageJSON.name),
-			// process.env.PACKAGE_VERSION is provided by CI, set default for local development
+			// `PACKAGE_VERSION` is provided by CI, set default for local development
 			'process.env.PACKAGE_VERSION': JSON.stringify(process.env.PACKAGE_VERSION || '-local'),
 			'process.env.PACKAGE_REPOSITORY': JSON.stringify(packageJSON.repository)
 		}),

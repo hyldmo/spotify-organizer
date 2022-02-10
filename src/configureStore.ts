@@ -16,7 +16,7 @@ const { createReduxHistory, routerMiddleware, routerReducer } = createReduxHisto
 
 const middlewares = [sagaMiddleware, routerMiddleware]
 
-const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose
+const composeEnhancers = __DEV__ ? window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose : compose
 
 const reducers = (r: typeof rootReducers) =>
 	persistReducer(
