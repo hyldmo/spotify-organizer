@@ -15,7 +15,8 @@ const config: Configuration = {
 	output: {
 		assetModuleFilename: 'static/[name][ext]',
 		chunkFilename: 'static/[name].chunk.js',
-		filename: 'static/[name].[contenthash].js'
+		filename: 'static/[name].[contenthash].js',
+		publicPath: '/'
 	},
 
 	resolve: {
