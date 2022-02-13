@@ -1,9 +1,9 @@
 /* eslint-disable camelcase */
 import { Action, Actions } from '../actions'
 import { call, cancelled, fork, put, select } from 'typed-redux-saga'
-import { sleep } from 'utils'
+import { firebaseGet, firebaseUpdate, sleep } from 'utils'
 import { spotifyFetch } from './spotifyFetch'
-import { Playback, State } from 'types'
+import { Playback, SongEntry, State, User } from 'types'
 
 export default function* () {
 	yield* fork(watchPlayback)
@@ -18,7 +18,7 @@ function* watchPlayback() {
 			const body: SpotifyApi.CurrentPlaybackResponse | null = yield* call(spotifyFetch, 'me/player')
 			if (body) {
 				const action = Actions.updatePlayback(body as Playback)
-				yield* call(watchSongSkips, action)
+				yield* call(onPlaybackUpdated, action)
 				yield* put(action)
 				timeout = initialTimeout
 			}
@@ -34,15 +34,33 @@ function* watchPlayback() {
 	}
 }
 
-function* watchSongSkips(action: Action<'PLAYBACK_UPDATED'>) {
+function* onPlaybackUpdated(action: Action<'PLAYBACK_UPDATED'>) {
 	const current = yield* select((s: State) => s.playback.nowPlaying)
+	const user = yield* select((s: State) => s.user as User) // User will not be null when playback is active
 
 	if (current && action.payload.item.id !== current.item.id) {
 		const { item: song, context, progress_ms } = current
 		const percent = ((progress_ms || 0) / song.duration_ms) * 100
 
+		const entry = (yield* call(
+			firebaseGet,
+			`users/${user.id}/songs/${song.id}/${context?.uri || 'unknown'}/`
+		)) as SongEntry
+
+		yield* call(
+			firebaseUpdate,
+			`users/${user.id}/songs/${song.id}/${context?.uri || 'unknown'}/plays/`,
+			(entry.plays || 0) + 1
+		)
+
 		if (percent < 80) {
 			yield put(Actions.songSkipped(song, context))
+
+			yield* call(
+				firebaseUpdate,
+				`users/${user.id}/songs/${song.id}/${context?.uri || 'unknown'}/skips/`,
+				(entry.skips || 0) + 1
+			)
 		}
 		if (percent < 90) {
 			yield* put(

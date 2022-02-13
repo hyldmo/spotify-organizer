@@ -1,5 +1,6 @@
 export * from './deepAccess'
 export * from './filters'
+export * from './firebase'
 export * from './helpers'
 export * from './modal'
 export * from './scopes'

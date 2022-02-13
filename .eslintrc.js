@@ -88,7 +88,8 @@ module.exports = {
 			{
 				paths: [
 					'lodash', // use `import { x } from 'lodash/fp'` instead
-					'redux-saga/effects' // use typed-redux-saga
+					'redux-saga/effects', // use typed-redux-saga
+					'firebase/database' // use utils/firebase
 				]
 			}
 		],

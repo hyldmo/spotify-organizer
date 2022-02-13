@@ -45,6 +45,7 @@
 		"@fortawesome/react-fontawesome": "^0.1.0-10",
 		"classnames": "^2.2.5",
 		"cross-env": "^5.2.0",
+		"firebase": "^9.6.6",
 		"history": "5.2.0",
 		"localforage": "^1.10.0",
 		"lodash": "^4.17.11",
