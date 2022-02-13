@@ -1,11 +1,13 @@
 export type SkipEntry = {
 	song: SpotifyApi.TrackObjectFull
-	playlists: Array<{
-		skips: number
-		name: string | null
-		uri: string
-	}>
+	playlists: SkipEntryPlaylist[]
 	totalSkips: number
+}
+
+export type SkipEntryPlaylist = {
+	skips: number
+	name: string | null
+	uri: string
 }
 
 export type Playback = SpotifyApi.CurrentPlaybackResponse &

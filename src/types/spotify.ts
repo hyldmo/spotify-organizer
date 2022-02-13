@@ -8,10 +8,10 @@ export interface Playlist extends SpotifyApi.PlaylistObjectSimplified {
 	}
 }
 
-export enum Sort {
-	Asc,
-	Desc,
-	None
+export type User = Omit<SpotifyApi.UserObjectPublic, 'display_name'> & {
+	name: string | null
+	image: string | null
+	token: string
 }
 
 export interface TrackMeta {

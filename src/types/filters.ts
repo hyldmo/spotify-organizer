@@ -1,4 +1,5 @@
-import { Playlist, Sort } from './spotify'
+import { Playlist } from './spotify'
+import { Sort } from './ui'
 
 type PlaylistKey = keyof Playlist | string
 export type Filters = {
