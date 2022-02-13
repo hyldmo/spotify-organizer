@@ -21,12 +21,10 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig)
 const db = getDatabase(app)
 
-export async function firebaseGet<T extends FirebaseUrls>(url: T): Promise<FirebaseGet<T>> {
+export async function firebaseGet<T extends FirebaseUrls>(url: T): Promise<FirebaseGet<T> | null> {
 	const key = url.endsWith('/') ? url.slice(0, -1) : url
 	const res = await get(ref(db, key))
-	const data = res.toJSON()
-	if (data) return data as FirebaseGet<T>
-	throw Error()
+	return res.val()
 }
 
 export async function firebaseUpdate<T extends FirebaseUrls>(url: T, value: unknown) {

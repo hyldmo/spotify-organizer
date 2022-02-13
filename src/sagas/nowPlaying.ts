@@ -45,12 +45,12 @@ function* onPlaybackUpdated(action: Action<'PLAYBACK_UPDATED'>) {
 		const entry = (yield* call(
 			firebaseGet,
 			`users/${user.id}/songs/${song.id}/${context?.uri || 'unknown'}/`
-		)) as SongEntry
+		)) as SongEntry | null
 
 		yield* call(
 			firebaseUpdate,
 			`users/${user.id}/songs/${song.id}/${context?.uri || 'unknown'}/plays/`,
-			(entry.plays || 0) + 1
+			(entry?.plays || 0) + 1
 		)
 
 		if (percent < 80) {
@@ -59,7 +59,7 @@ function* onPlaybackUpdated(action: Action<'PLAYBACK_UPDATED'>) {
 			yield* call(
 				firebaseUpdate,
 				`users/${user.id}/songs/${song.id}/${context?.uri || 'unknown'}/skips/`,
-				(entry.skips || 0) + 1
+				(entry?.skips || 0) + 1
 			)
 		}
 		if (percent < 90) {
