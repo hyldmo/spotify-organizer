@@ -29,6 +29,7 @@ function* getAllTracks(action: Action<'FETCH_PLAYLISTS_SUCCESS'>) {
 
 		yield* call(getTracks, Actions.fetchTracks({ id: playlist.id, owner: playlist.owner.id }), 3000)
 	}
+	console.info('All playlist tracks up to date')
 }
 
 function* getPlaylists() {

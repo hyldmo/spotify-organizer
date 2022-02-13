@@ -1,5 +1,6 @@
 /* eslint-disable max-len */
 import { Actions } from 'actions'
+import cn from 'classnames'
 import { startCase } from 'lodash/fp'
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
@@ -115,8 +116,28 @@ export const Footer: React.FC = () => {
 					</div>
 				</div>
 			)}
-			<div className="bg-green-600 px-2 grid grid-cols-[auto,1fr,auto] ">
-				<span className="col-start-1 space-x-1">
+			<div
+				className={cn(
+					'bg-green-600 p-2 gap-2 grid items-center',
+					'grid-flow-row sm:grid-flow-col sm:grid-cols-[auto,1fr,auto]'
+				)}
+			>
+				{playback && (
+					<span className="col-span-2 sm:col-span-1 sm:col-start-2 text-center">
+						<span>Playing on {playback.device.name} </span>
+						{isPlaylist(context) && (
+							<span className="text-green-200 whitespace-nowrap">
+								(Playlist:{' '}
+								<a className="text-green-200 hover:text-white" href={context.uri}>
+									{currentPlaylist?.name || 'Unknown'}
+								</a>
+								)
+							</span>
+						)}
+					</span>
+				)}
+
+				<span className="sm:col-start-1 space-x-1">
 					<a href={process.env.PACKAGE_REPOSITORY} target="_blank" rel="noreferrer">
 						{startCase(process.env.PACKAGE_NAME)}
 					</a>
@@ -129,22 +150,7 @@ export const Footer: React.FC = () => {
 					</a>
 				</span>
 
-				{playback && (
-					<span className="col-start-2 text-center">
-						<span>Playing on {playback.device.name} </span>
-						{isPlaylist(context) && (
-							<span className="text-green-200">
-								(Playlist:{' '}
-								<a className="text-green-200 hover:text-white" href={context.uri}>
-									{currentPlaylist?.name || 'Unknown'}
-								</a>
-								)
-							</span>
-						)}
-					</span>
-				)}
-
-				<span className="col-start-3 text-right">
+				<span className="text-right">
 					<a href={`${process.env.PACKAGE_REPOSITORY}/issues/new`} target="_blank" rel="noreferrer">
 						Send Feedback
 					</a>
