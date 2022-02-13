@@ -8,7 +8,6 @@ import { animated, config, useTransition } from 'react-spring'
 
 const Notifications: React.FC = () => {
 	const notifications = useSelector((s: State) => s.notifications)
-	console.log(notifications)
 
 	const transitions = useTransition(notifications, {
 		from: { opacity: 1 },
