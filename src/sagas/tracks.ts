@@ -1,4 +1,3 @@
-/* eslint-disable camelcase */
 import { call, put, select, takeLatest, takeLeading } from 'typed-redux-saga'
 import { Action, Actions } from '../actions'
 import { Playlist, State, Track } from 'types'

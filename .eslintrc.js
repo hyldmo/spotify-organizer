@@ -45,7 +45,7 @@ module.exports = {
 		'@typescript-eslint/unified-signatures': enabled,
 		'arrow-body-style': enabled,
 		'arrow-parens': ['off', 'as-needed'],
-		'camelcase': enabled,
+		'camelcase': 'off',
 		'constructor-super': enabled,
 		'dot-notation': enabled,
 		'guard-for-in': enabled,

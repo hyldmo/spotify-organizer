@@ -1,4 +1,3 @@
-/* eslint-disable camelcase */
 import { Album, Artist, SpotifyObjectType, Track, URI } from 'types'
 
 export function isPlaylist(obj: SpotifyApi.ContextObject | null | undefined): obj is SpotifyApi.ContextObject {

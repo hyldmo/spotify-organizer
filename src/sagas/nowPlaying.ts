@@ -1,4 +1,3 @@
-/* eslint-disable camelcase */
 import { Action, Actions } from '../actions'
 import { call, cancelled, fork, put, select } from 'typed-redux-saga'
 import { firebaseGet, firebaseUpdate, sleep } from 'utils'

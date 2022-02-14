@@ -5,20 +5,22 @@ export type SkipEntry = {
 	playlists: SkipEntryPlaylist[]
 }
 
-export type SkipEntryPlaylist = Partial<Playlist> & {
-	plays: number
-	skips: number
-	uri: URI | 'unknown'
+export type SkipStats = {
+	plays?: number
+	skips?: number
 }
+
+export type SkipEntryPlaylist = Partial<Playlist> &
+	Required<SkipStats> & {
+		uri: URI | 'unknown'
+	}
 
 export type PlaylistSkipEntry = Partial<Playlist> & {
 	songs: PlaylistSkipSongEntry[]
 	uri: URI | 'unknown'
 }
-export type PlaylistSkipSongEntry = {
+export type PlaylistSkipSongEntry = SkipStats & {
 	id: string
-	plays?: number
-	skips?: number
 }
 
 export type Playback = SpotifyApi.CurrentPlaybackResponse &

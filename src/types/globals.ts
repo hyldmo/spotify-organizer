@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-namespace */
-/* eslint-disable camelcase */
 import { compose } from 'redux'
 import { State } from '../types'
 

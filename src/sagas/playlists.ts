@@ -1,4 +1,3 @@
-/* eslint-disable camelcase */
 import { all, call, put, select, takeEvery, takeLatest } from 'typed-redux-saga'
 import { Action, Actions } from '../actions'
 import { Playlist, State, Track } from 'types'
@@ -33,11 +32,16 @@ function* deleteTracks(action: Action<'PLAYLIST_DELETE_TRACKS'>) {
 		tracks: payload.map(uri => ({ uri })),
 		snapshot_id: typeof meta !== 'string' ? meta.snapshot_id : undefined
 	}
-	yield* call(spotifyFetch, `playlists/${id}/tracks`, {
-		method: 'DELETE',
-		body: JSON.stringify(body)
-	})
-	yield* put(Actions.createNotification({ message: `${action.payload.length} tracks removed` }))
+	try {
+		yield* call(spotifyFetch, `playlists/${id}/tracks`, {
+			method: 'DELETE',
+			body: JSON.stringify(body)
+		})
+		yield* put(Actions.fetchTracks(id))
+		yield* put(Actions.createNotification({ message: `${action.payload.length} tracks removed` }))
+	} catch (e) {
+		yield* put(Actions.createNotification({ message: (e as Error).message }))
+	}
 }
 
 function* deduplicatePlaylists(action: Action<'DEDUPLICATE_PLAYLISTS'>) {

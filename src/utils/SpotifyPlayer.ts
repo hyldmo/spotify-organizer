@@ -1,4 +1,3 @@
-/* eslint-disable camelcase */
 export let player: Spotify.Player | null = null
 
 export async function initializePlayer(): Promise<Spotify.Player> {
