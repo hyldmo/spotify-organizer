@@ -6,6 +6,7 @@ export type Modal = {
 export type Notification = {
 	id: number
 	message: React.ReactNode
+	type: 'error' | 'warning' | 'success' | 'info'
 	progress?: boolean
-	duration?: number
+	duration: number
 }

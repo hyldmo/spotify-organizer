@@ -27,6 +27,9 @@ function* getUserDetails(action: Action<typeof Actions.tokenAquired.type>) {
 		if (redirect) yield* put(replace({ pathname: redirect }))
 	} catch (e) {
 		console.error(`${getUserDetails.name}:`, e)
+		yield put(
+			Actions.createNotification({ message: `${getUserDetails.name}: ${(e as Error).message}`, type: 'warning' })
+		)
 	}
 }
 

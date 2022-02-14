@@ -6,3 +6,7 @@ export interface Tuple<T1, T2> extends Array<any> {
 }
 
 export type Nullable<T> = T | null | undefined
+
+export type Optional<T, P extends keyof T> = Omit<T, P> & {
+	[K in P]?: T[K]
+}

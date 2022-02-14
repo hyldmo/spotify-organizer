@@ -40,7 +40,7 @@ function* deleteTracks(action: Action<'PLAYLIST_DELETE_TRACKS'>) {
 		yield* put(Actions.fetchTracks(id))
 		yield* put(Actions.createNotification({ message: `${action.payload.length} tracks removed` }))
 	} catch (e) {
-		yield* put(Actions.createNotification({ message: (e as Error).message }))
+		yield* put(Actions.createNotification({ message: (e as Error).message, type: 'error' }))
 	}
 }
 
@@ -49,7 +49,7 @@ function* deduplicatePlaylists(action: Action<'DEDUPLICATE_PLAYLISTS'>) {
 		payload: { source, target },
 		meta: compareMode
 	} = action
-	yield* put(Actions.createNotification({ message: 'Loading tracks', progress: true }))
+	yield* put(Actions.createNotification({ message: 'Loading tracks', type: 'info', progress: true }))
 	yield* all((target ? source.concat(target) : source).map(pl => call(getTracks, Actions.fetchTracks(pl.id))))
 	const playlists: Playlist[] = yield* select((state: State) =>
 		state.playlists.filter(pl => source.map(p => p.id).includes(pl.id))
@@ -76,7 +76,7 @@ function* deduplicatePlaylists(action: Action<'DEDUPLICATE_PLAYLISTS'>) {
 			`Are you sure? This will remove ${totalTracks} track(s) from ${result.map(p => p.name).join()}`
 		)
 		if (confirm) {
-			yield* put(Actions.createNotification({ id: -1, progress: true, message: 'Removing tracks' }))
+			yield* put(Actions.createNotification({ id: -1, progress: true, type: 'info', message: 'Removing tracks' }))
 			for (const playlist of result) {
 				for (const tracks of partition(playlist.tracks, 100)) {
 					const body = {
@@ -100,6 +100,6 @@ function* deduplicatePlaylists(action: Action<'DEDUPLICATE_PLAYLISTS'>) {
 		yield* put(Actions.createNotification({ message: 'Success!' }))
 		yield* put(Actions.fetchPlaylists())
 	} catch (err) {
-		yield* put(Actions.createNotification({ message: (err as Error).message }))
+		yield* put(Actions.createNotification({ message: (err as Error).message, type: 'error' }))
 	}
 }

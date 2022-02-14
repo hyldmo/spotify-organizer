@@ -59,7 +59,8 @@ function* onPlaybackUpdated(action: Action<'PLAYBACK_UPDATED'>) {
 			yield* put(
 				Actions.createNotification({
 					message: `${song.name} skipped ${percent.toFixed(0)}% in`,
-					duration: 10000
+					duration: 10000,
+					type: 'info'
 				})
 			)
 		}
