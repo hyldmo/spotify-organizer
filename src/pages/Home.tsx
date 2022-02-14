@@ -102,10 +102,10 @@ const PlaylistsManager: React.FC = () => {
 						</Button>
 					)}
 					<span className="filler" />
-					<ul className="stats right-menu flex gap-2 max-w-xs">
+					<ul className="stats right-menu flex gap-3 max-w-sm">
 						<li>{playlists.length} Playlists</li>
 						<li>{playlists.reduce((a, b) => a + b.tracks.total, 0)} Tracks</li>
-						{totalDuration && <li>{new Duration(totalDuration).toString()}</li>}
+						{totalDuration && <li>{new Duration(totalDuration).toString('hours')}</li>}
 					</ul>
 				</div>
 				{mode !== OperationMode.None && (

@@ -1,4 +1,4 @@
-import { Album, Artist, SpotifyObjectType, Track, URI } from 'types'
+import { Album, Artist, Nullable, Playlist, SpotifyObjectType, Track, URI, UriObject } from 'types'
 
 export function isPlaylist(obj: SpotifyApi.ContextObject | null | undefined): obj is SpotifyApi.ContextObject {
 	return obj?.type === 'playlist'
@@ -8,6 +8,11 @@ export function getUriType<T extends string>(uri: T): T extends URI<infer R> ? R
 	return uri.split(':')[1] as any
 }
 
+export function isUriType<T extends SpotifyObjectType>(uri: Nullable<UriObject>, test: T): uri is UriObject<T> {
+	if (uri?.uri == undefined) return false
+	return getUriType(uri.uri) === test
+}
+
 export function idToUri<T extends SpotifyObjectType>(id: string, type: T): URI<T> {
 	return `spotify:${type}:${id}`
 }
@@ -15,14 +20,14 @@ export function UriToId<T extends URI>(uri: T): T extends `spotify:${string}:${i
 	return uri.split(':').pop() as any
 }
 
-type Playlist = SpotifyApi.PlaylistTrackObject
+type TrackMeta = SpotifyApi.PlaylistTrackObject
 
-export function toTrack<T extends Playlist | SpotifyApi.TrackObjectFull>(
+export function toTrack<T extends TrackMeta | SpotifyApi.TrackObjectFull>(
 	t: T,
 	position?: number
-): T extends Playlist ? Track : Omit<Track, 'meta'> & { meta?: Track['meta'] } {
-	const isPl = (obj: Playlist | SpotifyApi.TrackObjectFull): obj is Playlist =>
-		(obj as Playlist).added_at !== undefined
+): T extends TrackMeta ? Track : Omit<Track, 'meta'> & { meta?: Track['meta'] } {
+	const isPl = (obj: TrackMeta | SpotifyApi.TrackObjectFull): obj is TrackMeta =>
+		(obj as TrackMeta).added_at !== undefined
 
 	const p = isPl(t) ? t : { track: t as SpotifyApi.TrackObjectFull }
 
@@ -51,4 +56,21 @@ export function toTrack<T extends Playlist | SpotifyApi.TrackObjectFull>(
 			  }
 			: undefined
 	} as Track
+}
+
+export function toPlaylist<T extends SpotifyApi.PlaylistObjectSimplified>(playlist: T, existing?: Playlist): Playlist {
+	const current = existing || {
+		tracks: {
+			lastFetched: null,
+			items: [] as Track[],
+			loaded: 0
+		}
+	}
+	return {
+		...existing,
+		...playlist,
+		uri: playlist.uri as Playlist['uri'],
+		tracks: { ...current.tracks, ...playlist.tracks },
+		selected: false
+	}
 }

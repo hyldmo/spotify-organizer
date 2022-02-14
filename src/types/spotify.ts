@@ -1,3 +1,5 @@
+import { Nullable } from './helpers'
+
 export interface Playlist extends SpotifyApi.PlaylistObjectSimplified {
 	selected: boolean
 	description: SpotifyApi.PlaylistObjectFull['description']
@@ -24,6 +26,12 @@ export interface TrackMeta {
 }
 export type SpotifyObjectType = SpotifyApi.ContextObject['type'] | 'track'
 export type URI<T extends SpotifyObjectType = SpotifyObjectType> = `spotify:${T}:${string}`
+
+export type UriObject<T = string> = {
+	name?: Nullable<string>
+	display_name?: Nullable<string>
+	uri: T extends SpotifyObjectType ? URI<T> : string
+}
 
 export interface Track {
 	id: SpotifyApi.TrackObjectFull['id']

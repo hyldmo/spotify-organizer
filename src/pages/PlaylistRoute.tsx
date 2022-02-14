@@ -8,7 +8,7 @@ import { State } from '../types'
 import { useParams } from 'react-router'
 import { UriLink } from 'components/UriLink'
 
-const TracksRoute: React.FC = () => {
+const PlaylistRoute: React.FC = () => {
 	const dispatch = useDispatch()
 	const params = useParams<{ id: string }>()
 
@@ -44,7 +44,7 @@ const TracksRoute: React.FC = () => {
 				<span className="filler" />
 				<ul className="stats right-menu">
 					<li>{tracks.length} Tracks</li>
-					<li>{new Duration(duration).toString()}</li>
+					<li>{new Duration(duration).toString('minutes')}</li>
 				</ul>
 			</div>
 			<hr />
@@ -53,4 +53,4 @@ const TracksRoute: React.FC = () => {
 	)
 }
 
-export default TracksRoute
+export default PlaylistRoute

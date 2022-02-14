@@ -1,6 +1,8 @@
-import { Tuple } from '../types'
+import { ArrayElement, Tuple } from 'types'
 
 export class Duration {
+	static units = ['days', 'hours', 'minutes', 'seconds'] as const
+
 	public days: number
 	public hours: number
 	public minutes: number
@@ -24,13 +26,13 @@ export class Duration {
 		this.seconds = Math.floor(milliseconds / second)
 	}
 
-	public toString(): string {
-		const values: Array<Tuple<number, string>> = [
-			[this.days, 'day'],
-			[this.hours, 'hour'],
-			[this.minutes, 'minute'],
-			[this.seconds, 'second']
-		]
+	public toString(upTo?: ArrayElement<typeof Duration.units>): string {
+		const values: Array<Tuple<number, string>> = []
+
+		for (const unit of Duration.units) {
+			values.push([this[unit], unit.slice(0, -1)])
+			if (unit === upTo) break
+		}
 
 		return values
 			.filter(value => value[0] !== 0)

@@ -7,36 +7,39 @@ import { ArtistLinks, UriLink } from './UriLink'
 type Props = {
 	tracks: Track[]
 }
-const Tracks: React.FC<Props> = ({ tracks }) =>
-	tracks.length > 0 ? (
+const Tracks: React.FC<Props> = ({ tracks }) => {
+	const contributors = new Set(tracks.map(t => t.meta.added_by.id))
+	return tracks.length > 0 ? (
 		<table className="playlists">
 			<thead className="sticky top-0 bg-black">
 				<tr>
 					<th>Name</th>
 					<th>Artist</th>
 					<th>Album</th>
-					<th>User</th>
+					{contributors.size > 1 && <th>Added by</th>}
 					<th>Added at</th>
 					<th>Duration</th>
 				</tr>
 			</thead>
 			<tbody>
-				{tracks.map((p, index) => (
-					<tr key={p.id + index}>
+				{tracks.map((track, index) => (
+					<tr key={track.id + index}>
 						<td>
-							<UriLink object={p} />
+							<UriLink object={track} />
 						</td>
 						<td>
-							<ArtistLinks artists={p.artists} />
+							<ArtistLinks artists={track.artists} />
 						</td>
 						<td>
-							<UriLink object={p.album} />
+							<UriLink object={track.album} />
 						</td>
-						<td>
-							<UriLink object={p.meta.added_by}>{getDisplayName(p.meta.added_by)}</UriLink>
-						</td>
-						<td>{new Date(p.meta.added_at).toLocaleDateString()}</td>
-						<td>{new Duration(p.duration_ms).toMinutesString()}</td>
+						{contributors.size > 1 && (
+							<td>
+								<UriLink object={track.meta.added_by}>{getDisplayName(track.meta.added_by)}</UriLink>
+							</td>
+						)}
+						<td>{new Date(track.meta.added_at).toLocaleDateString()}</td>
+						<td>{new Duration(track.duration_ms).toMinutesString()}</td>
 					</tr>
 				))}
 			</tbody>
@@ -44,6 +47,7 @@ const Tracks: React.FC<Props> = ({ tracks }) =>
 	) : (
 		<div>No tracks.</div>
 	)
+}
 
 function getDisplayName(addedBy: Track['meta']['added_by']): string {
 	return addedBy === null ? 'Spotify' : addedBy.display_name || addedBy.id

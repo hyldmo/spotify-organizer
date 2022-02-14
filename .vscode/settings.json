@@ -15,6 +15,10 @@
 	],
 	"editor.defaultFormatter": "esbenp.prettier-vscode",
 	"editor.formatOnSave": true,
+	"editor.codeActionsOnSave": {
+		"source.fixAll": true,
+		"source.organizeImports": true
+	},
 	"editor.rulers": [120],
 	"eslint.packageManager": "yarn",
 	"eslint.rules.customizations": [

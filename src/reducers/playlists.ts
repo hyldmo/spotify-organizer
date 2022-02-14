@@ -1,3 +1,4 @@
+import { toPlaylist } from 'utils'
 import { Action, MetaAction } from '../actions'
 import { Playlist } from '../types'
 
@@ -34,20 +35,8 @@ export default function playlists(state: Playlist[] = [], action: Action): Playl
 	switch (action.type) {
 		case 'FETCH_PLAYLISTS_SUCCESS':
 			return action.payload.map(p => {
-				const existing = state.find(s => s.id == p.id) || {
-					tracks: {
-						lastFetched: null,
-						items: [],
-						loaded: 0
-					}
-				}
-				return {
-					...existing,
-					...p,
-					uri: p.uri as Playlist['uri'],
-					tracks: { ...existing.tracks, ...p.tracks },
-					selected: false
-				}
+				const existing = state.find(s => s.id == p.id)
+				return toPlaylist(p, existing)
 			})
 		case 'PLAYLISTS_SELECT':
 		case 'FETCH_TRACKS_SUCCESS':
