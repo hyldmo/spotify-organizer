@@ -1,15 +1,24 @@
-import { Track, URI } from './spotify'
+import { Playlist, Track, URI } from './spotify'
 
 export type SkipEntry = {
-	song: SpotifyApi.TrackObjectFull & { uri: Track['uri'] }
+	song: Partial<Track> & { uri: Track['uri'] }
 	playlists: SkipEntryPlaylist[]
-	totalSkips: number
 }
 
-export type SkipEntryPlaylist = {
+export type SkipEntryPlaylist = Partial<Playlist> & {
+	plays: number
 	skips: number
-	name: string | null
 	uri: URI | 'unknown'
+}
+
+export type PlaylistSkipEntry = Partial<Playlist> & {
+	songs: PlaylistSkipSongEntry[]
+	uri: URI | 'unknown'
+}
+export type PlaylistSkipSongEntry = {
+	id: string
+	plays?: number
+	skips?: number
 }
 
 export type Playback = SpotifyApi.CurrentPlaybackResponse &

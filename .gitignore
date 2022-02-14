@@ -16,3 +16,5 @@ coverage/
 .firebase/
 
 .DS_Store
+
+scripts/*.json

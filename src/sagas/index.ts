@@ -6,9 +6,10 @@ import loginSaga from './login'
 import notificationsSaga from './notifications'
 import nowPlayingSaga from './nowPlaying'
 import playlistsSaga from './playlists'
+import tracksSaga from './tracks'
 import timer from './timer'
 
-const sagas = [loginSaga, nowPlayingSaga, notificationsSaga, playlistsSaga, timer]
+const sagas = [loginSaga, nowPlayingSaga, notificationsSaga, tracksSaga, playlistsSaga, timer]
 
 export const CANCEL_SAGAS_HMR = 'CANCEL_SAGAS_HMR'
 

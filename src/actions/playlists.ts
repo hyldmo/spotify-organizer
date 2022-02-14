@@ -1,7 +1,9 @@
 /* eslint-disable @typescript-eslint/member-delimiter-style */
 import { Playlist, Sort, Track } from '../types'
 import { CompareType } from '../utils'
-import { makeActionCreator } from '../utils/actionCreator'
+import { makeActionCreator, makeMetaActionCreator } from '../utils/actionCreator'
+
+type PlaylistMeta = Playlist['id'] | { id: Playlist['id']; snapshot_id: Playlist['snapshot_id'] }
 
 export default {
 	fetchPlaylists: makeActionCreator()('FETCH_PLAYLISTS'),
@@ -18,5 +20,7 @@ export default {
 	updateFilterText: makeActionCreator<string>()('PLAYLISTS_FILTER_TEXT_CHANGE'),
 	deduplicatePlaylists: makeActionCreator<{ source: Playlist[]; target: Playlist | null }, CompareType>()(
 		'DEDUPLICATE_PLAYLISTS'
-	)
+	),
+
+	deleteTracks: makeActionCreator<Array<Track['uri']>, PlaylistMeta>()('PLAYLIST_DELETE_TRACKS')
 }

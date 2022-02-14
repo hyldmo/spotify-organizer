@@ -9,7 +9,7 @@ type Props = {
 }
 // TODO: Handle user not having image
 export const Header: React.FC<Props> = ({ user }) => (
-	<header className="px-4">
+	<header className="nav px-4">
 		<nav className="grid grid-cols-[auto,1fr,1fr] gap-4 items-center h-full">
 			{process.env.PACKAGE_NAME && (
 				<ul>

@@ -25,18 +25,18 @@ const TracksRoute: React.FC = () => {
 	const duration = tracks.reduce((a, b) => a + b.duration_ms, 0)
 	return (
 		<div className="manager tracks">
-			<div className="header row">
+			<div className="header row p-2">
 				{playlist.images.length > 0 ? (
 					<img src={playlist.images.reduce((a, b) => (a.height || 0 > (b.height || 0) ? a : b)).url} />
 				) : null}
-				<div className="info">
+				<div className="info space-y-2">
 					{playlist.collaborative && (
 						<p>
 							<strong>Collaborative Playlist</strong>
 						</p>
 					)}
-					<h2>{playlist.name}</h2>
-					<p>TODO: Fetch description{playlist.description}</p>
+					<h2 className="text-2xl">{playlist.name}</h2>
+					<p className="opacity-80">{playlist.description}</p>
 					<p>
 						Created by: <UriLink className="font-bold" object={playlist.owner} />
 					</p>

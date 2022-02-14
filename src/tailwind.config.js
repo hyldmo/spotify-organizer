@@ -52,6 +52,9 @@ module.exports = {
 	plugins: [
 		plugin(({ addVariant }) => {
 			addVariant('hocus', ['&:hover', '&:focus-visible'])
+			addVariant('not', ['&:not'])
+			addVariant('first-child', ['&:first-child'])
+			addVariant('last-child', ['&:last-child'])
 		})
 	]
 }

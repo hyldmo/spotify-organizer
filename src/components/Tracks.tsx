@@ -10,7 +10,7 @@ type Props = {
 const Tracks: React.FC<Props> = ({ tracks }) =>
 	tracks.length > 0 ? (
 		<table className="playlists">
-			<thead className="sticky top-0">
+			<thead className="sticky top-0 bg-black">
 				<tr>
 					<th>Name</th>
 					<th>Artist</th>
