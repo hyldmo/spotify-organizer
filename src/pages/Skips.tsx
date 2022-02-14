@@ -6,7 +6,7 @@ import { ArtistLinks, UriLink } from 'components/UriLink'
 import memoizee from 'memoizee'
 
 const findPlaylist = memoizee((uri: string, playlists: State['playlists'], owner?: Nullable<User>) =>
-	playlists.find(pl => pl.uri == uri && pl.owner.id == owner?.id)
+	playlists.find(pl => pl.uri == uri && (owner ? pl.owner.id == owner.id : true))
 )
 
 export const Skips: React.FC = () => {
