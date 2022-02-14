@@ -1,4 +1,5 @@
 import React from 'react'
+import { Nullable } from 'types'
 
 type UriObject = {
 	name?: string | null
@@ -6,12 +7,12 @@ type UriObject = {
 }
 
 interface Props extends React.HTMLProps<HTMLAnchorElement> {
-	object: UriObject
+	object: Nullable<UriObject>
 }
 
 export const UriLink: React.FC<Props> = ({ object, children, ...props }) => (
-	<a href={object.uri} {...props}>
-		{children || object.name || object.uri}
+	<a href={object?.uri} {...props}>
+		{children || object?.name || object?.uri}
 	</a>
 )
 

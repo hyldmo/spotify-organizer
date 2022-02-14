@@ -2,7 +2,7 @@
 import { all, call, put, select, takeLatest, takeLeading } from 'typed-redux-saga'
 import { Action, Actions } from '../actions'
 import { Playlist, State, Track } from 'types'
-import { deduplicate, partition, pullTracks } from '../utils'
+import { deduplicate, partition, pullTracks, toTrack } from '../utils'
 import { sleep } from '../utils/sleep'
 import { spotifyFetch } from './spotifyFetch'
 import { __DEV__ } from '../constants'
@@ -56,28 +56,7 @@ function* getTracks(action: Action<typeof Actions.fetchTracks.type>, delay?: num
 	do {
 		response = yield* call(spotifyFetch, `users/${owner}/playlists/${id}/tracks?offset=${offset}&limit=${limit}`)
 		if (response === null) break
-		const mappedTracks = response.items.map<Track>(t => ({
-			id: t.track.id,
-			name: t.track.name,
-			uri: t.track.uri,
-			artists: t.track.artists.map(artist => ({
-				id: artist.id,
-				name: artist.name,
-				uri: artist.uri
-			})),
-			album: {
-				id: t.track.album.id,
-				name: t.track.album.name,
-				uri: t.track.album.uri
-			},
-			duration_ms: t.track.duration_ms,
-			meta: {
-				added_at: t.added_at,
-				added_by: t.added_by,
-				is_local: t.is_local,
-				index: index++
-			}
-		}))
+		const mappedTracks = response.items.map<Track>(t => toTrack(t, index++))
 		tracks = tracks.concat(mappedTracks)
 		offset += limit
 		yield* put(Actions.fetchTracksProgress(tracks.length, id))

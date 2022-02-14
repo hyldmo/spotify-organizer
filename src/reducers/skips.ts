@@ -1,4 +1,4 @@
-import { SkipEntry } from 'types'
+import { SkipEntry, URI } from 'types'
 import { Action } from '../actions'
 
 export type SkipState = Record<string, SkipEntry | undefined>
@@ -9,8 +9,8 @@ export default function (state = initialState, action: Action): SkipState {
 	switch (action.type) {
 		case 'PLAYBACK_SONG_SKIPPED': {
 			const { payload: song, meta: context } = action
-			const entry = state[song.id] || { song, playlists: [], totalSkips: 1 }
-			const uri = context?.uri || 'unknown'
+			const entry = state[song.id] || ({ song, playlists: [], totalSkips: 1 } as SkipEntry)
+			const uri = (context?.uri as URI) || 'unknown'
 			const playlistEntry = entry.playlists.find(pl => pl.uri === uri)
 			if (playlistEntry) {
 				playlistEntry.skips++

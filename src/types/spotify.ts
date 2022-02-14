@@ -6,6 +6,7 @@ export interface Playlist extends SpotifyApi.PlaylistObjectSimplified {
 		lastFetched: Date | null
 		items?: Track[]
 	}
+	uri: `spotify:playlist:${string}`
 }
 
 export type User = Omit<SpotifyApi.UserObjectPublic, 'display_name'> & {
@@ -22,27 +23,34 @@ export interface TrackMeta {
 	index: number
 }
 
+export type URI = Track['uri'] | Artist['uri'] | Album['uri'] | Playlist['uri']
+
 export interface Track {
 	id: SpotifyApi.TrackObjectFull['id']
 	name: SpotifyApi.TrackObjectFull['name']
-	uri: SpotifyApi.TrackObjectFull['uri']
-	artists: Array<{
-		uri: SpotifyApi.ArtistObjectSimplified['uri']
-		id: SpotifyApi.ArtistObjectSimplified['id']
-		name: SpotifyApi.ArtistObjectSimplified['name']
-	}>
-	album: {
-		uri: SpotifyApi.AlbumObjectSimplified['uri']
-		id: SpotifyApi.AlbumObjectSimplified['id']
-		name: SpotifyApi.AlbumObjectSimplified['name']
-	}
+	uri: `spotify:track:${string}`
+	artists: Artist[]
+	album: Album
 	duration_ms: SpotifyApi.TrackObjectFull['duration_ms']
 	meta: TrackMeta
 }
 
+export interface Artist {
+	uri: `spotify:artist:${string}`
+	id: SpotifyApi.ArtistObjectSimplified['id']
+	name: SpotifyApi.ArtistObjectSimplified['name']
+}
+
+export interface Album {
+	uri: `spotify:album:${string}`
+	id: SpotifyApi.AlbumObjectSimplified['id']
+	name: SpotifyApi.AlbumObjectSimplified['name']
+	images: SpotifyApi.AlbumObjectSimplified['images']
+}
+
 export type RemoveTracksRequest = {
 	tracks: Array<{
-		uri: string
+		uri: Track['uri']
 		positions?: number[]
 	}>
 	snapshot_id: string

@@ -44,6 +44,7 @@ export default function playlists(state: Playlist[] = [], action: Action): Playl
 				return {
 					...existing,
 					...p,
+					uri: p.uri as Playlist['uri'],
 					tracks: { ...existing.tracks, ...p.tracks },
 					selected: false
 				}
