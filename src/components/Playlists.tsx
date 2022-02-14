@@ -1,10 +1,9 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
-
 import { Actions } from '../actions'
 import Highlight from '../components/Highlight'
 import { Filters, Playlist, Sort } from '../types'
 import { getNextSortMode, getSortIcon } from '../utils'
+import { UriLink } from './UriLink'
 
 const headers = [
 	['Name', 'name'],
@@ -70,9 +69,9 @@ const Playlists: React.FC<Props> = ({ playlists, select, selectAll, changeSortMo
 							) : null}
 						</td>
 						<td className="name">
-							<Link to={`/users/${p.owner.id}/playlists/${p.id}`}>
+							<UriLink object={p}>
 								<Highlight text={p.name} term={filters.text} />
-							</Link>
+							</UriLink>
 						</td>
 						<td className="owner">
 							<Highlight text={p.owner.display_name || p.owner.id} term={filters.text} />

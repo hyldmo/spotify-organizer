@@ -27,7 +27,7 @@
 		"https://json.schemastore.org/github-workflow": "/.github/workflows/**/*.yml",
 		"https://www.graphql-code-generator.com/config.schema.json": "${workspaceFolder}/.graphql.config.yml"
 	},
-	"typescript.tsdk": "node_modules/typescript/lib",
+	"typescript.tsdk": "./node_modules/typescript/lib",
 	"[html]": {
 		"editor.defaultFormatter": "esbenp.prettier-vscode"
 	},

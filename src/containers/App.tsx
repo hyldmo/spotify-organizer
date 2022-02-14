@@ -35,7 +35,7 @@ const App: React.FC = () => {
 						<Routes>
 							<Route path="/" element={<PlaylistsManager />} />
 							<Route path="/skips" element={<Skips />} />
-							<Route path="/users/:user/playlists/:id" element={<TracksRoute />} />
+							<Route path="/playlists/:id" element={<TracksRoute />} />
 							<Route element={NotFound} />
 						</Routes>
 					) : (

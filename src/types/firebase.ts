@@ -1,5 +1,5 @@
 import { Join, PathsToStringProps, Split, ToStringProps, Traverse, User } from 'types'
-import { Playlist, Track } from './spotify'
+import { Track, URI } from './spotify'
 
 export interface FirebaseData {
 	users: Record<User['id'], FirebaseUserData>
@@ -11,9 +11,14 @@ export type SongEntry = {
 }
 
 export type FirebaseUserData = Omit<User, 'id'> & {
-	songs: {
-		[id: Track['id']]: {
-			[id: Playlist['uri']]: SongEntry
+	skips: {
+		[id: URI]: {
+			[id: Track['id']]: number
+		}
+	}
+	plays: {
+		[id: URI]: {
+			[id: Track['id']]: number
 		}
 	}
 }

@@ -1,8 +1,19 @@
 /* eslint-disable camelcase */
-import { Album, Artist, Track } from 'types'
+import { Album, Artist, SpotifyObjectType, Track, URI } from 'types'
 
 export function isPlaylist(obj: SpotifyApi.ContextObject | null | undefined): obj is SpotifyApi.ContextObject {
 	return obj?.type === 'playlist'
+}
+
+export function getUriType<T extends string>(uri: T): T extends URI<infer R> ? R : SpotifyObjectType {
+	return uri.split(':')[1] as any
+}
+
+export function idToUri<T extends SpotifyObjectType>(id: string, type: T): URI<T> {
+	return `spotify:${type}:${id}`
+}
+export function UriToId<T extends URI>(uri: T): T extends `spotify:${string}:${infer R}` ? R : never {
+	return uri.split(':').pop() as any
 }
 
 type Playlist = SpotifyApi.PlaylistTrackObject

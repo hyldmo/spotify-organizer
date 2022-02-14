@@ -6,11 +6,11 @@ import { makeActionCreator } from '../utils/actionCreator'
 export default {
 	fetchPlaylists: makeActionCreator()('FETCH_PLAYLISTS'),
 	playlistsFetched: makeActionCreator<SpotifyApi.PlaylistObjectSimplified[]>()('FETCH_PLAYLISTS_SUCCESS'),
-	fetchTracks: makeActionCreator<{ owner: string; id: string }>()('FETCH_TRACKS'),
-	fetchTracksProgress: makeActionCreator<number, string>()('FETCH_TRACKS_PROGRESS'),
-	tracksFetched: makeActionCreator<Track[], string>()('FETCH_TRACKS_SUCCESS'),
+	fetchTracks: makeMetaActionCreator<Playlist['id']>()('FETCH_TRACKS'),
+	fetchTracksProgress: makeActionCreator<number, Playlist['id']>()('FETCH_TRACKS_PROGRESS'),
+	tracksFetched: makeActionCreator<Track[], Playlist['id']>()('FETCH_TRACKS_SUCCESS'),
 
-	selectPlaylist: makeActionCreator<boolean, string>()('PLAYLISTS_SELECT'),
+	selectPlaylist: makeActionCreator<boolean, Playlist['id']>()('PLAYLISTS_SELECT'),
 	selectPlaylists: makeActionCreator<boolean>()('PLAYLISTS_SELECT_ALL'),
 	updatePlaylistsSort: makeActionCreator<Sort, keyof Playlist | string>()('PLAYLISTS_SORT_MODE_CHANGE'),
 	updateHideEmptyFilter: makeActionCreator<boolean>()('PLAYLISTS_FILTER_EMPTY_CHANGE'),

@@ -6,14 +6,15 @@ import Tracks from '../components/Tracks'
 import { Duration } from '../utils'
 import { State } from '../types'
 import { useParams } from 'react-router'
+import { UriLink } from 'components/UriLink'
 
 const TracksRoute: React.FC = () => {
 	const dispatch = useDispatch()
-	const params = useParams<{ id: string; user: string }>()
+	const params = useParams<{ id: string }>()
 
 	useEffect(() => {
-		if (params.id && params.user) dispatch(Actions.fetchTracks({ id: params.id, owner: params.user }))
-	}, [dispatch, params.id, params.user])
+		if (params.id) dispatch(Actions.fetchTracks(params.id))
+	}, [dispatch, params.id])
 
 	const playlist = useSelector((s: State) => s.playlists.find(p => p.id === params.id))
 	if (playlist === undefined) return <Loading />
@@ -37,7 +38,7 @@ const TracksRoute: React.FC = () => {
 					<h2>{playlist.name}</h2>
 					<p>TODO: Fetch description{playlist.description}</p>
 					<p>
-						Created by: <strong>{playlist.owner.display_name || playlist.owner.id}</strong>
+						Created by: <UriLink className="font-bold" object={playlist.owner} />
 					</p>
 				</div>
 				<span className="filler" />

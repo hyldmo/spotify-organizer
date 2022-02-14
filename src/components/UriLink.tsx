@@ -1,8 +1,11 @@
 import React from 'react'
-import { Nullable } from 'types'
+import { Link } from 'react-router-dom'
+import { Nullable, URI } from 'types'
+import { getUriType, UriToId } from 'utils'
 
 type UriObject = {
-	name?: string | null
+	name?: Nullable<string>
+	display_name?: Nullable<string>
 	uri: string
 }
 
@@ -10,11 +13,21 @@ interface Props extends React.HTMLProps<HTMLAnchorElement> {
 	object: Nullable<UriObject>
 }
 
-export const UriLink: React.FC<Props> = ({ object, children, ...props }) => (
-	<a href={object?.uri} {...props}>
-		{children || object?.name || object?.uri}
-	</a>
-)
+export const UriLink: React.FC<Props> = ({ object, children, ...props }) => {
+	const childNode = children || object?.name || object?.display_name || object?.uri
+	if (object && getUriType(object?.uri) === 'playlist')
+		return (
+			<Link to={`/playlists/${UriToId(object.uri as URI)}`} {...(props as any)}>
+				{childNode}
+			</Link>
+		)
+
+	return (
+		<a href={object?.uri} {...props}>
+			{childNode}
+		</a>
+	)
+}
 
 type ArtistLinksProps = React.HTMLProps<HTMLSpanElement> & {
 	artists: Array<UriObject & { id: string }>

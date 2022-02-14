@@ -22,13 +22,13 @@ export interface TrackMeta {
 	// Position of track in playlist
 	index: number
 }
-
-export type URI = Track['uri'] | Artist['uri'] | Album['uri'] | Playlist['uri']
+export type SpotifyObjectType = SpotifyApi.ContextObject['type'] | 'track'
+export type URI<T extends SpotifyObjectType = SpotifyObjectType> = `spotify:${T}:${string}`
 
 export interface Track {
 	id: SpotifyApi.TrackObjectFull['id']
 	name: SpotifyApi.TrackObjectFull['name']
-	uri: `spotify:track:${string}`
+	uri: URI<'track'>
 	artists: Artist[]
 	album: Album
 	duration_ms: SpotifyApi.TrackObjectFull['duration_ms']
@@ -36,13 +36,13 @@ export interface Track {
 }
 
 export interface Artist {
-	uri: `spotify:artist:${string}`
+	uri: URI<'artist'>
 	id: SpotifyApi.ArtistObjectSimplified['id']
 	name: SpotifyApi.ArtistObjectSimplified['name']
 }
 
 export interface Album {
-	uri: `spotify:album:${string}`
+	uri: URI<'album'>
 	id: SpotifyApi.AlbumObjectSimplified['id']
 	name: SpotifyApi.AlbumObjectSimplified['name']
 	images: SpotifyApi.AlbumObjectSimplified['images']
