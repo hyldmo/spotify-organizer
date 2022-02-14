@@ -23,7 +23,7 @@ const reducers = (r: typeof rootReducers) =>
 		{
 			key: process.env.PACKAGE_NAME,
 			storage: localforage,
-			whitelist: ['skips', 'playlists', 'user']
+			whitelist: ['playlists', 'user']
 		},
 		combineReducers({
 			router: routerReducer,
