@@ -1,6 +1,6 @@
 /* eslint-disable no-restricted-imports */
 import { initializeApp } from 'firebase/app'
-import { get, getDatabase, ref, update } from 'firebase/database'
+import { get, getDatabase, onValue, ref, update } from 'firebase/database'
 import { FirebaseGet, FirebaseUpdates, FirebaseUrls } from 'types'
 
 const PROJECT_ID = process.env.PACKAGE_NAME
@@ -20,6 +20,15 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig)
 const db = getDatabase(app)
+
+export function firebaseWatch<T extends FirebaseUrls>(url: T, onUpdate: (value: FirebaseGet<T>) => void) {
+	const key = url.endsWith('/') ? url.slice(0, -1) : url
+	const resource = ref(db, key)
+
+	onValue(resource, snapshot => {
+		onUpdate(snapshot.val())
+	})
+}
 
 export async function firebaseGet<T extends FirebaseUrls>(url: T): Promise<FirebaseGet<T> | null> {
 	const key = url.endsWith('/') ? url.slice(0, -1) : url

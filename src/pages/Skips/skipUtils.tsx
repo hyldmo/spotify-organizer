@@ -1,6 +1,14 @@
-import React from 'react'
 import memoizee from 'memoizee'
-import { Nullable, Playlist, PlaylistSkipEntry, SkipStats as SkipStatsProps, Track, User } from 'types'
+import React from 'react'
+import {
+	FirebaseUserData,
+	Nullable,
+	Playlist,
+	PlaylistSkipEntry,
+	SkipStats as SkipStatsProps,
+	Track,
+	User
+} from 'types'
 
 export const findSong = memoizee((id: Track['id'], playlists: Playlist[]) => {
 	for (const playlist of playlists) {
@@ -21,6 +29,25 @@ export const findPlaylist = memoizee((uri: string, playlists: Playlist[], owner?
 )
 
 export const countSkips = (playlist: PlaylistSkipEntry) => playlist.songs.reduce((a, b) => a + (b.skips || 0), 0)
+
+export function toEntries<K extends 'skips' | 'plays'>(
+	entries: FirebaseUserData[K] | FirebaseUserData[K],
+	key: K,
+	playlists: Playlist[]
+) {
+	return Object.entries(entries).map(([playlistUri, songs]) => {
+		const playlist = findPlaylist(playlistUri, playlists) || {
+			uri: playlistUri as PlaylistSkipEntry['uri']
+		}
+		return {
+			...playlist,
+			songs: Object.entries(songs).map(([songId, value]) => ({
+				id: songId,
+				[key]: value
+			}))
+		}
+	})
+}
 
 export type Props = {
 	countNonPlaylists: boolean

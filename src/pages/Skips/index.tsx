@@ -1,12 +1,12 @@
 import cn from 'classnames'
-import React, { useEffect, useState } from 'react'
-import { useSelector } from 'react-redux'
-import { FirebaseUserData, PlaylistSkipEntry, State } from 'types'
-import { firebaseGet } from 'utils'
 import { merge } from 'lodash/fp'
-import { ByTrack } from './ByTrack'
+import React, { useState } from 'react'
+import { useSelector } from 'react-redux'
+import { State } from 'types'
+import { useFirebase } from 'utils'
 import { ByPlaylist } from './ByPlaylist'
-import { findPlaylist } from './skipUtils'
+import { ByTrack } from './ByTrack'
+import { toEntries } from './skipUtils'
 
 type GroupBy = 'playlist' | 'track'
 
@@ -14,37 +14,17 @@ export const Skips: React.FC = () => {
 	const [nonPlaylists, countNonPlaylists] = useState(true)
 	const [allPlaylists, showAllPlaylists] = useState(false)
 	const [groupBy, setGroupBy] = useState<GroupBy>('playlist')
-	const [playlistSkips, setSkips] = useState<PlaylistSkipEntry[]>([])
 	const playlists = useSelector((s: State) => s.playlists)
 	const user = useSelector((s: State) => s.user)
+	const plays = useFirebase(`users/${user?.id}/plays/`)
+	const skips = useFirebase(`users/${user?.id}/skips/`)
 
-	useEffect(() => {
-		function toEntries<K extends 'skips' | 'plays'>(entries: FirebaseUserData[K] | FirebaseUserData[K], key: K) {
-			return Object.entries(entries).map(([playlistUri, songs]) => {
-				const playlist = findPlaylist(playlistUri, playlists) || {
-					uri: playlistUri as PlaylistSkipEntry['uri']
-				}
-				return {
-					...playlist,
-					songs: Object.entries(songs).map(([songId, value]) => ({
-						id: songId,
-						[key]: value
-					}))
-				}
-			})
-		}
-		async function fetchData() {
-			if (!user) return
-			const playData = await firebaseGet(`users/${user.id}/plays/`)
-			const skipData = await firebaseGet(`users/${user.id}/skips/`)
-			const entries = merge(
-				playData ? toEntries(playData, 'plays') : [],
-				skipData ? toEntries(skipData, 'skips') : []
-			)
-			setSkips(Object.values(entries))
-		}
-		fetchData()
-	}, [user, playlists])
+	const playlistSkips = Object.values(
+		merge(
+			plays ? toEntries(plays, 'plays', playlists) : [], //
+			skips ? toEntries(skips, 'skips', playlists) : []
+		)
+	)
 
 	return (
 		<div className="max-h-full grid grid-rows-[auto,1fr] grid-cols-1">
