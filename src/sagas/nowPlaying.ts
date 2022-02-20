@@ -1,8 +1,8 @@
-import { Action, Actions } from '../actions'
 import { call, cancelled, fork, put, select } from 'typed-redux-saga'
+import { FirebaseGet, FirebaseUrls, Playback, State, User } from 'types'
 import { firebaseGet, firebaseUpdate, sleep } from 'utils'
+import { Action, Actions } from '../actions'
 import { spotifyFetch } from './spotifyFetch'
-import { FirebaseUrls, Playback, SongEntry, State, User } from 'types'
 
 export default function* () {
 	yield* fork(watchPlayback)
@@ -41,19 +41,23 @@ function* onPlaybackUpdated(action: Action<'PLAYBACK_UPDATED'>) {
 		const { item: song, context, progress_ms } = current
 		const percent = ((progress_ms || 0) / song.duration_ms) * 100
 
-		const entry = (yield* call(
+		const plays: FirebaseGet<`users/${string}/plays/spotify:playlist:${string}/${string}/`> = (yield* call(
 			firebaseGet,
-			`users/${user.id}/songs/${song.id}/${context?.uri || 'unknown'}/`
-		)) as SongEntry | null
+			`users/${user.id}/plays/${context?.uri || 'unknown'}/${song.id}/`
+		)) as any
 
 		const updatePlaysId: FirebaseUrls = `users/${user.id}/plays/${context?.uri || 'unknown'}/${song.id}/`
-		yield* call(firebaseUpdate, updatePlaysId, (entry?.plays || 0) + 1)
+		yield* call(firebaseUpdate, updatePlaysId, (plays || 0) + 1)
 
 		if (percent < 80) {
 			yield put(Actions.songSkipped(song, context))
 
+			const skips: FirebaseGet<`users/${string}/plays/spotify:playlist:${string}/${string}/`> = yield* call(
+				firebaseGet,
+				`users/${user.id}/skips/${context?.uri || 'unknown'}/${song.id}/`
+			) as any
 			const updateSkipsId: FirebaseUrls = `users/${user.id}/skips/${context?.uri || 'unknown'}/${song.id}/`
-			yield* call(firebaseUpdate, updateSkipsId, (entry?.skips || 0) + 1)
+			yield* call(firebaseUpdate, updateSkipsId, (skips || 0) + 1)
 		}
 		if (percent < 90) {
 			yield* put(
