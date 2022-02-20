@@ -1,10 +1,12 @@
-import React, { useMemo, useState } from 'react'
-import { connect, useSelector } from 'react-redux'
 import { Actions } from 'actions'
 import Button from 'components/Button'
 import Input from 'components/Input'
 import Playlists from 'components/Playlists'
 import PullPlaylist from 'components/PullPlaylist'
+import Modal from 'containers/Modal'
+import Settings from 'containers/Settings'
+import React, { useMemo, useState } from 'react'
+import { connect, useSelector } from 'react-redux'
 import { OperationMode, Playlist, State as ReduxState } from 'types'
 import {
 	applyPlaylistsFilters,
@@ -12,10 +14,9 @@ import {
 	Duration,
 	getCompareTypeExplanation,
 	getDeduplicateErrors,
+	songEntriesToSongs,
 	useMapDispatch
 } from 'utils'
-import Modal from 'containers/Modal'
-import Settings from 'containers/Settings'
 
 const mapStateToProps = (state: ReduxState) => ({
 	playlists: state.playlists,
@@ -50,7 +51,8 @@ const PlaylistsManager: React.FC = () => {
 	const totalDuration = useMemo(
 		() =>
 			playlists.reduce((a, b) => {
-				const actualLength = b.tracks.items?.reduce((c, d) => c + d.duration_ms, 0)
+				const tracks = songEntriesToSongs(b.tracks.items)
+				const actualLength = tracks.reduce((c, d) => c + d.duration_ms, 0)
 				return a + (actualLength || b.tracks.total * 3 * 60 * 1000)
 			}, 0),
 		[playlists]

@@ -1,12 +1,12 @@
-import cn from 'classnames'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { Actions } from 'actions'
+import cn from 'classnames'
+import { ArtistLinks, UriLink } from 'components/UriLink'
 import React, { Fragment } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { State } from 'types'
-import { ArtistLinks, UriLink } from 'components/UriLink'
-import { Actions } from 'actions'
 import { idToUri } from 'utils'
-import { countSkips, Props, SkipStats } from './skipUtils'
+import { countSkips, findSong, Props, SkipStats } from './skipUtils'
 
 export const ByPlaylist: React.FC<Props> = ({ skipData, countNonPlaylists, allPlaylists }) => {
 	const dispatch = useDispatch()
@@ -38,9 +38,10 @@ export const ByPlaylist: React.FC<Props> = ({ skipData, countNonPlaylists, allPl
 					{playlist.songs
 						.filter(song => song.skips)
 						// Only show songs that are still in the playlist
-						.filter(song => playlist.tracks?.items?.some(s => s.id == song.id))
+						.filter(song => playlist.tracks?.items[song.id] !== undefined)
 						.map(({ id, ...stats }) => {
-							const song = playlist.tracks?.items?.find(s => s.id == id)
+							const song = findSong(id)
+							if (song === undefined) return null
 							return (
 								<Fragment key={id}>
 									{playlist.owner?.id == user?.id && (

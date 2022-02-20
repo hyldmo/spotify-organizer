@@ -1,12 +1,12 @@
+import { UriLink } from 'components/UriLink'
 import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import { useParams } from 'react-router'
 import { Actions } from '../actions'
 import Loading from '../components/Loading'
 import Tracks from '../components/Tracks'
-import { Duration } from '../utils'
 import { State } from '../types'
-import { useParams } from 'react-router'
-import { UriLink } from 'components/UriLink'
+import { Duration, songEntriesToSongs } from '../utils'
 
 const PlaylistRoute: React.FC = () => {
 	const dispatch = useDispatch()
@@ -21,7 +21,7 @@ const PlaylistRoute: React.FC = () => {
 	if (playlist.tracks.loaded < playlist.tracks.total || playlist.tracks.items === undefined)
 		return <Loading progress={{ current: playlist.tracks.loaded, total: playlist.tracks.total }} />
 
-	const tracks = playlist.tracks.items
+	const tracks = songEntriesToSongs(playlist.tracks.items)
 	const duration = tracks.reduce((a, b) => a + b.duration_ms, 0)
 	return (
 		<div className="manager tracks">

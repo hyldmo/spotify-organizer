@@ -5,21 +5,16 @@ export interface FirebaseData {
 	users: Record<User['id'], FirebaseUserData>
 }
 
-export type SongEntry = {
-	skips?: number
-	plays?: number
+export type SongEntries = {
+	[id: Track['id']]: number // number of plays
 }
 
 export type FirebaseUserData = Omit<User, 'id'> & {
 	skips: {
-		[id: URI]: {
-			[id: Track['id']]: number
-		}
+		[id: URI]: SongEntries
 	}
 	plays: {
-		[id: URI]: {
-			[id: Track['id']]: number
-		}
+		[id: URI]: SongEntries
 	}
 }
 

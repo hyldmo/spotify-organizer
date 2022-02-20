@@ -1,9 +1,9 @@
+import { Actions } from 'actions'
 import cn from 'classnames'
+import { ArtistLinks, UriLink } from 'components/UriLink'
 import React, { useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { SkipEntry, SkipEntryPlaylist, State } from 'types'
-import { ArtistLinks, UriLink } from 'components/UriLink'
-import { Actions } from 'actions'
 import { idToUri } from 'utils'
 import { findPlaylist, findPlays, findSong, Props, SkipStats } from './skipUtils'
 
@@ -15,7 +15,7 @@ export const ByTrack: React.FC<Props> = ({ skipData, countNonPlaylists, allPlayl
 	const songSkips = useMemo(() => {
 		const songIds = new Set(skipData.flatMap(a => a.songs.map(s => s.id)))
 		return Array.from(songIds).map<SkipEntry>(id => {
-			const song = findSong(id, playlists) || { uri: idToUri(id, 'track') }
+			const song = findSong(id) || { uri: idToUri(id, 'track') }
 			const skips = skipData
 				.filter(pl => pl.songs.find(s => s.id == id))
 				.map<SkipEntryPlaylist>(pl => ({ ...pl, ...findPlays(id, pl) }))
@@ -40,7 +40,7 @@ export const ByTrack: React.FC<Props> = ({ skipData, countNonPlaylists, allPlayl
 				playlistsSkips.push(
 					...playlists
 						.filter(pl => playlistsSkips.some(s => s.uri !== pl.uri))
-						.filter(pl => pl.tracks.items?.find(track => track.id == song.id))
+						.filter(pl => pl.tracks.items[song.id || ''] !== undefined)
 						.map(pl => ({ plays: 0, skips: 0, name: pl.name, uri: pl.uri }))
 				)
 

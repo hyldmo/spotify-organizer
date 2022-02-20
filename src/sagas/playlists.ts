@@ -1,7 +1,7 @@
 import { all, call, put, select, takeEvery, takeLatest } from 'typed-redux-saga'
-import { Action, Actions } from '../actions'
 import { Playlist, State, Track } from 'types'
-import { deduplicate, partition, pullTracks } from '../utils'
+import { Action, Actions } from '../actions'
+import { deduplicate, partition, pullTracks, songEntriesToSongs } from '../utils'
 import { spotifyFetch } from './spotifyFetch'
 import { getTracks } from './tracks'
 
@@ -19,6 +19,7 @@ function* getPlaylists() {
 	do {
 		response = yield* call(spotifyFetch, `me/playlists?offset=${offset}&limit=${limit}`)
 		if (response === null) break
+		// response.items.forEach(pl => PlaylistCache.set(pl.uri as URI<'playlist'>, pl))
 		playlists = playlists.concat(response.items)
 		offset += limit
 	} while (response.next !== null)
@@ -59,15 +60,19 @@ function* deduplicatePlaylists(action: Action<'DEDUPLICATE_PLAYLISTS'>) {
 		if (target === null) {
 			result = playlists.map(playlist => ({
 				...playlist,
-				tracks: deduplicate(playlist.tracks.items as Track[], compareMode)
+				tracks: deduplicate(songEntriesToSongs(playlist.tracks.items), compareMode)
 			}))
 		} else {
 			const targetPlaylist = yield* select((state: State) => state.playlists.find(pl => pl.id === target.id))
-			const tracks = playlists.reduce<Track[]>((a, b) => a.concat(b.tracks.items as Track[]), [])
+			if (!targetPlaylist) {
+				yield* put(Actions.createNotification({ type: 'error', message: 'Target playlist not found' }))
+				return
+			}
+			const tracks = playlists.reduce<Track[]>((a, b) => a.concat(songEntriesToSongs(b.tracks.items)), [])
 			result = [
 				{
 					...targetPlaylist,
-					tracks: pullTracks(tracks, compareMode, targetPlaylist?.tracks.items || [])
+					tracks: pullTracks(tracks, compareMode, songEntriesToSongs(targetPlaylist.tracks.items))
 				}
 			]
 		}

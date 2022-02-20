@@ -1,11 +1,11 @@
 import { createBrowserHistory } from 'history'
+import localforage from 'localforage'
 import { applyMiddleware, combineReducers, compose, createStore } from 'redux'
+import { createReduxHistoryContext } from 'redux-first-history'
+import { persistReducer, persistStore } from 'redux-persist'
 import createSagaMiddleware from 'redux-saga'
 import * as rootReducers from './reducers'
 import SagaManager from './sagas'
-import { createReduxHistoryContext } from 'redux-first-history'
-import { persistReducer, persistStore } from 'redux-persist'
-import localforage from 'localforage'
 
 const __DEV__ = process.env.NODE_ENV === 'development'
 const sagaMiddleware = createSagaMiddleware()
@@ -21,7 +21,7 @@ const composeEnhancers = __DEV__ ? window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ |
 const reducers = (r: typeof rootReducers) =>
 	persistReducer(
 		{
-			key: process.env.PACKAGE_NAME,
+			key: `${process.env.PACKAGE_NAME}_redux`,
 			storage: localforage,
 			whitelist: ['playlists', 'user']
 		},

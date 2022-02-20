@@ -9,14 +9,10 @@ import {
 	Track,
 	User
 } from 'types'
+import { SongCache } from 'utils'
 
-export const findSong = memoizee((id: Track['id'], playlists: Playlist[]) => {
-	for (const playlist of playlists) {
-		const track = playlist.tracks?.items?.find(t => t.id == id)
-		if (track) return track
-	}
-	return undefined
-})
+// TODO: Load track from API when not found in cache
+export const findSong = (id: Track['id']) => SongCache.get(id)
 
 export const findPlays = memoizee((id: Track['id'], playlist: PlaylistSkipEntry) => {
 	const track = playlist.songs?.find(t => t.id == id)

@@ -1,5 +1,4 @@
 import React from 'react'
-
 import { Track } from '../types'
 import { Duration } from '../utils'
 import { ArtistLinks, UriLink } from './UriLink'
@@ -9,6 +8,7 @@ type Props = {
 }
 const Tracks: React.FC<Props> = ({ tracks }) => {
 	const contributors = new Set(tracks.map(t => t.meta.added_by.id))
+	const plays = tracks.reduce((a, t) => a + (t.meta.plays || 0), 0)
 	return tracks.length > 0 ? (
 		<table className="playlists">
 			<thead className="sticky top-0 bg-black">
@@ -19,6 +19,7 @@ const Tracks: React.FC<Props> = ({ tracks }) => {
 					{contributors.size > 1 && <th>Added by</th>}
 					<th>Added at</th>
 					<th>Duration</th>
+					{plays > 0 && <th>Plays</th>}
 				</tr>
 			</thead>
 			<tbody>
@@ -40,6 +41,7 @@ const Tracks: React.FC<Props> = ({ tracks }) => {
 						)}
 						<td>{new Date(track.meta.added_at).toLocaleDateString()}</td>
 						<td>{new Duration(track.duration_ms).toMinutesString()}</td>
+						{plays > 0 && <td>{track.meta.plays}</td>}
 					</tr>
 				))}
 			</tbody>

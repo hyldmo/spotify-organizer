@@ -1,3 +1,4 @@
+import { SongEntries } from './firebase'
 import { Nullable } from './helpers'
 
 export interface Playlist extends SpotifyApi.PlaylistObjectSimplified {
@@ -6,7 +7,7 @@ export interface Playlist extends SpotifyApi.PlaylistObjectSimplified {
 	tracks: SpotifyApi.PlaylistObjectSimplified['tracks'] & {
 		loaded: number
 		lastFetched: Date | null
-		items?: Track[]
+		items: SongEntries
 	}
 	uri: `spotify:playlist:${string}`
 }
@@ -23,6 +24,8 @@ export interface TrackMeta {
 	is_local: SpotifyApi.PlaylistTrackObject['is_local']
 	// Position of track in playlist
 	index: number
+	plays?: number
+	skips?: number
 }
 export type SpotifyObjectType = SpotifyApi.ContextObject['type'] | 'track'
 export type URI<T extends SpotifyObjectType = SpotifyObjectType> = `spotify:${T}:${string}`

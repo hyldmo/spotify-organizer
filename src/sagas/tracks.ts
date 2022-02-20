@@ -1,10 +1,9 @@
 import { call, put, select, takeLatest, takeLeading } from 'typed-redux-saga'
+import { FirebaseGet, Playlist, SongEntries, State, Track } from 'types'
 import { Action, Actions } from '../actions'
-import { Playlist, State, Track } from 'types'
-import { toTrack } from '../utils'
+import { firebaseGet, SongCache, toTrack } from '../utils'
 import { sleep } from '../utils/sleep'
 import { spotifyFetch } from './spotifyFetch'
-import { __DEV__ } from '../constants'
 
 export default function* () {
 	yield* takeLatest(Actions.fetchTracks.type, getTracks)
@@ -12,7 +11,6 @@ export default function* () {
 }
 
 function* getAllTracks(action: Action<'FETCH_PLAYLISTS_SUCCESS'>) {
-	if (__DEV__) return // Don't cache tracks in dev mode
 	for (const playlist of action.payload) {
 		const existing = yield* select((s: State) => s.playlists.find(pl => pl.id === playlist.id))
 		if (existing) {
@@ -24,32 +22,41 @@ function* getAllTracks(action: Action<'FETCH_PLAYLISTS_SUCCESS'>) {
 			}
 		}
 
-		yield* call(getTracks, Actions.fetchTracks(playlist.id), 3000)
+		yield* call(getTracks, Actions.fetchTracks(playlist.id), 10000)
 	}
 	console.info('All playlist tracks up to date')
 }
 
 export function* getTracks(action: Action<typeof Actions.fetchTracks.type>, delay?: number) {
 	const id = action.meta
-	let tracks: Track[] = []
+	let tracks: SongEntries = {}
 	let response: SpotifyApi.PlaylistTrackResponse
 	const limit = 100
 	let offset = 0
 	let index = 0
+	const user = yield* select((s: State) => s.user)
+	const plays: FirebaseGet<`users/${string}/plays/spotify:playlist:${string}/`> | null = yield* call(
+		firebaseGet,
+		`users/${user?.id}/plays/spotify:playlist:${id}/`
+	) as any
 	do {
 		response = yield* call(spotifyFetch, `playlists/${id}/tracks?offset=${offset}&limit=${limit}`)
 		if (response === null) break
 		const mappedTracks = response.items.map<Track>(t => toTrack(t, index++))
-		tracks = tracks.concat(mappedTracks)
+		mappedTracks.forEach(track => SongCache.set(track.id, track))
+		tracks = Object.assign(
+			tracks,
+			mappedTracks.reduce((a, b) => Object.assign(a, { [b.id]: plays?.[b.id] || 0 }), {})
+		)
 		offset += limit
-		yield* put(Actions.fetchTracksProgress(tracks.length, id))
+		yield* put(Actions.fetchTracksProgress(Object.keys(tracks).length, id))
 		if (delay) yield* call(sleep, delay)
 	} while (response.next !== null)
 
 	function* waitForPlaylists(): IterableIterator<any> {
 		const playlist: Playlist | undefined = yield* select((s: State) => s.playlists.find(p => p.id === id))
 		if (playlist) return
-		yield* call(sleep, 50)
+		yield* call(sleep, 100)
 		yield* call(waitForPlaylists)
 	}
 

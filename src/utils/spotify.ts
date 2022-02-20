@@ -1,4 +1,5 @@
-import { Album, Artist, Nullable, Playlist, SpotifyObjectType, Track, URI, UriObject } from 'types'
+import { findSong } from 'pages/Skips/skipUtils'
+import { Album, Artist, Nullable, Playlist, SongEntries, SpotifyObjectType, Track, URI, UriObject } from 'types'
 
 export function isPlaylist(obj: SpotifyApi.ContextObject | null | undefined): obj is SpotifyApi.ContextObject {
 	return obj?.type === 'playlist'
@@ -16,7 +17,7 @@ export function isUriType<T extends SpotifyObjectType>(uri: Nullable<UriObject>,
 export function idToUri<T extends SpotifyObjectType>(id: string, type: T): URI<T> {
 	return `spotify:${type}:${id}`
 }
-export function UriToId<T extends URI>(uri: T): T extends `spotify:${string}:${infer R}` ? R : never {
+export function uriToId<T extends URI>(uri: T): T extends `spotify:${string}:${infer R}` ? R : never {
 	return uri.split(':').pop() as any
 }
 
@@ -62,7 +63,7 @@ export function toPlaylist<T extends SpotifyApi.PlaylistObjectSimplified>(playli
 	const current = existing || {
 		tracks: {
 			lastFetched: null,
-			items: [] as Track[],
+			items: {},
 			loaded: 0
 		}
 	}
@@ -73,4 +74,17 @@ export function toPlaylist<T extends SpotifyApi.PlaylistObjectSimplified>(playli
 		tracks: { ...current.tracks, ...playlist.tracks },
 		selected: false
 	}
+}
+
+export function songEntriesToSongs(items: SongEntries) {
+	return Object.keys(items)
+		.map(id => findSong(id))
+		.filter((t): t is Track => t !== undefined)
+		.map(t => ({
+			...t,
+			meta: {
+				...t.meta,
+				plays: items[t.id]
+			}
+		}))
 }

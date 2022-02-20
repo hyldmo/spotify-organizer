@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/member-delimiter-style */
-import { Playlist, Sort, Track } from '../types'
+import { Playlist, SongEntries, Sort, Track } from '../types'
 import { CompareType } from '../utils'
 import { makeActionCreator, makeMetaActionCreator } from '../utils/actionCreator'
 
@@ -10,7 +10,7 @@ export default {
 	playlistsFetched: makeActionCreator<SpotifyApi.PlaylistObjectSimplified[]>()('FETCH_PLAYLISTS_SUCCESS'),
 	fetchTracks: makeMetaActionCreator<Playlist['id']>()('FETCH_TRACKS'),
 	fetchTracksProgress: makeActionCreator<number, Playlist['id']>()('FETCH_TRACKS_PROGRESS'),
-	tracksFetched: makeActionCreator<Track[], Playlist['id']>()('FETCH_TRACKS_SUCCESS'),
+	tracksFetched: makeActionCreator<SongEntries, Playlist['id']>()('FETCH_TRACKS_SUCCESS'),
 
 	selectPlaylist: makeActionCreator<boolean, Playlist['id']>()('PLAYLISTS_SELECT'),
 	selectPlaylists: makeActionCreator<boolean>()('PLAYLISTS_SELECT_ALL'),

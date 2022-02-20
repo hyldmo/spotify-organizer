@@ -1,27 +1,41 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import { Nullable, URI, UriObject } from 'types'
-import { isUriType, UriToId } from 'utils'
+import { Nullable, UriObject } from 'types'
+import { isUriType, SongCache, uriToId } from 'utils'
 
 interface Props extends React.HTMLProps<HTMLAnchorElement> {
 	object: Nullable<UriObject>
 }
 
-export const UriLink: React.FC<Props> = ({ object, children, ...props }) => {
+export const SimpleUriLink: React.FC<Props> = ({ object, children, ...props }) => {
 	const childNode = children || object?.name || object?.display_name || object?.uri
-	if (isUriType(object, 'playlist')) {
-		return (
-			<Link to={`/playlists/${UriToId(object.uri as URI)}`} {...(props as any)}>
-				{childNode}
-			</Link>
-		)
-	}
-
 	return (
 		<a href={object?.uri} {...props}>
 			{childNode}
 		</a>
 	)
+}
+
+export const UriLink: React.FC<Props> = props => {
+	const { object, children, ...rest } = props
+	const childNode = children || object?.name || object?.display_name || object?.uri
+	if (isUriType(object, 'playlist')) {
+		return (
+			<Link to={`/playlists/${uriToId(object.uri)}`} {...(rest as any)}>
+				{childNode}
+			</Link>
+		)
+	}
+	if (isUriType(object, 'track')) {
+		const track = SongCache.get(uriToId(object.uri)) || object
+		return (
+			<a href={object?.uri} {...rest}>
+				{children || track?.name || track?.uri}
+			</a>
+		)
+	}
+
+	return <SimpleUriLink {...props} />
 }
 
 type ArtistLinksProps = React.HTMLProps<HTMLSpanElement> & {
