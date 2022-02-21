@@ -92,7 +92,9 @@ export const ByTrack: React.FC<Props> = ({ filterIds, skipData, countNonPlaylist
 										<span>Unknown playlist</span>
 									)}
 								</span>
-								<SkipStats skips={playlist.skips} plays={playlist.plays} />
+								<span className="space-x-1">
+									<SkipStats skips={playlist.skips} plays={playlist.plays} />
+								</span>
 							</li>
 						))}
 					</ul>

@@ -1,7 +1,9 @@
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { UriLink } from 'components/UriLink'
 import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router'
+import { Link } from 'react-router-dom'
 import { Actions } from '../actions'
 import Loading from '../components/Loading'
 import Tracks from '../components/Tracks'
@@ -25,7 +27,7 @@ const PlaylistRoute: React.FC = () => {
 	const duration = tracks.reduce((a, b) => a + b.duration_ms, 0)
 	return (
 		<div className="manager tracks">
-			<div className="header row p-2">
+			<div className="header row p-2 relative">
 				{playlist.images.length > 0 ? (
 					<img src={playlist.images.reduce((a, b) => (a.height || 0 > (b.height || 0) ? a : b)).url} />
 				) : null}
@@ -46,6 +48,13 @@ const PlaylistRoute: React.FC = () => {
 					<li>{tracks.length} Tracks</li>
 					<li>{new Duration(duration).toString('minutes')}</li>
 				</ul>
+				<Link
+					to={`/skips?filterId=${playlist.uri}&groupBy=playlist`}
+					className="absolute top-2 right-2 space-x-2"
+				>
+					<FontAwesomeIcon icon="share" />
+					<span>View all skips</span>
+				</Link>
 			</div>
 			<hr />
 			<Tracks tracks={tracks} />

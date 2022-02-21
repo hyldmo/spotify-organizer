@@ -9,14 +9,12 @@ import { ByPlaylist } from './ByPlaylist'
 import { ByTrack } from './ByTrack'
 import { toEntries } from './skipUtils'
 
-type GroupBy = 'playlist' | 'track'
-
 export const Skips: React.FC = () => {
-	const [searchParams] = useSearchParams()
+	const [searchParams, setSearchParams] = useSearchParams()
 	const [nonPlaylists, countNonPlaylists] = useState(true)
 	const [allPlaylists, showAllPlaylists] = useState(false)
-	const songIds = searchParams.get('songId')?.split(',')
-	const [groupBy, setGroupBy] = useState<GroupBy>(songIds ? 'track' : 'playlist')
+	const filterIds = searchParams.get('filterId')?.split(',')
+	const groupBy = searchParams.get('groupBy') ?? 'playlist'
 	const playlists = useSelector((s: State) => s.playlists)
 	const user = useSelector((s: State) => s.user)
 	const plays = useFirebase(`users/${user?.id}/plays/`)
@@ -59,7 +57,7 @@ export const Skips: React.FC = () => {
 							<input
 								type="checkbox"
 								checked={groupBy === 'playlist'}
-								onChange={e => setGroupBy(e.target.checked ? 'playlist' : 'track')}
+								onChange={e => setSearchParams({ groupBy: e.target.checked ? 'playlist' : 'track' })}
 							/>
 							Group by playlist
 						</label>
@@ -75,13 +73,18 @@ export const Skips: React.FC = () => {
 			<ul className="overflow-y-scroll px-4">
 				{groupBy == 'track' ? (
 					<ByTrack
-						filterIds={songIds}
+						filterIds={filterIds}
 						skipData={playlistSkips}
 						countNonPlaylists={nonPlaylists}
 						allPlaylists={allPlaylists}
 					/>
 				) : (
-					<ByPlaylist skipData={playlistSkips} countNonPlaylists={nonPlaylists} allPlaylists={allPlaylists} />
+					<ByPlaylist
+						filterIds={filterIds}
+						skipData={playlistSkips}
+						countNonPlaylists={nonPlaylists}
+						allPlaylists={allPlaylists}
+					/>
 				)}
 			</ul>
 		</div>

@@ -52,19 +52,16 @@ export type Props = {
 	filterIds?: string[]
 }
 
-export const SkipStats: React.FC<SkipStatsProps> = ({ skips = 0, plays = 0 }) => (
-	<span className="opacity-70 space-x-1 justify-end">
-		{plays == 1 ? (
-			<>
-				<span>{skips} skips</span>
-				<span>/</span>
-				<span>{plays} plays</span>
-			</>
-		) : (
-			<>
-				<span>Skipped:</span>
-				<span>{Math.min(100, Math.round((skips / plays) * 100))}%</span>
-			</>
-		)}
-	</span>
-)
+export const SkipStats: React.FC<SkipStatsProps> = ({ skips = 0, plays = 0 }) => {
+	plays = Math.max(skips, plays) // Adjust up plays as they can sometime be missed
+	return (
+		<>
+			<span className="opacity-70 align-right">{skips}</span>
+			<span className="opacity-70 text-xs">skips</span>
+			<span className="opacity-70 ">/</span>
+			<span className="opacity-70 align-right">{Math.min(plays)}</span>
+			<span className="opacity-70 text-xs">plays</span>
+			<span className="opacity-50 text-sm">({Math.round((skips / plays) * 100)}%)</span>
+		</>
+	)
+}

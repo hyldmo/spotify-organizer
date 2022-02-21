@@ -65,7 +65,10 @@ export const TrackRoute: React.FC = () => {
 							.reduce((a, b) => a + b, 0)}
 				</p>
 			</div>
-			<Link to={`/skips?songId=${track.id}`} className="col-start-3 self-center text-xl font-bold space-x-2">
+			<Link
+				to={`/skips?filterId=${track.id}&groupBy=song`}
+				className="col-start-3 self-center text-xl font-bold space-x-2"
+			>
 				<FontAwesomeIcon icon="share" />
 				<span>View all skips</span>
 			</Link>

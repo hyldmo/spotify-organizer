@@ -8,7 +8,7 @@ import { State } from 'types'
 import { idToUri } from 'utils'
 import { countSkips, findSong, Props, SkipStats } from './skipUtils'
 
-export const ByPlaylist: React.FC<Props> = ({ skipData, countNonPlaylists, allPlaylists }) => {
+export const ByPlaylist: React.FC<Props> = ({ filterIds, skipData, countNonPlaylists, allPlaylists }) => {
 	const dispatch = useDispatch()
 	const user = useSelector((s: State) => s.user)
 
@@ -16,6 +16,7 @@ export const ByPlaylist: React.FC<Props> = ({ skipData, countNonPlaylists, allPl
 	const retval = skipData
 		.filter(pl => (countNonPlaylists ? pl.uri.includes('playlist') : true))
 		.filter(pl => (allPlaylists ? pl.owner?.id === user?.id : true))
+		.filter(pl => (filterIds ? filterIds.includes(pl.id || '') || filterIds.includes(pl.uri) : true))
 		.sort((a, b) => countSkips(b) - countSkips(a))
 		.map((playlist, i, { length }) => (
 			<li key={playlist.uri} className={cn('py-2', { 'border-b-2 border-b-gray-300': i < length - 1 })}>
@@ -34,7 +35,7 @@ export const ByPlaylist: React.FC<Props> = ({ skipData, countNonPlaylists, allPl
 					<UriLink object={playlist.owner} className="col-start-2 row-start-2 ellipsis opacity-60" />
 					<span className="row-span-2 justify-self-end">Total skips: {countSkips(playlist)}</span>
 				</div>
-				<div className="p-2 grid gap-x-4 grid-cols-[auto,auto,1fr,auto] items-center justify-between">
+				<div className="p-2 grid gap-x-1 grid-cols-[auto,auto,1fr,auto,auto,auto,auto,auto,auto] items-baseline justify-between">
 					{playlist.songs
 						.filter(song => song.skips)
 						// Only show songs that are still in the playlist
@@ -46,7 +47,7 @@ export const ByPlaylist: React.FC<Props> = ({ skipData, countNonPlaylists, allPl
 								<Fragment key={id}>
 									{playlist.owner?.id == user?.id && (
 										<button
-											className="opacity-40 hover:opacity-80"
+											className="opacity-40 hover:opacity-80 mr-3"
 											onClick={_ =>
 												dispatch(
 													Actions.deleteTracks([idToUri(id, 'track')], {
@@ -64,7 +65,7 @@ export const ByPlaylist: React.FC<Props> = ({ skipData, countNonPlaylists, allPl
 											/>
 										</button>
 									)}
-									<UriLink object={song} />
+									<UriLink object={song} className="mr-4" />
 									<ArtistLinks artists={song?.artists} />
 									<SkipStats {...stats} />
 								</Fragment>
