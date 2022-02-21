@@ -1,12 +1,12 @@
-import { replace } from 'redux-first-history'
 import React from 'react'
 import { connect } from 'react-redux'
+import { push } from 'redux-first-history'
 import { State } from '../types'
 
 const mapStateToProps = (_: State) => ({})
 
 const dispatchToProps = {
-	replace
+	push
 }
 
 type Props = typeof dispatchToProps & {
@@ -31,7 +31,7 @@ class ErrorBoundary extends React.Component<Props> {
 		const { hasError } = this.state
 		if (hasError) {
 			if (location.pathname !== '/') {
-				this.props.replace('/')
+				this.props.push('/')
 			}
 			return null
 		}

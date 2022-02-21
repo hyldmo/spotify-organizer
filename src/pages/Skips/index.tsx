@@ -2,6 +2,7 @@ import cn from 'classnames'
 import { merge } from 'lodash/fp'
 import React, { useState } from 'react'
 import { useSelector } from 'react-redux'
+import { useSearchParams } from 'react-router-dom'
 import { State } from 'types'
 import { useFirebase } from 'utils'
 import { ByPlaylist } from './ByPlaylist'
@@ -11,9 +12,11 @@ import { toEntries } from './skipUtils'
 type GroupBy = 'playlist' | 'track'
 
 export const Skips: React.FC = () => {
+	const [searchParams] = useSearchParams()
 	const [nonPlaylists, countNonPlaylists] = useState(true)
 	const [allPlaylists, showAllPlaylists] = useState(false)
-	const [groupBy, setGroupBy] = useState<GroupBy>('playlist')
+	const songIds = searchParams.get('songId')?.split(',')
+	const [groupBy, setGroupBy] = useState<GroupBy>(songIds ? 'track' : 'playlist')
 	const playlists = useSelector((s: State) => s.playlists)
 	const user = useSelector((s: State) => s.user)
 	const plays = useFirebase(`users/${user?.id}/plays/`)
@@ -71,7 +74,12 @@ export const Skips: React.FC = () => {
 
 			<ul className="overflow-y-scroll px-4">
 				{groupBy == 'track' ? (
-					<ByTrack skipData={playlistSkips} countNonPlaylists={nonPlaylists} allPlaylists={allPlaylists} />
+					<ByTrack
+						filterIds={songIds}
+						skipData={playlistSkips}
+						countNonPlaylists={nonPlaylists}
+						allPlaylists={allPlaylists}
+					/>
 				) : (
 					<ByPlaylist skipData={playlistSkips} countNonPlaylists={nonPlaylists} allPlaylists={allPlaylists} />
 				)}

@@ -49,6 +49,7 @@ export type Props = {
 	countNonPlaylists: boolean
 	allPlaylists: boolean
 	skipData: PlaylistSkipEntry[]
+	filterIds?: string[]
 }
 
 export const SkipStats: React.FC<SkipStatsProps> = ({ skips = 0, plays = 0 }) => (

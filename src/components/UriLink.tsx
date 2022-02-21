@@ -29,9 +29,9 @@ export const UriLink: React.FC<Props> = props => {
 	if (isUriType(object, 'track')) {
 		const track = SongCache.get(uriToId(object.uri)) || object
 		return (
-			<a href={object?.uri} {...rest}>
+			<Link to={`/tracks/${uriToId(object.uri)}`} {...(rest as any)}>
 				{children || track?.name || track?.uri}
-			</a>
+			</Link>
 		)
 	}
 

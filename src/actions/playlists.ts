@@ -8,6 +8,11 @@ type PlaylistMeta = Playlist['id'] | { id: Playlist['id']; snapshot_id: Playlist
 export default {
 	fetchPlaylists: makeActionCreator()('FETCH_PLAYLISTS'),
 	playlistsFetched: makeActionCreator<SpotifyApi.PlaylistObjectSimplified[]>()('FETCH_PLAYLISTS_SUCCESS'),
+	fetchTrack: makeMetaActionCreator<Track['id']>()('FETCH_TRACK'),
+	fetchTrackSuccess: makeActionCreator<SpotifyApi.TrackObjectFull, Track['id']>()('FETCH_TRACK_SUCCESS'),
+
+	fetchArtistsSuccess: makeActionCreator<SpotifyApi.ArtistObjectFull[], Track['id']>()('FETCH_ARTISTS_SUCCESS'),
+
 	fetchTracks: makeMetaActionCreator<Playlist['id']>()('FETCH_TRACKS'),
 	fetchTracksProgress: makeActionCreator<number, Playlist['id']>()('FETCH_TRACKS_PROGRESS'),
 	tracksFetched: makeActionCreator<SongEntries, Playlist['id']>()('FETCH_TRACKS_SUCCESS'),

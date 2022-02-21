@@ -6,6 +6,7 @@ import { sleep } from '../utils/sleep'
 import { spotifyFetch } from './spotifyFetch'
 
 export default function* () {
+	yield* takeLatest(Actions.fetchTrack.type, getTrack)
 	yield* takeLatest(Actions.fetchTracks.type, getTracks)
 	yield* takeLeading(Actions.playlistsFetched.type, getAllTracks)
 }
@@ -27,7 +28,19 @@ function* getAllTracks(action: Action<'FETCH_PLAYLISTS_SUCCESS'>) {
 	console.info('All playlist tracks up to date')
 }
 
-export function* getTracks(action: Action<typeof Actions.fetchTracks.type>, delay?: number) {
+export function* getTrack(action: Action<'FETCH_TRACK'>) {
+	const id = action.meta
+	const track: SpotifyApi.SingleTrackResponse = yield* call(spotifyFetch, `tracks/${id}`)
+	yield* put(Actions.fetchTrackSuccess(track, id))
+
+	const artists: SpotifyApi.MultipleArtistsResponse = yield* call(
+		spotifyFetch,
+		`artists/?ids=${track.artists.map(a => a.id)}`
+	)
+	yield put(Actions.fetchArtistsSuccess(artists.artists, id))
+}
+
+export function* getTracks(action: Action<'FETCH_TRACKS'>, delay?: number) {
 	const id = action.meta
 	let tracks: SongEntries = {}
 	let response: SpotifyApi.PlaylistTrackResponse

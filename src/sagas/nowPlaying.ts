@@ -1,10 +1,11 @@
-import { call, cancelled, fork, put, select } from 'typed-redux-saga'
+import { call, cancelled, fork, put, select, take } from 'typed-redux-saga'
 import { FirebaseGet, FirebaseUrls, Playback, State, User } from 'types'
 import { firebaseGet, firebaseUpdate, sleep } from 'utils'
 import { Action, Actions } from '../actions'
 import { spotifyFetch } from './spotifyFetch'
 
 export default function* () {
+	yield* take('TOKEN_AQUIRED')
 	yield* fork(watchPlayback)
 }
 

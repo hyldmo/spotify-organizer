@@ -5,7 +5,7 @@ const NotFound: React.FC = () => {
 	const location = useLocation()
 
 	return (
-		<div>
+		<div className="p-8">
 			<h2>
 				No match for <code>{location.pathname}</code>
 			</h2>

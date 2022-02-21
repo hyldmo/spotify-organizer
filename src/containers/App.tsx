@@ -7,10 +7,11 @@ import PlaylistsManager from '../pages/Home'
 import { Header } from '../components/Header'
 import NotFound from '../pages/NotFound'
 import Notifications from '../containers/Notifications'
+import PlaylistRoute from '../pages/PlaylistRoute'
+import { TrackRoute } from '../pages/TrackRoute'
 import { State } from '../types'
 import Alerts from './Alerts'
 import Auth from './Auth'
-import TracksRoute from '../pages/PlaylistRoute'
 import { Skips } from '../pages/Skips'
 import { __DEV__ } from '../constants'
 
@@ -35,8 +36,9 @@ const App: React.FC = () => {
 						<Routes>
 							<Route path="/" element={<PlaylistsManager />} />
 							<Route path="/skips" element={<Skips />} />
-							<Route path="/playlists/:id" element={<TracksRoute />} />
-							<Route element={NotFound} />
+							<Route path="/playlists/:id" element={<PlaylistRoute />} />
+							<Route path="/tracks/:id" element={<TrackRoute />} />
+							<Route path="*" element={<NotFound />} />
 						</Routes>
 					) : (
 						<Auth />

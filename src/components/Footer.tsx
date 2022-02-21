@@ -7,7 +7,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { State } from 'types'
 import { isPlaylist } from 'utils'
 import { Time } from './Time'
-import { ArtistLinks } from './UriLink'
+import { ArtistLinks, UriLink } from './UriLink'
 
 export const Footer: React.FC = () => {
 	const dispatch = useDispatch()
@@ -38,9 +38,7 @@ export const Footer: React.FC = () => {
 					<a className="row-start-1 row-span-2" href={context?.uri || playback.item.uri}>
 						<img className="h-16" src={song.album.images[0]?.url} alt="" />
 					</a>
-					<span className="col-start-2 row-start-1 self-end ellipsis">
-						<a href={song.album.uri}>{song.name}</a>
-					</span>
+					<UriLink className="col-start-2 row-start-1 self-end ellipsis" object={song} />
 					<ArtistLinks artists={song.album.artists} className="col-start-2 row-start-2 self-start text-xs" />
 					<button
 						onClick={_ => dispatch(comingSoon)}
@@ -136,9 +134,9 @@ export const Footer: React.FC = () => {
 						{isPlaylist(context) && (
 							<span className="text-green-200 whitespace-nowrap">
 								(Playlist:{' '}
-								<a className="text-green-200 hover:text-white" href={context.uri}>
+								<UriLink className="text-green-200 hover:text-white" object={context}>
 									{currentPlaylist?.name || 'Unknown'}
-								</a>
+								</UriLink>
 								)
 							</span>
 						)}

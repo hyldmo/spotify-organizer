@@ -7,7 +7,7 @@ import { SkipEntry, SkipEntryPlaylist, State } from 'types'
 import { idToUri } from 'utils'
 import { findPlaylist, findPlays, findSong, Props, SkipStats } from './skipUtils'
 
-export const ByTrack: React.FC<Props> = ({ skipData, countNonPlaylists, allPlaylists }) => {
+export const ByTrack: React.FC<Props> = ({ filterIds, skipData, countNonPlaylists, allPlaylists }) => {
 	const dispatch = useDispatch()
 	const playlists = useSelector((s: State) => s.playlists)
 	const user = useSelector((s: State) => s.user)
@@ -30,6 +30,7 @@ export const ByTrack: React.FC<Props> = ({ skipData, countNonPlaylists, allPlayl
 	// const instead of return to reduce indentention level
 	const retval = songSkips
 		.filter(s => totalSkips(s.playlists) > 0)
+		.filter(s => (filterIds ? filterIds.includes(s.song.id || '') : true))
 		.sort((a, b) => totalSkips(b.playlists) - totalSkips(a.playlists))
 		.map(({ song, ...entry }, i, { length }) => {
 			const playlistsSkips = entry.playlists
