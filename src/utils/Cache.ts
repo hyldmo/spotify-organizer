@@ -1,62 +1,51 @@
 import localforage from 'localforage'
-import { snakeCase, startCase } from 'lodash/fp'
+import { startCase } from 'lodash/fp'
 import { Tuple } from 'types'
 
 type CacheEntry<T, K = string> = Tuple<K, Readonly<T>>
 
-const cacheKey = (id: string) => `${id}_cache_`
-
-const db = localforage.createInstance({
-	driver: localforage.INDEXEDDB,
-	name: startCase(process.env.PACKAGE_NAME),
-	storeName: snakeCase(process.env.PACKAGE_NAME)
-})
-
 export class PersistentCache<T, K extends string = string> extends Map<K, Readonly<T>> {
-	public key = ''
 	public id = ''
+	private db: LocalForage
 
 	constructor(id: string) {
 		super()
 		this.id = id
-		this.key = cacheKey(this.id)
-		PersistentCache.loadEntries<T>(this.id).then(data => data.forEach(([key, value]) => super.set(key as K, value)))
-	}
-
-	static async getAll<T>(id: string) {
-		return PersistentCache.loadEntries<T>(id)
-	}
-
-	static async getByCacheIdAndKey<T>(id: string, entryKey: string) {
-		return db.getItem<T>(cacheKey(id) + entryKey)
-	}
-
-	private static async loadEntries<T>(id: string) {
-		const key = cacheKey(id)
-		const savedKeys = await db.getItem<string[]>(cacheKey(id))
-		if (!savedKeys) return []
-
-		const entries = await Promise.all(
-			savedKeys.map(async saveKey => {
-				const savedData = await db.getItem<T>(key + saveKey)
-				return savedData ? [key, savedData] : null
-			})
-		)
-
-		return entries.filter((e): e is CacheEntry<T> => e !== null)
+		this.db = localforage.createInstance({
+			driver: localforage.INDEXEDDB,
+			name: startCase(process.env.PACKAGE_NAME),
+			storeName: this.id,
+			version: 1
+		})
+		this.loadEntries().then(data => data.forEach(([key, value]) => super.set(key as K, value)))
 	}
 
 	public set(key: K, value: T) {
+		if (key === null) return this
 		super.set(key, value)
 
-		db.setItem(this.key + key, value)
-		// As storage APIs does not implement a "getAll", create an entry with all keys in the cache
-		const keys = [...this.keys()].filter(k => k !== this.key) // Remove that entry's key from it's own list
-		db.setItem(this.key, keys)
+		this.db.setItem(key, value)
+		// As storage APIs does not implement a "getAll", create an entry with all known keys in the cache
+		const keys = [...this.keys()].filter(k => k !== 'keys') // Remove that entry's key from it's own list
+		this.db.setItem('keys', keys)
 		return this
 	}
 
 	public getAll(): Array<CacheEntry<T, K>> {
 		return [...this.entries()]
+	}
+
+	private async loadEntries() {
+		const savedKeys = await this.db.getItem<string[]>('keys')
+		if (!savedKeys) return []
+
+		const entries = await Promise.all(
+			savedKeys.map(async key => {
+				const savedData = await this.db.getItem<T>(key)
+				return savedData ? [key, savedData] : null
+			})
+		)
+
+		return entries.filter((e): e is CacheEntry<T> => e !== null)
 	}
 }

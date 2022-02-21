@@ -12,7 +12,7 @@ import {
 import { SongCache } from 'utils'
 
 // TODO: Load track from API when not found in cache
-export const findSong = (id: Track['id']) => SongCache.get(id)
+export const findSong = (id: Track['id']) => (id !== null ? SongCache.get(id) : null)
 
 export const findPlays = memoizee((id: Track['id'], playlist: PlaylistSkipEntry) => {
 	const track = playlist.songs?.find(t => t.id == id)
