@@ -17,6 +17,7 @@ export class PersistentCache<T, K extends string = string> extends Map<K, Readon
 			storeName: this.id,
 			version: 1
 		})
+		this.db.ready(console.info)
 		this.loadEntries().then(data => data.forEach(([key, value]) => super.set(key as K, value)))
 	}
 
