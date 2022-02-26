@@ -26,7 +26,7 @@ export default function user (state: User | null = null, action: Action): User |
 			if (!state) return state
 			return {
 				...state,
-				settings: settings(state?.settings, action.payload)
+				settings: settings(state.settings, action)
 			}
 
 		default:
