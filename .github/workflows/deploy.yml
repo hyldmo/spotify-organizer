@@ -30,9 +30,6 @@ jobs:
       - name: Lint CSS
         run: yarn stylelint
 
-      - name: Check formatting
-        run: yarn format:check
-
       - name: Get version number
         id: semver
         run: ./scripts/semver.sh

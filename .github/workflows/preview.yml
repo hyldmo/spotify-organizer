@@ -24,9 +24,6 @@ jobs:
       - name: Lint CSS
         run: yarn stylelint
 
-      - name: Check formatting
-        run: yarn format:check
-
       # - name: Run unit tests
       #   run: yarn test:cover
 

@@ -57,8 +57,8 @@ module.exports = {
 			enabled,
 			{
 				ignoreCase: true,
-				ignoreDeclarationSort: true
-				// allowSeparatedGroups: true
+				ignoreDeclarationSort: true,
+				allowSeparatedGroups: true
 			}
 		],
 		'linebreak-style': [enabled, 'unix'],
@@ -111,10 +111,7 @@ module.exports = {
 		'quote-props': [enabled, 'consistent-as-needed'],
 		'radix': enabled,
 		'react/prop-types': 'off',
-		'space-before-function-paren': [
-			'off', // TODO: Fix vs code actions so this can be applied
-			'always'
-		],
+		'space-before-function-paren': [enabled, 'always'],
 		'space-in-parens': enabled,
 		'spaced-comment': enabled,
 		'use-isnan': enabled,

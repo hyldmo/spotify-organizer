@@ -10,6 +10,7 @@
 		"graphql.vscode-graphql",
 		"vscode-icons-team.vscode-icons",
 		"bradlc.vscode-tailwindcss",
-		"eamodio.gitlens"
+		"eamodio.gitlens",
+		"rohit-gohri.format-code-action"
 	]
 }

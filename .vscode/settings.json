@@ -14,11 +14,12 @@
 		}
 	],
 	"editor.defaultFormatter": "esbenp.prettier-vscode",
-	"editor.formatOnSave": true,
-	"editor.codeActionsOnSave": {
-		"source.fixAll": true,
-		"source.organizeImports": true
-	},
+	"editor.formatOnSave": false,
+	"editor.codeActionsOnSave": [
+		"source.organizeImports", // Follow https://github.com/microsoft/TypeScript/issues/43141 for update on not sorting
+		"source.formatDocument", // Requires rohit-gohri.format-code-action
+		"source.fixAll.eslint"
+	],
 	"editor.rulers": [120],
 	"eslint.packageManager": "yarn",
 	"eslint.rules.customizations": [
