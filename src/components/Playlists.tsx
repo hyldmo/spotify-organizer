@@ -1,8 +1,8 @@
 import React from 'react'
-import { Actions } from '../actions'
-import Highlight from '../components/Highlight'
-import { Filters, Playlist, Sort } from '../types'
-import { getNextSortMode, getSortIcon } from '../utils'
+import { Actions } from '~/actions'
+import Highlight from '~/components/Highlight'
+import { Filters, Playlist, Sort } from '~/types'
+import { getNextSortMode, getSortIcon } from '~/utils'
 import { UriLink } from './UriLink'
 
 const headers = [

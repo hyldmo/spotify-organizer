@@ -1,6 +1,6 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import React from 'react'
-import { Playlist, Sort, User } from '../types'
+import { Playlist, Sort, User } from '~/types'
 export function getNextSortMode(isOwn: boolean, order: Sort): Sort {
 	if (!isOwn) return Sort.Desc
 

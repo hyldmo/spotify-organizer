@@ -1,5 +1,5 @@
-import { findSong } from 'pages/Skips/skipUtils'
-import { Album, Artist, Nullable, Playlist, SongEntries, SpotifyObjectType, Track, URI, UriObject } from 'types'
+import { findSong } from '~/pages/Skips/skipUtils'
+import { Album, Artist, Nullable, Playlist, SongEntries, SpotifyObjectType, Track, URI, UriObject } from '~/types'
 
 export function isPlaylist(obj: SpotifyApi.ContextObject | null | undefined): obj is SpotifyApi.ContextObject {
 	return obj?.type === 'playlist'

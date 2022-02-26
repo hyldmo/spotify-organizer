@@ -1,4 +1,4 @@
-import { ArrayElement, Tuple } from 'types'
+import { ArrayElement, Tuple } from '~/types'
 
 export class Duration {
 	static units = ['days', 'hours', 'minutes', 'seconds'] as const

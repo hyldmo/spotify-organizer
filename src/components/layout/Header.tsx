@@ -1,8 +1,8 @@
 import { startCase } from 'lodash/fp'
 import React from 'react'
 import { Link, NavLink } from 'react-router-dom'
-import { User } from '../types'
-import { UriLink } from './UriLink'
+import { User } from '~/types'
+import { UriLink } from '../UriLink'
 
 type Props = {
 	user: User | null // TODO

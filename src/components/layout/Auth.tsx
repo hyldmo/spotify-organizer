@@ -1,10 +1,10 @@
-import { replace } from 'redux-first-history'
 import React from 'react'
 import { connect } from 'react-redux'
-import { Actions } from '../actions'
-import { loginLink } from '../constants'
-import { State } from '../types'
-import { parseQueryString } from '../utils/parseQueryString'
+import { replace } from 'redux-first-history'
+import { Actions } from '~/actions'
+import { loginLink } from '~/consts'
+import { State } from '~/types'
+import { parseQueryString } from '~/utils/parseQueryString'
 
 const mapStateToProps = (state: State) => ({
 	user: state.user

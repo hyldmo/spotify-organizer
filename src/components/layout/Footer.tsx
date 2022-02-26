@@ -1,13 +1,13 @@
 /* eslint-disable max-len */
-import { Actions } from 'actions'
 import cn from 'classnames'
 import { startCase } from 'lodash/fp'
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { State } from 'types'
-import { isPlaylist } from 'utils'
-import { Time } from './Time'
-import { ArtistLinks, UriLink } from './UriLink'
+import { Actions } from '~/actions'
+import { State } from '~/types'
+import { isPlaylist } from '~/utils'
+import { Time } from '../Time'
+import { ArtistLinks, UriLink } from '../UriLink'
 
 export const Footer: React.FC = () => {
 	const dispatch = useDispatch()

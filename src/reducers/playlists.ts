@@ -1,6 +1,6 @@
-import { toPlaylist } from 'utils'
-import { Action, MetaAction } from '../actions'
-import { Playlist } from '../types'
+import { Action, MetaAction } from '~/actions'
+import { Playlist } from '~/types'
+import { toPlaylist } from '~/utils'
 
 function playlist(state: Playlist, action: MetaAction): Playlist {
 	if (state.id !== action.meta) return state

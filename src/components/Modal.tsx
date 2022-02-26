@@ -2,9 +2,9 @@ import classnames from 'classnames'
 import React from 'react'
 import { createPortal } from 'react-dom'
 import { connect } from 'react-redux'
-import { Actions } from '../actions'
-import Button from '../components/Button'
-import { State } from '../types'
+import { Actions } from '~/actions'
+import Button from '~/components/Button'
+import { State } from '~/types'
 
 type OwnProps = {
 	id: string

@@ -1,5 +1,5 @@
-import { Notification, Optional } from '../types'
-import { makeActionCreator, makeMetaActionCreator } from '../utils/actionCreator'
+import { Notification, Optional } from '~/types'
+import { makeActionCreator, makeMetaActionCreator } from '~/utils/actionCreator'
 
 export default {
 	createNotification: makeActionCreator<Optional<Notification, 'id' | 'type' | 'duration'>>()('CREATE_NOTIFICATION'),

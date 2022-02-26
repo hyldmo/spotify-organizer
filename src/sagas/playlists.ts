@@ -1,7 +1,7 @@
 import { all, call, put, select, takeEvery, takeLatest } from 'typed-redux-saga'
-import { Playlist, State, Track } from 'types'
-import { Action, Actions } from '../actions'
-import { deduplicate, partition, pullTracks, songEntriesToSongs } from '../utils'
+import { Action, Actions } from '~/actions'
+import { Playlist, State, Track } from '~/types'
+import { deduplicate, partition, pullTracks, songEntriesToSongs } from '~/utils'
 import { spotifyFetch } from './spotifyFetch'
 import { getTracks } from './tracks'
 

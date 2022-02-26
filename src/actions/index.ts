@@ -1,10 +1,10 @@
-import { FilterActions, GetMetaActions } from 'utils'
+import { FilterActions, GetMetaActions } from '~/utils'
 import modals from './modals'
 import notifications from './notifications'
+import playback from './playback'
 import playlists from './playlists'
 import timer from './timer'
 import user from './user'
-import playback from './playback'
 
 export const Actions = {
 	...modals,

@@ -1,7 +1,7 @@
-import { ActionCreator } from 'actions'
 import { useEffect, useState } from 'react'
 import { useDispatch } from 'react-redux'
-import { FirebaseGet, FirebaseUrls } from 'types'
+import { ActionCreator } from '~/actions'
+import { FirebaseGet, FirebaseUrls } from '~/types'
 import { firebaseGet, firebaseWatch } from './firebase'
 
 export function useMapDispatch<T extends Record<string, ActionCreator>>(actions: T): T {

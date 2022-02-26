@@ -1,10 +1,10 @@
-import { Actions } from 'actions'
 import cn from 'classnames'
-import { ArtistLinks, UriLink } from 'components/UriLink'
 import React, { useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { SkipEntry, SkipEntryPlaylist, State } from 'types'
-import { idToUri } from 'utils'
+import { Actions } from '~/actions'
+import { ArtistLinks, UriLink } from '~/components/UriLink'
+import { SkipEntry, SkipEntryPlaylist, State } from '~/types'
+import { idToUri } from '~/utils'
 import { findPlaylist, findPlays, findSong, Props, SkipStats } from './skipUtils'
 
 export const ByTrack: React.FC<Props> = ({ filterIds, skipData, countNonPlaylists, allPlaylists }) => {

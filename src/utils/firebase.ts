@@ -1,7 +1,7 @@
 /* eslint-disable no-restricted-imports */
 import { initializeApp } from 'firebase/app'
 import { get, getDatabase, onValue, ref, update } from 'firebase/database'
-import { FirebaseGet, FirebaseUpdates, FirebaseUrls } from 'types'
+import { FirebaseGet, FirebaseUpdates, FirebaseUrls } from '~/types'
 
 const PROJECT_ID = process.env.PACKAGE_NAME
 const REGION = 'europe-west1'

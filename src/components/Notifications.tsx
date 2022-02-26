@@ -1,11 +1,11 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import cn from 'classnames'
 import React from 'react'
 import { createPortal } from 'react-dom'
 import { useDispatch, useSelector } from 'react-redux'
-import { Notification, State } from '../types'
-import cn from 'classnames'
 import { animated, config, useTransition } from 'react-spring'
-import { Actions } from 'actions'
+import { Actions } from '~/actions'
+import { Notification, State } from '~/types'
 
 function getColor(type: Notification['type']): string {
 	switch (type) {

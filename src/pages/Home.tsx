@@ -1,13 +1,13 @@
-import { Actions } from 'actions'
-import Button from 'components/Button'
-import Input from 'components/Input'
-import Playlists from 'components/Playlists'
-import PullPlaylist from 'components/PullPlaylist'
-import Modal from 'containers/Modal'
-import Settings from 'containers/Settings'
 import React, { useMemo, useState } from 'react'
 import { connect, useSelector } from 'react-redux'
-import { OperationMode, Playlist, State as ReduxState } from 'types'
+import { Actions } from '~/actions'
+import Button from '~/components/Button'
+import Input from '~/components/Input'
+import Modal from '~/components/Modal'
+import Playlists from '~/components/Playlists'
+import PullPlaylist from '~/components/PullPlaylist'
+import Settings from '~/components/Settings'
+import { OperationMode, Playlist, State as ReduxState } from '~/types'
 import {
 	applyPlaylistsFilters,
 	CompareType,
@@ -16,7 +16,7 @@ import {
 	getDeduplicateErrors,
 	songEntriesToSongs,
 	useMapDispatch
-} from 'utils'
+} from '~/utils'
 
 const mapStateToProps = (state: ReduxState) => ({
 	playlists: state.playlists,

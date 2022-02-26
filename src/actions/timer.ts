@@ -1,4 +1,4 @@
-import { makeActionCreator } from '../utils/actionCreator'
+import { makeActionCreator } from '~/utils/actionCreator'
 
 export default {
 	startTimer: makeActionCreator<number>()('TIMER_START'),

@@ -2,7 +2,6 @@ import HtmlWebpackPlugin from 'html-webpack-plugin'
 import path from 'path'
 import { Configuration, DefinePlugin, SourceMapDevToolPlugin } from 'webpack'
 import packageJSON from '../package.json'
-import { getFolders } from './utils'
 import tsConfig from '../tsconfig.json'
 
 const context = path.resolve(__dirname, '../')
@@ -21,8 +20,15 @@ const config: Configuration = {
 
 	resolve: {
 		alias: {
-			styles: path.resolve(__dirname, 'src/styles'),
-			...getFolders(path.join(context, tsConfig.compilerOptions.baseUrl))
+			static: path.resolve(context, 'static'),
+			// Add tsConfig.compilerOptions.paths to webpack resolution
+			...Object.entries(tsConfig.compilerOptions.paths).reduce(
+				(a, [baseUrl, paths]) => ({
+					...a,
+					[baseUrl.replace('*', '')]: paths.map(p => path.resolve(context, p).replace('*', ''))
+				}),
+				{}
+			)
 		},
 		extensions: packageJSON.jest.moduleFileExtensions.map(ext => `.${ext}`)
 	},

@@ -1,7 +1,7 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import { Nullable, UriObject } from 'types'
-import { isUriType, SongCache, uriToId } from 'utils'
+import { Nullable, UriObject } from '~/types'
+import { isUriType, SongCache, uriToId } from '~/utils'
 
 interface Props extends React.HTMLProps<HTMLAnchorElement> {
 	object: Nullable<UriObject>

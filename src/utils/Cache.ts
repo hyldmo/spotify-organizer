@@ -1,6 +1,6 @@
 import localforage from 'localforage'
 import { startCase } from 'lodash/fp'
-import { Tuple } from 'types'
+import { Tuple } from '~/types'
 
 type CacheEntry<T, K = string> = Tuple<K, Readonly<T>>
 

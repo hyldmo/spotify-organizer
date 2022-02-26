@@ -1,5 +1,5 @@
 import React from 'react'
-import { OperationMode, Playlist, User } from '../types'
+import { OperationMode, Playlist, User } from '~/types'
 import { CompareType } from './deduplicate'
 import { canModifyPlaylist } from './playlist'
 

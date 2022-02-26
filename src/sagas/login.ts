@@ -1,6 +1,6 @@
 import { replace } from 'redux-first-history'
 import { call, put, takeLatest } from 'typed-redux-saga'
-import { Action, Actions } from '../actions'
+import { Action, Actions } from '~/actions'
 import { spotifyFetch } from './spotifyFetch'
 
 export default function* () {

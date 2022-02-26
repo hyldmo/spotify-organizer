@@ -1,8 +1,8 @@
 import { call, put, select, takeLatest, takeLeading } from 'typed-redux-saga'
-import { FirebaseGet, Playlist, SongEntries, State, Track } from 'types'
-import { Action, Actions } from '../actions'
-import { firebaseGet, SongCache, toTrack } from '../utils'
-import { sleep } from '../utils/sleep'
+import { Action, Actions } from '~/actions'
+import { FirebaseGet, Playlist, SongEntries, State, Track } from '~/types'
+import { firebaseGet, SongCache, toTrack } from '~/utils'
+import { sleep } from '~/utils/sleep'
 import { spotifyFetch } from './spotifyFetch'
 
 export default function* () {

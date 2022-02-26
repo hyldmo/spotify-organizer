@@ -1,4 +1,4 @@
-import { Join, PathsToStringProps, Split, ToStringProps, Traverse, User } from 'types'
+import { Join, PathsToStringProps, Split, ToStringProps, Traverse, User } from '~/types'
 import { Track, URI } from './spotify'
 
 export interface FirebaseData {

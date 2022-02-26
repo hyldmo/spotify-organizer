@@ -1,5 +1,5 @@
-import { Modal } from '../types'
-import { makeActionCreator } from '../utils'
+import { Modal } from '~/types'
+import { makeActionCreator } from '~/utils'
 
 export default {
 	registerModal: makeActionCreator<Modal['id']>()('MODAL_REGISTER'),

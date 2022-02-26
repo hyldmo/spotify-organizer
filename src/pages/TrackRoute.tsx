@@ -1,13 +1,13 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { ArtistLinks, UriLink } from 'components/UriLink'
 import { startCase, uniq } from 'lodash/fp'
 import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router'
 import { Link } from 'react-router-dom'
-import { Actions } from '../actions'
-import { State } from '../types'
-import { Duration, useFirebase } from '../utils'
+import { Actions } from '~/actions'
+import { ArtistLinks, UriLink } from '~/components/UriLink'
+import { State } from '~/types'
+import { Duration, useFirebase } from '~/utils'
 
 export const TrackRoute: React.FC = () => {
 	const dispatch = useDispatch()

@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { push } from 'redux-first-history'
-import { State } from '../types'
+import { State } from '~/types'
 
 const mapStateToProps = (_: State) => ({})
 

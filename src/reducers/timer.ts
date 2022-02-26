@@ -1,4 +1,4 @@
-import { Action } from '../actions'
+import { Action } from '~/actions'
 
 export default function user(state = 0, action: Action): number {
 	switch (action.type) {

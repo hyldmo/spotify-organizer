@@ -1,14 +1,14 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { UriLink } from 'components/UriLink'
 import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router'
 import { Link } from 'react-router-dom'
-import { Actions } from '../actions'
-import Loading from '../components/Loading'
-import Tracks from '../components/Tracks'
-import { State } from '../types'
-import { Duration, songEntriesToSongs } from '../utils'
+import { Actions } from '~/actions'
+import Loading from '~/components/Loading'
+import Tracks from '~/components/Tracks'
+import { UriLink } from '~/components/UriLink'
+import { State } from '~/types'
+import { Duration, songEntriesToSongs } from '~/utils'
 
 const PlaylistRoute: React.FC = () => {
 	const dispatch = useDispatch()

@@ -1,6 +1,6 @@
-import { Track } from 'types'
-import { Action } from '../actions'
-import { SongCache } from '../utils'
+import { Action } from '~/actions'
+import { Track } from '~/types'
+import { SongCache } from '~/utils'
 
 interface Song extends SpotifyApi.TrackObjectFull {
 	meta: Track['meta']

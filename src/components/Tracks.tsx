@@ -1,6 +1,6 @@
 import React from 'react'
-import { Track } from '../types'
-import { Duration } from '../utils'
+import { Track } from '~/types'
+import { Duration } from '~/utils'
 import { ArtistLinks, UriLink } from './UriLink'
 
 type Props = {

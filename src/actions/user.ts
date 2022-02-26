@@ -1,5 +1,5 @@
-import { Optional, User } from '../types'
-import { makeActionCreator } from '../utils/actionCreator'
+import { Optional, User } from '~/types'
+import { makeActionCreator } from '~/utils/actionCreator'
 
 export default {
 	tokenAquired: makeActionCreator<string, string | null>()('TOKEN_AQUIRED'),

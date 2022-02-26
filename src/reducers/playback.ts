@@ -1,5 +1,5 @@
-import { Playback } from 'types'
-import { Action } from '../actions'
+import { Action } from '~/actions'
+import { Playback } from '~/types'
 
 export type PlaybackState = {
 	nowPlaying: Playback | null

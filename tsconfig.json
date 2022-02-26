@@ -12,7 +12,9 @@
 		"target": "es6",
 		"esModuleInterop": true,
 		"jsx": "react",
-		"baseUrl": "src"
+		"paths": {
+			"~*": ["./src/*"]
+		}
 	},
 	"files": ["./src/types/globals.ts", "./node_modules/@types/spotify-api/index.d.ts"],
 	"include": ["./src/*"],

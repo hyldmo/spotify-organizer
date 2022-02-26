@@ -1,8 +1,8 @@
 import React from 'react'
-import { Actions } from '../actions'
-import { initialState, playlists as updateFilters } from '../reducers/filters'
-import { Playlist, Filters as PlaylistFilters, User } from '../types'
-import { applyPlaylistsFilters } from '../utils'
+import { Actions } from '~/actions'
+import { initialState, playlists as updateFilters } from '~/reducers/filters'
+import { Filters as PlaylistFilters, Playlist, User } from '~/types'
+import { applyPlaylistsFilters } from '~/utils'
 import Playlists from './Playlists'
 
 type Filters = PlaylistFilters['playlists']

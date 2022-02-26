@@ -1,6 +1,6 @@
 import { isEqual } from 'lodash/fp'
 import memoize from 'memoizee'
-import { Track } from '../types'
+import { Track } from '~/types'
 
 export enum CompareType {
 	SongId = 'SongId',

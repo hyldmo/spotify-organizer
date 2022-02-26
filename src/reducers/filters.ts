@@ -1,5 +1,5 @@
-import { Action } from '../actions'
-import { Filters, Sort } from '../types'
+import { Action } from '~/actions'
+import { Filters, Sort } from '~/types'
 
 export const initialState: Filters = {
 	playlists: {

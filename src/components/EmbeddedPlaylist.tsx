@@ -1,9 +1,9 @@
 import React from 'react'
-import { Action, Actions } from '../actions'
-import Highlight from '../components/Highlight'
-import { initialState, playlists as updateFilters } from '../reducers/filters'
-import { Playlist, Filters as PlaylistFilters } from '../types'
-import { applyPlaylistsFilters, getNextSortMode, getSortIcon } from '../utils'
+import { Action, Actions } from '~/actions'
+import Highlight from '~/components/Highlight'
+import { initialState, playlists as updateFilters } from '~/reducers/filters'
+import { Filters as PlaylistFilters, Playlist } from '~/types'
+import { applyPlaylistsFilters, getNextSortMode, getSortIcon } from '~/utils'
 
 const headers = [
 	['Name', 'name'],

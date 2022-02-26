@@ -1,4 +1,4 @@
-import { Track } from 'types'
+import { Track } from '~/types'
 import { PersistentCache } from './Cache'
 
 export * from './actionCreator'

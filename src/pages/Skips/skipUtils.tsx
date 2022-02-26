@@ -8,8 +8,8 @@ import {
 	SkipStats as SkipStatsProps,
 	Track,
 	User
-} from 'types'
-import { SongCache } from 'utils'
+} from '~/types'
+import { SongCache } from '~/utils'
 
 // TODO: Load track from API when not found in cache
 export const findSong = (id: Track['id']) => (id !== null ? SongCache.get(id) : null)

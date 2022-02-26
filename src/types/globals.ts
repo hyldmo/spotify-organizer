@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-namespace */
 import { compose } from 'redux'
-import { State } from '../types'
+import { State } from '~/types'
 
 declare global {
 	interface Window {

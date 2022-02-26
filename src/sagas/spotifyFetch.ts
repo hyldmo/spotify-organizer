@@ -1,9 +1,9 @@
-import { loginLink } from '../constants'
 import { SagaIterator } from 'redux-saga'
 import { call, put, select } from 'typed-redux-saga'
-import { Actions } from '../actions'
-import { State } from '../types'
-import { sleep } from '../utils'
+import { Actions } from '~/actions'
+import { loginLink } from '~/consts'
+import { State } from '~/types'
+import { sleep } from '~/utils'
 
 // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-constraint
 export function* spotifyFetch<T extends unknown>(

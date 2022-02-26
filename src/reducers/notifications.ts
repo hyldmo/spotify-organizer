@@ -1,5 +1,5 @@
-import { Action } from '../actions'
-import { Notification } from '../types'
+import { Action } from '~/actions'
+import { Notification } from '~/types'
 
 type State = Notification[]
 

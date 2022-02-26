@@ -1,5 +1,5 @@
-import { Action } from '../actions'
-import { User } from '../types'
+import { Action } from '~/actions'
+import { User } from '~/types'
 
 function settings(state: User['settings'], action: Action): User['settings'] {
 	switch (action.type) {

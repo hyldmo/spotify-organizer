@@ -1,13 +1,13 @@
 import { Store } from 'redux'
 import { SagaMiddleware } from 'redux-saga'
 import { cancel, fork, take } from 'typed-redux-saga'
-import { State } from '../types'
+import { State } from '~/types'
 import loginSaga from './login'
 import notificationsSaga from './notifications'
 import nowPlayingSaga from './nowPlaying'
 import playlistsSaga from './playlists'
-import tracksSaga from './tracks'
 import timer from './timer'
+import tracksSaga from './tracks'
 
 const sagas = [loginSaga, nowPlayingSaga, notificationsSaga, tracksSaga, playlistsSaga, timer]
 

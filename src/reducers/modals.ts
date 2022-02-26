@@ -1,5 +1,5 @@
-import { Action, MetaAction } from '../actions'
-import { Modal } from '../types'
+import { Action, MetaAction } from '~/actions'
+import { Modal } from '~/types'
 
 function modal(state: Modal, action: MetaAction): Modal {
 	if (action.meta === undefined || state.id !== action.meta) return state

@@ -1,6 +1,6 @@
 import { call, put, takeLatest } from 'typed-redux-saga'
-import { Action, Actions } from '../actions'
-import { sleep } from '../utils/sleep'
+import { Action, Actions } from '~/actions'
+import { sleep } from '~/utils/sleep'
 
 export default function* () {
 	yield takeLatest<ReturnType<typeof Actions.startTimer>>(Actions.startTimer.type, startTimer)

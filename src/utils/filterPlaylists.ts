@@ -1,4 +1,4 @@
-import { Filters, Playlist, Sort, User } from '../types'
+import { Filters, Playlist, Sort, User } from '~/types'
 import { compareByKey } from './sort'
 
 export function applyPlaylistsFilters(

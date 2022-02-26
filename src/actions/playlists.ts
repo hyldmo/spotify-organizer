@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/member-delimiter-style */
-import { Playlist, SongEntries, Sort, Track } from '../types'
-import { CompareType } from '../utils'
-import { makeActionCreator, makeMetaActionCreator } from '../utils/actionCreator'
+import { Playlist, SongEntries, Sort, Track } from '~/types'
+import { CompareType } from '~/utils'
+import { makeActionCreator, makeMetaActionCreator } from '~/utils/actionCreator'
 
 type PlaylistMeta = Playlist['id'] | { id: Playlist['id']; snapshot_id: Playlist['snapshot_id'] }
 
