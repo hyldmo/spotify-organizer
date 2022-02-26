@@ -8,7 +8,7 @@ export class Duration {
 	public minutes: number
 	public seconds: number
 
-	constructor(milliseconds: number) {
+	constructor (milliseconds: number) {
 		const second = 1000
 		const minute = second * 60
 		const hour = minute * 60
@@ -26,7 +26,7 @@ export class Duration {
 		this.seconds = Math.floor(milliseconds / second)
 	}
 
-	public toString(upTo?: ArrayElement<typeof Duration.units>): string {
+	public toString (upTo?: ArrayElement<typeof Duration.units>): string {
 		const values: Array<Tuple<number, string>> = []
 
 		for (const unit of Duration.units) {
@@ -40,13 +40,13 @@ export class Duration {
 			.join(' ')
 	}
 
-	public toMinutesString(): string {
+	public toMinutesString (): string {
 		const minutes = this.days * 24 * 60 + this.hours * 60 + this.minutes
 
 		return `${minutes}:${this.seconds.toString().padStart(2, '0')}`
 	}
 
-	private formatUnit(value: number, unit: string): string {
+	private formatUnit (value: number, unit: string): string {
 		if (value > 1) return `${value} ${unit}s`
 		else return `${value} ${unit}`
 	}

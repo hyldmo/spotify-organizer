@@ -16,15 +16,15 @@ export default class Root extends React.Component<unknown, State> {
 		error: null
 	}
 
-	static getDerivedStateFromError(error: Error) {
+	static getDerivedStateFromError (error: Error) {
 		return { error }
 	}
 
-	componentDidCatch(error: Error, info: React.ErrorInfo) {
+	componentDidCatch (error: Error, info: React.ErrorInfo) {
 		console.error(error, info)
 	}
 
-	render() {
+	render () {
 		const { error } = this.state
 		if (error !== null && process.env.NODE_ENV !== 'test') {
 			return <div>{JSON.stringify(error)}</div>

@@ -2,7 +2,7 @@ import { Action, MetaAction } from '~/actions'
 import { Playlist } from '~/types'
 import { toPlaylist } from '~/utils'
 
-function playlist(state: Playlist, action: MetaAction): Playlist {
+function playlist (state: Playlist, action: MetaAction): Playlist {
 	if (state.id !== action.meta) return state
 
 	switch (action.type) {
@@ -31,7 +31,7 @@ function playlist(state: Playlist, action: MetaAction): Playlist {
 	}
 }
 
-export default function playlists(state: Playlist[] = [], action: Action): Playlist[] {
+export default function playlists (state: Playlist[] = [], action: Action): Playlist[] {
 	switch (action.type) {
 		case 'FETCH_PLAYLISTS_SUCCESS':
 			return action.payload.map(p => {

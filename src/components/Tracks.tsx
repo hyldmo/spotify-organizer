@@ -51,7 +51,7 @@ const Tracks: React.FC<Props> = ({ tracks }) => {
 	)
 }
 
-function getDisplayName(addedBy: Track['meta']['added_by']): string {
+function getDisplayName (addedBy: Track['meta']['added_by']): string {
 	return addedBy === null ? 'Spotify' : addedBy.display_name || addedBy.id
 }
 

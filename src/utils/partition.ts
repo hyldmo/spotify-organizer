@@ -1,4 +1,4 @@
-export function partition<T>(array: T[], size: number): T[][] {
+export function partition<T> (array: T[], size: number): T[][] {
 	const chunkList: T[][] = []
 	const chunkCount = Math.ceil(array.length / size)
 	for (let i = 0; i < chunkCount; i++) {

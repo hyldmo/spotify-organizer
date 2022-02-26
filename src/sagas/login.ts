@@ -8,7 +8,7 @@ export default function* () {
 	yield* takeLatest('LOAD_USER', loadUser)
 }
 
-function* getUserDetails(action: Action<typeof Actions.tokenAquired.type>) {
+function* getUserDetails (action: Action<typeof Actions.tokenAquired.type>) {
 	const token = action.payload
 
 	try {
@@ -33,7 +33,7 @@ function* getUserDetails(action: Action<typeof Actions.tokenAquired.type>) {
 	}
 }
 
-function* loadUser(_: Action<typeof Actions.loadUser.type>) {
+function* loadUser (_: Action<typeof Actions.loadUser.type>) {
 	const token = localStorage.getItem('token')
 	if (token) yield* put(Actions.tokenAquired(token, null))
 }

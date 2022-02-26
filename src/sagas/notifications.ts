@@ -8,7 +8,7 @@ export default function* () {
 
 let ID = 0
 
-function* createNotification(action: Action<typeof Actions.createNotification.type>) {
+function* createNotification (action: Action<typeof Actions.createNotification.type>) {
 	const { id = ID++, duration = 5000, type = 'success', ...payload } = action.payload
 
 	const notification = { ...payload, id, duration, type }

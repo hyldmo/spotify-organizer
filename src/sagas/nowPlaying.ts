@@ -9,7 +9,7 @@ export default function* () {
 	yield* fork(watchPlayback)
 }
 
-function* watchPlayback() {
+function* watchPlayback () {
 	const initialTimeout = 3000
 
 	let timeout = initialTimeout
@@ -34,7 +34,7 @@ function* watchPlayback() {
 	}
 }
 
-function* onPlaybackUpdated(action: Action<'PLAYBACK_UPDATED'>) {
+function* onPlaybackUpdated (action: Action<'PLAYBACK_UPDATED'>) {
 	const current = yield* select((s: State) => s.playback.nowPlaying)
 	const user = yield* select((s: State) => s.user as User) // User will not be null when playback is active
 

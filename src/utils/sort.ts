@@ -1,6 +1,6 @@
 import { get } from 'lodash/fp'
 
-export function compareByKey<T>(a: T, b: T, key: string, ascending = true) {
+export function compareByKey<T> (a: T, b: T, key: string, ascending = true) {
 	const invert = ascending ? 1 : -1
 	a = get(key, a)
 	b = get(key, b)

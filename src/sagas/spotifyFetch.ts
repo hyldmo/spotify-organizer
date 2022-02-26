@@ -6,7 +6,7 @@ import { State } from '~/types'
 import { sleep } from '~/utils'
 
 // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-constraint
-export function* spotifyFetch<T extends unknown>(
+export function* spotifyFetch<T extends unknown> (
 	url: string,
 	options: RequestInit = {},
 	apiToken?: string

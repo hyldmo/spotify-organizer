@@ -1,7 +1,7 @@
 import { Action } from '~/actions'
 import { User } from '~/types'
 
-function settings(state: User['settings'], action: Action): User['settings'] {
+function settings (state: User['settings'], action: Action): User['settings'] {
 	switch (action.type) {
 		case 'USER_SETTINGS_UPDATE':
 			return {
@@ -13,7 +13,7 @@ function settings(state: User['settings'], action: Action): User['settings'] {
 	}
 }
 
-export default function user(state: User | null = null, action: Action): User | null {
+export default function user (state: User | null = null, action: Action): User | null {
 	switch (action.type) {
 		case 'USER_LOADED':
 			return {

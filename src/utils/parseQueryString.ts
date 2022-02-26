@@ -1,5 +1,5 @@
 type QueryStringResult = { [key: string]: string }
-export function parseQueryString(input: string, hash = false): QueryStringResult {
+export function parseQueryString (input: string, hash = false): QueryStringResult {
 	const queryString = input.split(hash ? '#' : '?')[1]
 	const parameters = queryString.split('&')
 	const output: QueryStringResult = {}

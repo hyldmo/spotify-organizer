@@ -8,7 +8,7 @@ export class PersistentCache<T, K extends string = string> extends Map<K, Readon
 	public id = ''
 	private db: LocalForage
 
-	constructor(id: string) {
+	constructor (id: string) {
 		super()
 		this.id = id
 		this.db = localforage.createInstance({
@@ -21,7 +21,7 @@ export class PersistentCache<T, K extends string = string> extends Map<K, Readon
 		this.loadEntries().then(data => data.forEach(([key, value]) => super.set(key as K, value)))
 	}
 
-	public set(key: K, value: T) {
+	public set (key: K, value: T) {
 		if (key === null) return this
 		super.set(key, value)
 
@@ -32,11 +32,11 @@ export class PersistentCache<T, K extends string = string> extends Map<K, Readon
 		return this
 	}
 
-	public getAll(): Array<CacheEntry<T, K>> {
+	public getAll (): Array<CacheEntry<T, K>> {
 		return [...this.entries()]
 	}
 
-	private async loadEntries() {
+	private async loadEntries () {
 		const savedKeys = await this.db.getItem<string[]>('keys')
 		if (!savedKeys) return []
 

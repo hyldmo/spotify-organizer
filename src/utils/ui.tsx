@@ -3,7 +3,7 @@ import { OperationMode, Playlist, User } from '~/types'
 import { CompareType } from './deduplicate'
 import { canModifyPlaylist } from './playlist'
 
-export function getDeduplicateErrors(
+export function getDeduplicateErrors (
 	mode: OperationMode,
 	selectedPlaylists: Playlist[],
 	secondPlaylist: Playlist | null,
@@ -23,7 +23,7 @@ export function getDeduplicateErrors(
 	return null
 }
 
-export function getCompareTypeExplanation(compareType: CompareType): Exclude<React.ReactNode, undefined> {
+export function getCompareTypeExplanation (compareType: CompareType): Exclude<React.ReactNode, undefined> {
 	const Mark: React.FC = props => <strong className="not-italic" {...props} />
 	switch (compareType) {
 		case CompareType.SongId:

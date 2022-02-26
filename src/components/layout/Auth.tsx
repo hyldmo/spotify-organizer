@@ -18,18 +18,18 @@ const dispatchToProps = {
 type Props = ReturnType<typeof mapStateToProps> & typeof dispatchToProps
 
 class Login extends React.Component<Props> {
-	componentDidMount() {
+	componentDidMount () {
 		if (location.href.indexOf('#access_token=') !== -1) {
 			const query = parseQueryString(location.href, true)
 			this.props.tokenAquired(query.access_token, query.state)
 		}
 	}
 
-	componentDidUpdate() {
+	componentDidUpdate () {
 		if (this.props.user) this.props.replace('/')
 	}
 
-	render() {
+	render () {
 		return (
 			<div className="auth">
 				<a className="button primary" href={loginLink()}>

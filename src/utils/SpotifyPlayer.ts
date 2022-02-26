@@ -1,6 +1,6 @@
 export let player: Spotify.Player | null = null
 
-export async function initializePlayer(): Promise<Spotify.Player> {
+export async function initializePlayer (): Promise<Spotify.Player> {
 	if (player !== null) return player
 
 	const script = document.createElement('script')

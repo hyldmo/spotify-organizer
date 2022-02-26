@@ -7,7 +7,7 @@ import { animated, config, useTransition } from 'react-spring'
 import { Actions } from '~/actions'
 import { Notification, State } from '~/types'
 
-function getColor(type: Notification['type']): string {
+function getColor (type: Notification['type']): string {
 	switch (type) {
 		case 'success':
 			return 'bg-green-600'

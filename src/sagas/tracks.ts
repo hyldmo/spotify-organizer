@@ -11,7 +11,7 @@ export default function* () {
 	yield* takeLeading(Actions.playlistsFetched.type, getAllTracks)
 }
 
-function* getAllTracks(action: Action<'FETCH_PLAYLISTS_SUCCESS'>) {
+function* getAllTracks (action: Action<'FETCH_PLAYLISTS_SUCCESS'>) {
 	for (const playlist of action.payload) {
 		const existing = yield* select((s: State) => s.playlists.find(pl => pl.id === playlist.id))
 		if (existing) {
@@ -28,7 +28,7 @@ function* getAllTracks(action: Action<'FETCH_PLAYLISTS_SUCCESS'>) {
 	console.info('All playlist tracks up to date')
 }
 
-export function* getTrack(action: Action<'FETCH_TRACK'>) {
+export function* getTrack (action: Action<'FETCH_TRACK'>) {
 	const id = action.meta
 	const track: SpotifyApi.SingleTrackResponse = yield* call(spotifyFetch, `tracks/${id}`)
 	yield* put(Actions.fetchTrackSuccess(track, id))
@@ -40,7 +40,7 @@ export function* getTrack(action: Action<'FETCH_TRACK'>) {
 	yield put(Actions.fetchArtistsSuccess(artists.artists, id))
 }
 
-export function* getTracks(action: Action<'FETCH_TRACKS'>, delay?: number) {
+export function* getTracks (action: Action<'FETCH_TRACKS'>, delay?: number) {
 	const id = action.meta
 	let tracks: SongEntries = {}
 	let response: SpotifyApi.PlaylistTrackResponse
@@ -66,7 +66,7 @@ export function* getTracks(action: Action<'FETCH_TRACKS'>, delay?: number) {
 		if (delay) yield* call(sleep, delay)
 	} while (response.next !== null)
 
-	function* waitForPlaylists(): IterableIterator<any> {
+	function* waitForPlaylists (): IterableIterator<any> {
 		const playlist: Playlist | undefined = yield* select((s: State) => s.playlists.find(p => p.id === id))
 		if (playlist) return
 		yield* call(sleep, 100)

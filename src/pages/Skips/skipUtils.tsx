@@ -26,7 +26,7 @@ export const findPlaylist = memoizee((uri: string, playlists: Playlist[], owner?
 
 export const countSkips = (playlist: PlaylistSkipEntry) => playlist.songs.reduce((a, b) => a + (b.skips || 0), 0)
 
-export function toEntries<K extends 'skips' | 'plays'>(
+export function toEntries<K extends 'skips' | 'plays'> (
 	entries: FirebaseUserData[K] | FirebaseUserData[K],
 	key: K,
 	playlists: Playlist[]

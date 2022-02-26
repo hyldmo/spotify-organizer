@@ -11,7 +11,7 @@ export default function* () {
 	yield* takeEvery('PLAYLIST_DELETE_TRACKS', deleteTracks)
 }
 
-function* getPlaylists() {
+function* getPlaylists () {
 	let playlists: SpotifyApi.ListOfCurrentUsersPlaylistsResponse['items'] = []
 	let response: SpotifyApi.ListOfCurrentUsersPlaylistsResponse | null
 	const limit = 50
@@ -26,7 +26,7 @@ function* getPlaylists() {
 	yield* put(Actions.playlistsFetched(playlists))
 }
 
-function* deleteTracks(action: Action<'PLAYLIST_DELETE_TRACKS'>) {
+function* deleteTracks (action: Action<'PLAYLIST_DELETE_TRACKS'>) {
 	const { payload, meta } = action
 	const id = typeof meta === 'string' ? meta : meta.id
 	const body = {
@@ -45,7 +45,7 @@ function* deleteTracks(action: Action<'PLAYLIST_DELETE_TRACKS'>) {
 	}
 }
 
-function* deduplicatePlaylists(action: Action<'DEDUPLICATE_PLAYLISTS'>) {
+function* deduplicatePlaylists (action: Action<'DEDUPLICATE_PLAYLISTS'>) {
 	const {
 		payload: { source, target },
 		meta: compareMode

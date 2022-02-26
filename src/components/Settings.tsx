@@ -15,7 +15,7 @@ const dispatchToProps = {
 type Props = ReturnType<typeof mapStateToProps> & typeof dispatchToProps
 
 class Settings extends React.Component<Props> {
-	render() {
+	render () {
 		const { filters, hideEmpty, updateOwned } = this.props
 
 		return (

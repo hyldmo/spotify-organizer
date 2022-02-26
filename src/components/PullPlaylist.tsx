@@ -1,7 +1,7 @@
 import React from 'react'
 import { Actions } from '~/actions'
 import { initialState, playlists as updateFilters } from '~/reducers/filters'
-import { Filters as PlaylistFilters, Playlist, User } from '~/types'
+import { Playlist, Filters as PlaylistFilters, User } from '~/types'
 import { applyPlaylistsFilters } from '~/utils'
 import Playlists from './Playlists'
 
@@ -23,7 +23,7 @@ type State = {
 }
 
 class PullPlaylist extends React.Component<Props, State> {
-	constructor(props: Props) {
+	constructor (props: Props) {
 		super(props)
 
 		this.state = {
@@ -32,22 +32,22 @@ class PullPlaylist extends React.Component<Props, State> {
 		}
 	}
 
-	updateAFilters(action: any) {
+	updateAFilters (action: any) {
 		const newState = updateFilters(this.state.aFilters, action)
 		this.setState({ aFilters: newState })
 	}
-	updateBFilters(action: any) {
+	updateBFilters (action: any) {
 		const newState = updateFilters(this.state.bFilters, action)
 		this.setState({ bFilters: newState })
 	}
 
-	handleRadioClick(id: string) {
+	handleRadioClick (id: string) {
 		const playlist = this.props.playlists.find(p => p.id === id)
 		this.setState({ playlistToRemoveFrom: playlist })
 		this.props.onPlaylistSelect(playlist as Playlist)
 	}
 
-	render() {
+	render () {
 		const { playlists, select, selectAll, user } = this.props
 		const { aFilters, bFilters, playlistToRemoveFrom } = this.state
 		const aPlaylists = applyPlaylistsFilters(playlists, aFilters).filter(pl =>

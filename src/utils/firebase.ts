@@ -21,7 +21,7 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig)
 const db = getDatabase(app)
 
-export function firebaseWatch<T extends FirebaseUrls>(url: T, onUpdate: (value: FirebaseGet<T>) => void) {
+export function firebaseWatch<T extends FirebaseUrls> (url: T, onUpdate: (value: FirebaseGet<T>) => void) {
 	const key = url.endsWith('/') ? url.slice(0, -1) : url
 	const resource = ref(db, key)
 
@@ -30,17 +30,17 @@ export function firebaseWatch<T extends FirebaseUrls>(url: T, onUpdate: (value: 
 	})
 }
 
-export async function firebaseGet<T extends FirebaseUrls>(url: T): Promise<FirebaseGet<T> | null> {
+export async function firebaseGet<T extends FirebaseUrls> (url: T): Promise<FirebaseGet<T> | null> {
 	const key = url.endsWith('/') ? url.slice(0, -1) : url
 	const res = await get(ref(db, key))
 	return res.val()
 }
 
-export async function firebaseUpdate<T extends FirebaseUrls>(url: T, value: unknown) {
+export async function firebaseUpdate<T extends FirebaseUrls> (url: T, value: unknown) {
 	const key = url.endsWith('/') ? url.slice(0, -1) : url
 	return update(ref(db), { [key]: value })
 }
 
-export async function firebaseUpdateMultiple(updates: FirebaseUpdates) {
+export async function firebaseUpdateMultiple (updates: FirebaseUpdates) {
 	return update(ref(db), updates)
 }

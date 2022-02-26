@@ -14,9 +14,9 @@ const sagas = [loginSaga, nowPlayingSaga, notificationsSaga, tracksSaga, playlis
 export const CANCEL_SAGAS_HMR = 'CANCEL_SAGAS_HMR'
 
 // TODO: Add proper typing
-function createAbortableSaga(saga: any) {
+function createAbortableSaga (saga: any) {
 	if (process.env.NODE_ENV === 'development') {
-		return function* main() {
+		return function* main () {
 			const sagaTask = yield* fork(saga)
 
 			yield* take(CANCEL_SAGAS_HMR)
@@ -28,11 +28,11 @@ function createAbortableSaga(saga: any) {
 }
 
 const SagaManager = {
-	startSagas(sagaMiddleware: SagaMiddleware<any>) {
+	startSagas (sagaMiddleware: SagaMiddleware<any>) {
 		sagas.map(createAbortableSaga).forEach(saga => sagaMiddleware.run(saga))
 	},
 
-	cancelSagas(store: Store<State>) {
+	cancelSagas (store: Store<State>) {
 		store.dispatch({
 			type: CANCEL_SAGAS_HMR
 		})

@@ -31,17 +31,17 @@ const dispatchToProps = {
 type Props = OwnProps & ReturnType<typeof mapStateToProps> & typeof dispatchToProps
 
 class Modal extends React.Component<Props> {
-	componentDidMount() {
+	componentDidMount () {
 		const { registerModal, id } = this.props
 		registerModal(id)
 	}
 
-	componentWillUnmount() {
+	componentWillUnmount () {
 		const { unregisterModal, id } = this.props
 		unregisterModal(id)
 	}
 
-	render() {
+	render () {
 		const { id, open, centered, disabled, changeModal, children, onConfirm } = this.props
 		const Component = React.cloneElement(this.props.component, {
 			onClick: () => !disabled && changeModal(true, id)

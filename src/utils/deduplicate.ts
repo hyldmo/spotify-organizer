@@ -17,7 +17,7 @@ const simplifyTrack = memoize((track: Track) => ({
 	duration: track.duration_ms
 }))
 
-export function compareTrack(trackA: Track, trackB: Track, compareType: CompareType): boolean {
+export function compareTrack (trackA: Track, trackB: Track, compareType: CompareType): boolean {
 	const a = simplifyTrack(trackA)
 	const b = simplifyTrack(trackB)
 
@@ -42,7 +42,7 @@ export function compareTrack(trackA: Track, trackB: Track, compareType: CompareT
  * @param compareType The comparison type. Note that tracks are always compared by track and artist id
  * @returns Returns the tracks are duplicates.
  */
-export function deduplicate(tracks: Track[], compareType = CompareType.SongId): Track[] {
+export function deduplicate (tracks: Track[], compareType = CompareType.SongId): Track[] {
 	tracks = tracks.slice()
 	tracks = tracks
 		.sort((a, b) => a.meta.index - b.meta.index)
@@ -62,6 +62,6 @@ export function deduplicate(tracks: Track[], compareType = CompareType.SongId): 
  * @param tracksToRemove The tracks to remove from the source playlist.
  * @returns Returns the tracks that should be removed from source.
  */
-export function pullTracks(source: Track[], compareType = CompareType.SongId, tracksToRemove: Track[]): Track[] {
+export function pullTracks (source: Track[], compareType = CompareType.SongId, tracksToRemove: Track[]): Track[] {
 	return source.filter(a => tracksToRemove.some(b => compareTrack(a, b, compareType)))
 }

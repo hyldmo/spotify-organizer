@@ -18,16 +18,16 @@ class ErrorBoundary extends React.Component<Props> {
 		hasError: false
 	}
 
-	static getDerivedStateFromError() {
+	static getDerivedStateFromError () {
 		// Update state so the next render will show the fallback UI.
 		return { hasError: true }
 	}
 
-	componentDidCatch(error: Error, info: React.ErrorInfo) {
+	componentDidCatch (error: Error, info: React.ErrorInfo) {
 		console.error(error, info)
 	}
 
-	render() {
+	render () {
 		const { hasError } = this.state
 		if (hasError) {
 			if (location.pathname !== '/') {

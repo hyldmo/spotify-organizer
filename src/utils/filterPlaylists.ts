@@ -1,7 +1,7 @@
 import { Filters, Playlist, Sort, User } from '~/types'
 import { compareByKey } from './sort'
 
-export function applyPlaylistsFilters(
+export function applyPlaylistsFilters (
 	playlists: Playlist[],
 	filters: Filters['playlists'],
 	user?: User | null
