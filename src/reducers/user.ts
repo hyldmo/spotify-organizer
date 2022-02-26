@@ -18,7 +18,7 @@ export default function user (state: User | null = null, action: Action): User |
 		case 'USER_LOADED':
 			return {
 				...action.payload,
-				settings: action.payload.settings ?? state?.settings ?? { watchSkips: true }
+				settings: action.payload.settings ?? state?.settings ?? { minSkips: 0, watchSkips: true }
 			}
 		case 'USER_LOGOUT':
 			return null

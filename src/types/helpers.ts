@@ -49,3 +49,11 @@ export type AtLeastOne<T, U = { [K in keyof T]: Pick<T, K> }> = Partial<T> & U[k
 
 /** Exclude empty objects */
 export type ExcludeEmpty<T> = T extends AtLeastOne<T> ? T : never
+
+/**
+ * Like React.DetailedHTMLProps, except T will replace props found DetailedHTMLProps's props
+ */
+export type HTMLElementProps<
+	E extends keyof JSX.IntrinsicElements = 'main',
+	T extends Obj = Record<never, never>
+> = Augment<JSX.IntrinsicElements[E], T>

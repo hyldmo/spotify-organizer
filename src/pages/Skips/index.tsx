@@ -1,9 +1,11 @@
+/* eslint-disable radix */
 import cn from 'classnames'
 import { merge } from 'lodash/fp'
 import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useSearchParams } from 'react-router-dom'
 import { Actions } from '~/actions'
+import Input from '~/components/Input'
 import { State } from '~/types'
 import { useFirebase } from '~/utils'
 import { ByPlaylist } from './ByPlaylist'
@@ -21,6 +23,7 @@ export const Skips: React.FC = () => {
 	const user = useSelector((s: State) => s.user)
 	const plays = useFirebase(`users/${user?.id}/plays/`)
 	const skips = useFirebase(`users/${user?.id}/skips/`)
+	if (!user) return null
 
 	const playlistSkips = Object.values(
 		merge(
@@ -31,54 +34,62 @@ export const Skips: React.FC = () => {
 
 	return (
 		<div className="max-h-full grid grid-rows-[auto,1fr] grid-cols-1">
-			<header className={cn('pt-4 px-4', 'grid grid-cols-[auto,auto] gap-x-4 justify-between items-end')}>
+			<header className={cn('pt-4 px-4', 'grid grid-cols-[auto,auto] gap-x-4 justify-between items-start')}>
 				<h2 className="col-start-1 text-2xl self-end">Most skipped songs</h2>
-				<ul className="col-start-2 row-span-2">
+				<ul className="col-start-2 row-span-3">
 					<li>
-						<label className="flex items-center gap-x-2">
-							<input
-								type="checkbox"
-								checked={nonPlaylists}
-								onChange={e => countNonPlaylists(e.target.checked)}
-							/>
-							Hide skips that are not from your playlists
-						</label>
+						<Input
+							label="Hide skips that are not from your playlists"
+							className="flex items-center gap-x-2"
+							type="checkbox"
+							checked={nonPlaylists}
+							onChange={e => countNonPlaylists(e.target.checked)}
+						/>
 					</li>
 					<li>
-						<label className="flex items-center gap-x-2">
-							<input
-								type="checkbox"
-								checked={allPlaylists}
-								onChange={e => showAllPlaylists(e.target.checked)}
-							/>
-							Show all playlists the songs belong to
-						</label>
+						<Input
+							label="Show all playlists the songs belong to"
+							className="flex items-center gap-x-2"
+							type="checkbox"
+							checked={allPlaylists}
+							onChange={e => showAllPlaylists(e.target.checked)}
+						/>
 					</li>
 					<li>
-						<label className="flex items-center gap-x-2">
-							<input
-								type="checkbox"
-								checked={groupBy === 'playlist'}
-								onChange={e => setSearchParams({ groupBy: e.target.checked ? 'playlist' : 'track' })}
-							/>
-							Group by playlist
-						</label>
+						<Input
+							label="Group by playlist"
+							className="flex items-center gap-x-2"
+							type="checkbox"
+							checked={groupBy === 'playlist'}
+							onChange={e => setSearchParams({ groupBy: e.target.checked ? 'playlist' : 'track' })}
+						/>
 					</li>
 					<li>
-						<label className="flex items-center gap-x-2">
-							<input
-								type="checkbox"
-								checked={user?.settings.watchSkips}
-								onChange={e => dispatch(Actions.updateSettings(e.target.checked, 'watchSkips'))}
-							/>
-							Watch skips
-						</label>
+						<Input
+							label="Watch skips"
+							className="flex items-center gap-x-2"
+							type="checkbox"
+							checked={user.settings.watchSkips}
+							onChange={e => dispatch(Actions.updateSettings(e.target.checked, 'watchSkips'))}
+						/>
 					</li>
 				</ul>
 				<p>
 					Keep this app on while listening on Spotify, and it will detect which songs you&apos;re skipping and
 					from which playlists.
 				</p>
+				<Input
+					label="Minimum skips"
+					labelClassName="col-start-1"
+					className={cn(
+						'px-1.5 rounded bg-transparent outline-none border-2',
+						'border-gray-600 hover:border-gray-400 focus:border-gray-300'
+					)}
+					type="number"
+					min={0}
+					value={user.settings.minSkips}
+					onChange={e => dispatch(Actions.updateSettings(Number.parseInt(e.target.value), 'minSkips'))}
+				/>
 				<hr className="mt-4 border-t-2 col-span-2 border-t-gray-300" />
 			</header>
 
@@ -89,6 +100,7 @@ export const Skips: React.FC = () => {
 						skipData={playlistSkips}
 						countNonPlaylists={nonPlaylists}
 						allPlaylists={allPlaylists}
+						minSkips={user.settings.minSkips}
 					/>
 				) : (
 					<ByPlaylist
@@ -96,6 +108,7 @@ export const Skips: React.FC = () => {
 						skipData={playlistSkips}
 						countNonPlaylists={nonPlaylists}
 						allPlaylists={allPlaylists}
+						minSkips={user.settings.minSkips}
 					/>
 				)}
 			</ul>

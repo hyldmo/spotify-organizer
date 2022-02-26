@@ -50,6 +50,7 @@ export type Props = {
 	allPlaylists: boolean
 	skipData: PlaylistSkipEntry[]
 	filterIds?: string[]
+	minSkips: number
 }
 
 export const SkipStats: React.FC<SkipStatsProps> = ({ skips = 0, plays = 0 }) => {

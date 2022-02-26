@@ -7,7 +7,7 @@ import { SkipEntry, SkipEntryPlaylist, State } from '~/types'
 import { idToUri } from '~/utils'
 import { findPlaylist, findPlays, findSong, Props, SkipStats } from './skipUtils'
 
-export const ByTrack: React.FC<Props> = ({ filterIds, skipData, countNonPlaylists, allPlaylists }) => {
+export const ByTrack: React.FC<Props> = ({ filterIds, skipData, countNonPlaylists, allPlaylists, minSkips }) => {
 	const dispatch = useDispatch()
 	const playlists = useSelector((s: State) => s.playlists)
 	const user = useSelector((s: State) => s.user)
@@ -68,35 +68,37 @@ export const ByTrack: React.FC<Props> = ({ filterIds, skipData, countNonPlaylist
 						</span>
 					</div>
 					<ul className="p-2">
-						{entry.playlists.map(playlist => (
-							<li key={playlist.uri} className="flex justify-between">
-								<span className="space-x-4">
-									{(playlist.uri as string) !== 'unknown' && playlist.id ? (
-										<>
-											<UriLink object={playlist} />
-											<button
-												className="opacity-80 hover:opacity-100"
-												onClick={_ =>
-													dispatch(
-														Actions.deleteTracks([song.uri], {
-															id: playlist.id as string,
-															snapshot_id: playlist.snapshot_id as string
-														})
-													)
-												}
-											>
-												Remove song from this list
-											</button>
-										</>
-									) : (
-										<span>Unknown playlist</span>
-									)}
-								</span>
-								<span className="space-x-1">
-									<SkipStats skips={playlist.skips} plays={playlist.plays} />
-								</span>
-							</li>
-						))}
+						{entry.playlists
+							.filter(pl => pl.skips >= minSkips)
+							.map((playlist, j) => (
+								<li key={playlist.uri + j} className="flex justify-between">
+									<span className="space-x-4">
+										{(playlist.uri as string) !== 'unknown' && playlist.id ? (
+											<>
+												<UriLink object={playlist} />
+												<button
+													className="opacity-80 hover:opacity-100"
+													onClick={_ =>
+														dispatch(
+															Actions.deleteTracks([song.uri], {
+																id: playlist.id as string,
+																snapshot_id: playlist.snapshot_id as string
+															})
+														)
+													}
+												>
+													Remove song from this list
+												</button>
+											</>
+										) : (
+											<span>Unknown playlist</span>
+										)}
+									</span>
+									<span className="space-x-1">
+										<SkipStats skips={playlist.skips} plays={playlist.plays} />
+									</span>
+								</li>
+							))}
 					</ul>
 				</li>
 			)

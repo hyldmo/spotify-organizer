@@ -18,6 +18,7 @@ export type User = Omit<SpotifyApi.UserObjectPublic, 'display_name'> & {
 	token: string
 
 	settings: {
+		minSkips: number
 		watchSkips: boolean
 	}
 }

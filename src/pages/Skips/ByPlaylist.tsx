@@ -8,7 +8,7 @@ import { State } from '~/types'
 import { idToUri } from '~/utils'
 import { countSkips, findSong, Props, SkipStats } from './skipUtils'
 
-export const ByPlaylist: React.FC<Props> = ({ filterIds, skipData, countNonPlaylists, allPlaylists }) => {
+export const ByPlaylist: React.FC<Props> = ({ filterIds, skipData, countNonPlaylists, allPlaylists, minSkips }) => {
 	const dispatch = useDispatch()
 	const user = useSelector((s: State) => s.user)
 
@@ -19,7 +19,7 @@ export const ByPlaylist: React.FC<Props> = ({ filterIds, skipData, countNonPlayl
 		.filter(pl => (filterIds ? filterIds.includes(pl.id || '') || filterIds.includes(pl.uri) : true))
 		.sort((a, b) => countSkips(b) - countSkips(a))
 		.map((playlist, i, { length }) => (
-			<li key={playlist.uri} className={cn('py-2', { 'border-b-2 border-b-gray-300': i < length - 1 })}>
+			<li key={playlist.uri + i} className={cn('py-2', { 'border-b-2 border-b-gray-300': i < length - 1 })}>
 				<div
 					className={cn(
 						'grid grid-rows-2 grid-cols-[auto,3fr,1fr] grid-flow-col items-center',
@@ -35,16 +35,17 @@ export const ByPlaylist: React.FC<Props> = ({ filterIds, skipData, countNonPlayl
 					<UriLink object={playlist.owner} className="col-start-2 row-start-2 ellipsis opacity-60" />
 					<span className="row-span-2 justify-self-end">Total skips: {countSkips(playlist)}</span>
 				</div>
-				<div className="p-2 grid gap-x-1 grid-cols-[auto,auto,1fr,auto,auto,auto,auto,auto,auto] items-baseline justify-between">
+				<div className="p-2 grid gap-x-1 grid-cols-[auto,auto,minmax(35%,1fr),repeat(6,auto)] items-baseline">
 					{playlist.songs
-						.filter(song => song.skips)
+						.filter(({ skips = 0 }) => skips >= minSkips)
 						// Only show songs that are still in the playlist
 						.filter(song => playlist.tracks?.items[song.id] !== undefined)
-						.map(({ id, ...stats }) => {
+						.sort((a, b) => (b.skips || 0) - (a.skips || 0))
+						.map(({ id, ...stats }, j) => {
 							const song = findSong(id)
 							if (song === undefined) return null
 							return (
-								<Fragment key={id}>
+								<Fragment key={id + j}>
 									{playlist.owner?.id == user?.id && (
 										<button
 											className="opacity-40 hover:opacity-80 mr-3"
