@@ -1,7 +1,8 @@
+import { Actions } from 'actions'
 import cn from 'classnames'
 import { merge } from 'lodash/fp'
 import React, { useState } from 'react'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { useSearchParams } from 'react-router-dom'
 import { State } from 'types'
 import { useFirebase } from 'utils'
@@ -10,6 +11,7 @@ import { ByTrack } from './ByTrack'
 import { toEntries } from './skipUtils'
 
 export const Skips: React.FC = () => {
+	const dispatch = useDispatch()
 	const [searchParams, setSearchParams] = useSearchParams()
 	const [nonPlaylists, countNonPlaylists] = useState(true)
 	const [allPlaylists, showAllPlaylists] = useState(false)
@@ -60,6 +62,16 @@ export const Skips: React.FC = () => {
 								onChange={e => setSearchParams({ groupBy: e.target.checked ? 'playlist' : 'track' })}
 							/>
 							Group by playlist
+						</label>
+					</li>
+					<li>
+						<label className="flex items-center gap-x-2">
+							<input
+								type="checkbox"
+								checked={user?.settings.watchSkips}
+								onChange={e => dispatch(Actions.updateSettings(e.target.checked, 'watchSkips'))}
+							/>
+							Watch skips
 						</label>
 					</li>
 				</ul>

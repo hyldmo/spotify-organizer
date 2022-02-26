@@ -39,8 +39,9 @@ function* onPlaybackUpdated(action: Action<'PLAYBACK_UPDATED'>) {
 	const user = yield* select((s: State) => s.user as User) // User will not be null when playback is active
 
 	if (current && action.payload.item.id !== current.item.id) {
-		const { item: song, context, progress_ms } = current
-		const percent = ((progress_ms || 0) / song.duration_ms) * 100
+		const { item: song, context } = current
+		const progress_ms = current.progress_ms ?? 0
+		const percent = (progress_ms / song.duration_ms) * 100
 
 		const plays: FirebaseGet<`users/${string}/plays/spotify:playlist:${string}/${string}/`> = (yield* call(
 			firebaseGet,
@@ -50,7 +51,8 @@ function* onPlaybackUpdated(action: Action<'PLAYBACK_UPDATED'>) {
 		const updatePlaysId: FirebaseUrls = `users/${user.id}/plays/${context?.uri || 'unknown'}/${song.id}/`
 		yield* call(firebaseUpdate, updatePlaysId, (plays || 0) + 1)
 
-		if (percent < 80) {
+		// Detect skip based on seconds left in song and percent completed
+		if (song.duration_ms - progress_ms > 10000 && percent < 80 && user.settings.watchSkips) {
 			yield put(Actions.songSkipped(song, context))
 
 			const skips: FirebaseGet<`users/${string}/plays/spotify:playlist:${string}/${string}/`> = yield* call(

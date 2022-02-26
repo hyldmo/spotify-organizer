@@ -16,6 +16,10 @@ export type User = Omit<SpotifyApi.UserObjectPublic, 'display_name'> & {
 	name: string | null
 	image: string | null
 	token: string
+
+	settings: {
+		watchSkips: boolean
+	}
 }
 
 export interface TrackMeta {
