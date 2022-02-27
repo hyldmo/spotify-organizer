@@ -3,13 +3,11 @@ import { startCase } from 'lodash/fp'
 import React from 'react'
 import { useSelector } from 'react-redux'
 import { UriLink } from '~/components/UriLink'
-import { Playback, State } from '~/types'
+import { State } from '~/types'
 import { isPlaylist } from '~/utils'
 
-type StatusBarProps = {
-	playback: Playback | null
-}
-export const StatusBar: React.FC<StatusBarProps> = ({ playback }) => {
+export const StatusBar: React.FC = () => {
+	const playback = useSelector((s: State) => s.playback.nowPlaying)
 	const playlists = useSelector((s: State) => s.playlists)
 	const currentPlaylist = playlists.find(pl => pl.uri == playback?.context?.uri)
 	return (
