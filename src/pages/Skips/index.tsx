@@ -1,6 +1,5 @@
 /* eslint-disable radix */
 import cn from 'classnames'
-import { merge } from 'lodash/fp'
 import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useSearchParams } from 'react-router-dom'
@@ -10,33 +9,42 @@ import { State } from '~/types'
 import { useFirebase } from '~/utils'
 import { ByPlaylist } from './ByPlaylist'
 import { ByTrack } from './ByTrack'
-import { toEntries } from './skipUtils'
+import { merge as mergeEntries, toEntries } from './skipUtils'
 
 export const Skips: React.FC = () => {
 	const dispatch = useDispatch()
 	const [searchParams, setSearchParams] = useSearchParams()
-	const [nonPlaylists, countNonPlaylists] = useState(true)
+	const [nonPlaylists, countNonPlaylists] = useState(false)
 	const [allPlaylists, showAllPlaylists] = useState(false)
 	const filterIds = searchParams.get('filterId')?.split(',')
 	const groupBy = searchParams.get('groupBy') ?? 'playlist'
 	const playlists = useSelector((s: State) => s.playlists)
 	const user = useSelector((s: State) => s.user)
-	const plays = useFirebase(`users/${user?.id}/plays/`)
-	const skips = useFirebase(`users/${user?.id}/skips/`)
+	const plays = useFirebase(`users/${user?.id}/plays/`) || {}
+	const skips = useFirebase(`users/${user?.id}/skips/`) || {}
 	if (!user) return null
 
-	const playlistSkips = Object.values(
-		merge(
-			plays ? toEntries(plays, 'plays', playlists) : [], //
-			skips ? toEntries(skips, 'skips', playlists) : []
-		)
-	)
+	const playlistSkips = toEntries(mergeEntries(plays, skips), playlists)
 
 	return (
 		<div className="max-h-full grid grid-rows-[auto,1fr] grid-cols-1">
 			<header className={cn('pt-4 px-4', 'grid grid-cols-[auto,auto] gap-x-4 justify-between items-start')}>
 				<h2 className="col-start-1 text-2xl self-end">Most skipped songs</h2>
 				<ul className="col-start-2 row-span-3">
+					<li>
+						<Input
+							label="Group by playlist"
+							className="flex items-center gap-x-2"
+							type="checkbox"
+							checked={groupBy === 'playlist'}
+							onChange={e =>
+								setSearchParams(
+									{ groupBy: e.target.checked ? 'playlist' : 'track' },
+									{ replace: false }
+								)
+							}
+						/>
+					</li>
 					<li>
 						<Input
 							label="Hide skips that are not from your playlists"
@@ -48,20 +56,11 @@ export const Skips: React.FC = () => {
 					</li>
 					<li>
 						<Input
-							label="Show all playlists the songs belong to"
+							label="Only show playlists you own"
 							className="flex items-center gap-x-2"
 							type="checkbox"
 							checked={allPlaylists}
 							onChange={e => showAllPlaylists(e.target.checked)}
-						/>
-					</li>
-					<li>
-						<Input
-							label="Group by playlist"
-							className="flex items-center gap-x-2"
-							type="checkbox"
-							checked={groupBy === 'playlist'}
-							onChange={e => setSearchParams({ groupBy: e.target.checked ? 'playlist' : 'track' })}
 						/>
 					</li>
 					<li>

@@ -1,5 +1,5 @@
+import { merge as _merge } from 'lodash/fp'
 import memoizee from 'memoizee'
-import React from 'react'
 import {
 	FirebaseUserData,
 	Nullable,
@@ -7,6 +7,7 @@ import {
 	PlaylistSkipEntry,
 	SkipStats as SkipStatsProps,
 	Track,
+	URI,
 	User
 } from '~/types'
 import { SongCache } from '~/utils'
@@ -26,11 +27,13 @@ export const findPlaylist = memoizee((uri: string, playlists: Playlist[], owner?
 
 export const countSkips = (playlist: PlaylistSkipEntry) => playlist.songs.reduce((a, b) => a + (b.skips || 0), 0)
 
-export function toEntries<K extends 'skips' | 'plays'> (
-	entries: FirebaseUserData[K] | FirebaseUserData[K],
-	key: K,
-	playlists: Playlist[]
-) {
+type MergedSkipEntry = {
+	[uri: URI]: {
+		[songId: Track['id']]: SkipStatsProps
+	}
+}
+
+export function toEntries (entries: MergedSkipEntry, playlists: Playlist[]) {
 	return Object.entries(entries).map(([playlistUri, songs]) => {
 		const playlist = findPlaylist(playlistUri, playlists) || {
 			uri: playlistUri as PlaylistSkipEntry['uri']
@@ -39,10 +42,27 @@ export function toEntries<K extends 'skips' | 'plays'> (
 			...playlist,
 			songs: Object.entries(songs).map(([songId, value]) => ({
 				id: songId,
-				[key]: value
+				...value
 			}))
 		}
 	})
+}
+
+// eslint-disable-next-line @typescript-eslint/ban-types
+export function objectMap<T extends {}> (obj: T, func: (value: T[typeof key], key: keyof T) => void) {
+	return Object.entries(obj).reduce(
+		(a, [key, value]) => ({
+			...a,
+			[key]: func(value as any, key as keyof T)
+		}),
+		{}
+	)
+}
+
+export function merge (a: FirebaseUserData['plays'], b: FirebaseUserData['skips']) {
+	const plays = objectMap(a, value => objectMap(value, entry => ({ plays: entry })))
+	const skips = objectMap(b, value => objectMap(value, entry => ({ skips: entry })))
+	return _merge(plays, skips)
 }
 
 export type Props = {
@@ -51,18 +71,4 @@ export type Props = {
 	skipData: PlaylistSkipEntry[]
 	filterIds?: string[]
 	minSkips: number
-}
-
-export const SkipStats: React.FC<SkipStatsProps> = ({ skips = 0, plays = 0 }) => {
-	plays = Math.max(skips, plays) // Adjust up plays as they can sometime be missed
-	return (
-		<>
-			<span className="opacity-70 align-right">{skips}</span>
-			<span className="opacity-70 text-xs">skips</span>
-			<span className="opacity-70 ">/</span>
-			<span className="opacity-70 align-right">{Math.min(plays)}</span>
-			<span className="opacity-70 text-xs">plays</span>
-			<span className="opacity-50 text-sm">({Math.round((skips / plays) * 100)}%)</span>
-		</>
-	)
 }

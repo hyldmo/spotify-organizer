@@ -4,8 +4,9 @@ import { useDispatch, useSelector } from 'react-redux'
 import { Actions } from '~/actions'
 import { ArtistLinks, UriLink } from '~/components/UriLink'
 import { SkipEntry, SkipEntryPlaylist, State } from '~/types'
-import { idToUri } from '~/utils'
-import { findPlaylist, findPlays, findSong, Props, SkipStats } from './skipUtils'
+import { idToUri, recommendedPlaylistName } from '~/utils'
+import { SkipStats } from './SkipStats'
+import { findPlaylist, findPlays, findSong, Props } from './skipUtils'
 
 export const ByTrack: React.FC<Props> = ({ filterIds, skipData, countNonPlaylists, allPlaylists, minSkips }) => {
 	const dispatch = useDispatch()
@@ -75,7 +76,14 @@ export const ByTrack: React.FC<Props> = ({ filterIds, skipData, countNonPlaylist
 									<span className="space-x-4">
 										{(playlist.uri as string) !== 'unknown' && playlist.id ? (
 											<>
-												<UriLink object={playlist} />
+												<UriLink
+													object={{
+														...playlist,
+														display_name: playlist.uri?.includes(':recommended')
+															? recommendedPlaylistName(playlist, playlists)
+															: undefined
+													}}
+												/>
 												<button
 													className="opacity-80 hover:opacity-100"
 													onClick={_ =>
@@ -95,7 +103,15 @@ export const ByTrack: React.FC<Props> = ({ filterIds, skipData, countNonPlaylist
 										)}
 									</span>
 									<span className="space-x-1">
-										<SkipStats skips={playlist.skips} plays={playlist.plays} />
+										<SkipStats
+											skips={playlist.skips}
+											plays={playlist.plays}
+											onRemoveClick={
+												song.id
+													? _ => dispatch(Actions.resetSkips(song.id || '', playlist.uri))
+													: undefined
+											}
+										/>
 									</span>
 								</li>
 							))}

@@ -1,5 +1,16 @@
 import { findSong } from '~/pages/Skips/skipUtils'
-import { Album, Artist, Nullable, Playlist, SongEntries, SpotifyObjectType, Track, URI, UriObject } from '~/types'
+import {
+	Album,
+	Artist,
+	Nullable,
+	Playlist,
+	SkipEntryPlaylist,
+	SongEntries,
+	SpotifyObjectType,
+	Track,
+	URI,
+	UriObject
+} from '~/types'
 
 export function isPlaylist (obj: SpotifyApi.ContextObject | null | undefined): obj is SpotifyApi.ContextObject {
 	return obj?.type === 'playlist'
@@ -87,4 +98,12 @@ export function songEntriesToSongs (items: SongEntries) {
 				plays: items[t.id]
 			}
 		}))
+}
+
+export function recommendedPlaylistName (playlist: SkipEntryPlaylist, playlists: Playlist[]) {
+	const uris = playlist.uri.split(':')
+	uris.splice(-1)
+	const uri = uris.join(':')
+	const result = playlists.find(pl => pl.uri == uri)
+	return result ? `${result?.name}:recommended` : playlist.uri
 }

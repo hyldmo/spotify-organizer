@@ -4,19 +4,25 @@ import React, { Fragment } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Actions } from '~/actions'
 import { ArtistLinks, UriLink } from '~/components/UriLink'
-import { State } from '~/types'
+import { PlaylistSkipEntry, State } from '~/types'
 import { idToUri } from '~/utils'
-import { countSkips, findSong, Props, SkipStats } from './skipUtils'
+import { SkipStats } from './SkipStats'
+import { countSkips, findSong, Props } from './skipUtils'
 
 export const ByPlaylist: React.FC<Props> = ({ filterIds, skipData, countNonPlaylists, allPlaylists, minSkips }) => {
 	const dispatch = useDispatch()
 	const user = useSelector((s: State) => s.user)
 
+	const filterSongs = (pl: PlaylistSkipEntry) =>
+		pl.songs
+			.filter(({ skips = 0 }) => skips >= minSkips)
+			.filter(song => (countNonPlaylists ? pl.tracks?.items[song.id] !== undefined : true))
+
 	// const instead of return to reduce indentention level
 	const retval = skipData
-		.filter(pl => (countNonPlaylists ? pl.uri.includes('playlist') : true))
 		.filter(pl => (allPlaylists ? pl.owner?.id === user?.id : true))
 		.filter(pl => (filterIds ? filterIds.includes(pl.id || '') || filterIds.includes(pl.uri) : true))
+		.filter(pl => filterSongs(pl).length > 0)
 		.sort((a, b) => countSkips(b) - countSkips(a))
 		.map((playlist, i, { length }) => (
 			<li key={playlist.uri + i} className={cn('py-2', { 'border-b-2 border-b-gray-300': i < length - 1 })}>
@@ -35,18 +41,15 @@ export const ByPlaylist: React.FC<Props> = ({ filterIds, skipData, countNonPlayl
 					<UriLink object={playlist.owner} className="col-start-2 row-start-2 ellipsis opacity-60" />
 					<span className="row-span-2 justify-self-end">Total skips: {countSkips(playlist)}</span>
 				</div>
-				<div className="p-2 grid gap-x-1 grid-cols-[auto,auto,minmax(35%,1fr),repeat(6,auto)] items-baseline">
-					{playlist.songs
-						.filter(({ skips = 0 }) => skips >= minSkips)
-						// Only show songs that are still in the playlist
-						.filter(song => playlist.tracks?.items[song.id] !== undefined)
+				<div className="p-2 grid gap-x-1 grid-cols-[auto,auto,minmax(35%,1fr),repeat(7,auto)] items-baseline">
+					{filterSongs(playlist)
 						.sort((a, b) => (b.skips || 0) - (a.skips || 0))
 						.map(({ id, ...stats }, j) => {
 							const song = findSong(id)
-							if (song === undefined) return null
+							if (!song) return null
 							return (
 								<Fragment key={id + j}>
-									{playlist.owner?.id == user?.id && (
+									{playlist.owner?.id == user?.id ? (
 										<button
 											className="opacity-40 hover:opacity-80 mr-3"
 											onClick={_ =>
@@ -65,10 +68,15 @@ export const ByPlaylist: React.FC<Props> = ({ filterIds, skipData, countNonPlayl
 												aria-hidden="true"
 											/>
 										</button>
+									) : (
+										<span />
 									)}
 									<UriLink object={song} className="mr-4" />
 									<ArtistLinks artists={song?.artists} />
-									<SkipStats {...stats} />
+									<SkipStats
+										{...stats}
+										onRemoveClick={_ => dispatch(Actions.resetSkips(song.id, playlist.uri))}
+									/>
 								</Fragment>
 							)
 						})}

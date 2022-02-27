@@ -1,12 +1,19 @@
-import { call, cancelled, fork, put, select, take } from 'typed-redux-saga'
+import { call, cancelled, fork, put, select, take, takeEvery } from 'typed-redux-saga'
 import { Action, Actions } from '~/actions'
 import { FirebaseGet, FirebaseUrls, Playback, State, User } from '~/types'
 import { firebaseGet, firebaseUpdate, sleep } from '~/utils'
 import { spotifyFetch } from './spotifyFetch'
 
 export default function* () {
+	yield* takeEvery('PLAYBACK_CLEAR_SKIPS', clearSkips)
 	yield* take('TOKEN_AQUIRED')
 	yield* fork(watchPlayback)
+}
+
+function* clearSkips (action: Action<'PLAYBACK_CLEAR_SKIPS'>) {
+	const user = yield* select((s: State) => s.user as User) // User will not be null when playback is active
+	const updateSkipsId: FirebaseUrls = `users/${user.id}/skips/${action.meta}/${action.payload}/`
+	yield* call(firebaseUpdate, updateSkipsId, 0)
 }
 
 function* watchPlayback () {
