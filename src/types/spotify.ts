@@ -1,7 +1,7 @@
 import { SongEntries } from './firebase'
 import { Nullable } from './helpers'
 
-export interface Playlist extends SpotifyApi.PlaylistObjectSimplified {
+export interface Playlist extends Omit<SpotifyApi.PlaylistObjectFull, 'tracks' | 'followers'> {
 	selected: boolean
 	description: SpotifyApi.PlaylistObjectFull['description']
 	tracks: SpotifyApi.PlaylistObjectSimplified['tracks'] & {
@@ -9,6 +9,7 @@ export interface Playlist extends SpotifyApi.PlaylistObjectSimplified {
 		lastFetched: Date | null
 		items: SongEntries
 	}
+	followers: SpotifyApi.FollowersObject | null
 	uri: `spotify:playlist:${string}`
 }
 

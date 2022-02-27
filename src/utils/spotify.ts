@@ -11,6 +11,13 @@ import {
 	URI,
 	UriObject
 } from '~/types'
+import { PlaylistCache } from '~/utils'
+
+export function findPlaylist (id: string | URI): Playlist | undefined {
+	const uri = getUriType(id) === 'playlist' ? id : idToUri(id, 'playlist')
+	const pl = PlaylistCache.get(uri as URI<'playlist'>)
+	return pl
+}
 
 export function isPlaylist (obj: SpotifyApi.ContextObject | null | undefined): obj is SpotifyApi.ContextObject {
 	return obj?.type === 'playlist'
@@ -81,6 +88,7 @@ export function toPlaylist<T extends SpotifyApi.PlaylistObjectSimplified> (playl
 	return {
 		...existing,
 		...playlist,
+		followers: null,
 		uri: playlist.uri as Playlist['uri'],
 		tracks: { ...current.tracks, ...playlist.tracks },
 		selected: false

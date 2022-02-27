@@ -4,9 +4,9 @@ import { useDispatch, useSelector } from 'react-redux'
 import { Actions } from '~/actions'
 import { ArtistLinks, UriLink } from '~/components/UriLink'
 import { SkipEntry, SkipEntryPlaylist, State } from '~/types'
-import { idToUri, recommendedPlaylistName } from '~/utils'
+import { findPlaylist, idToUri, recommendedPlaylistName } from '~/utils'
 import { SkipStats } from './SkipStats'
-import { findPlaylist, findPlays, findSong, Props } from './skipUtils'
+import { findPlays, findSong, Props } from './skipUtils'
 
 export const ByTrack: React.FC<Props> = ({ filterIds, skipData, countNonPlaylists, allPlaylists, minSkips }) => {
 	const dispatch = useDispatch()
@@ -36,7 +36,7 @@ export const ByTrack: React.FC<Props> = ({ filterIds, skipData, countNonPlaylist
 		.map(({ song, ...entry }, i, { length }) => {
 			const playlistsSkips = entry.playlists
 				?.slice()
-				.filter(p => (countNonPlaylists ? findPlaylist(p.uri, playlists, user) : true))
+				.filter(p => (countNonPlaylists ? findPlaylist(p.uri)?.owner.id === user?.id : true))
 
 			if (allPlaylists)
 				playlistsSkips.push(
@@ -69,7 +69,7 @@ export const ByTrack: React.FC<Props> = ({ filterIds, skipData, countNonPlaylist
 						</span>
 					</div>
 					<ul className="p-2">
-						{entry.playlists
+						{playlistsSkips
 							.filter(pl => pl.skips >= minSkips)
 							.map((playlist, j) => (
 								<li key={playlist.uri + j} className="flex justify-between">

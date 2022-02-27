@@ -1,16 +1,7 @@
 import { merge as _merge } from 'lodash/fp'
 import memoizee from 'memoizee'
-import {
-	FirebaseUserData,
-	Nullable,
-	Playlist,
-	PlaylistSkipEntry,
-	SkipStats as SkipStatsProps,
-	Track,
-	URI,
-	User
-} from '~/types'
-import { SongCache } from '~/utils'
+import { FirebaseUserData, PlaylistSkipEntry, SkipStats as SkipStatsProps, Track, URI } from '~/types'
+import { findPlaylist, SongCache } from '~/utils'
 
 // TODO: Load track from API when not found in cache
 export const findSong = (id: Track['id']) => (id !== null ? SongCache.get(id) : null)
@@ -21,10 +12,6 @@ export const findPlays = memoizee((id: Track['id'], playlist: PlaylistSkipEntry)
 	return { id, plays: 0, skips: 0 }
 })
 
-export const findPlaylist = memoizee((uri: string, playlists: Playlist[], owner?: Nullable<User>) =>
-	playlists.find(pl => pl.uri == uri && (owner ? pl.owner.id == owner.id : true))
-)
-
 export const countSkips = (playlist: PlaylistSkipEntry) => playlist.songs.reduce((a, b) => a + (b.skips || 0), 0)
 
 type MergedSkipEntry = {
@@ -33,9 +20,9 @@ type MergedSkipEntry = {
 	}
 }
 
-export function toEntries (entries: MergedSkipEntry, playlists: Playlist[]) {
+export function toEntries (entries: MergedSkipEntry) {
 	return Object.entries(entries).map(([playlistUri, songs]) => {
-		const playlist = findPlaylist(playlistUri, playlists) || {
+		const playlist = findPlaylist(playlistUri) || {
 			uri: playlistUri as PlaylistSkipEntry['uri']
 		}
 		return {

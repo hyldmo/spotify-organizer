@@ -18,13 +18,12 @@ export const Skips: React.FC = () => {
 	const [allPlaylists, showAllPlaylists] = useState(false)
 	const filterIds = searchParams.get('filterId')?.split(',')
 	const groupBy = searchParams.get('groupBy') ?? 'playlist'
-	const playlists = useSelector((s: State) => s.playlists)
 	const user = useSelector((s: State) => s.user)
 	const plays = useFirebase(`users/${user?.id}/plays/`) || {}
 	const skips = useFirebase(`users/${user?.id}/skips/`) || {}
 	if (!user) return null
 
-	const playlistSkips = toEntries(mergeEntries(plays, skips), playlists)
+	const playlistSkips = toEntries(mergeEntries(plays, skips))
 
 	return (
 		<div className="max-h-full grid grid-rows-[auto,1fr] grid-cols-1">

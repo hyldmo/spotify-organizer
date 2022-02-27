@@ -15,15 +15,7 @@ function playlist (state: Playlist, action: MetaAction): Playlist {
 				}
 			}
 		case 'FETCH_TRACKS_SUCCESS':
-			return {
-				...state,
-				tracks: {
-					...state.tracks,
-					lastFetched: new Date(),
-					items: action.payload,
-					loaded: action.payload.length
-				}
-			}
+			return action.payload
 		case 'PLAYLISTS_SELECT':
 			return { ...state, selected: action.payload }
 		default:

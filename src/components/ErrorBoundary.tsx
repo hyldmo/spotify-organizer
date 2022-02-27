@@ -1,19 +1,6 @@
 import React from 'react'
-import { connect } from 'react-redux'
-import { push } from 'redux-first-history'
-import { State } from '~/types'
 
-const mapStateToProps = (_: State) => ({})
-
-const dispatchToProps = {
-	push
-}
-
-type Props = typeof dispatchToProps & {
-	children?: React.ReactNode
-}
-
-class ErrorBoundary extends React.Component<Props> {
+export class ErrorBoundary extends React.Component {
 	state = {
 		hasError: false
 	}
@@ -30,13 +17,9 @@ class ErrorBoundary extends React.Component<Props> {
 	render () {
 		const { hasError } = this.state
 		if (hasError) {
-			if (location.pathname !== '/') {
-				this.props.push('/')
-			}
+			location.reload()
 			return null
 		}
 		return this.props.children as any
 	}
 }
-
-export default connect(mapStateToProps, dispatchToProps)(ErrorBoundary)

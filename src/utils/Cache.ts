@@ -17,7 +17,7 @@ export class PersistentCache<T, K extends string = string> extends Map<K, Readon
 			storeName: this.id,
 			version: 1
 		})
-		this.db.ready(console.info)
+		this.db.ready(err => (err ? console.warn(err) : console.info(`Cache ${id} loaded`)))
 		this.loadEntries().then(data => data.forEach(([key, value]) => super.set(key as K, value)))
 	}
 
@@ -25,7 +25,7 @@ export class PersistentCache<T, K extends string = string> extends Map<K, Readon
 		if (key === null) return this
 		super.set(key, value)
 
-		this.db.setItem(key, value)
+		this.db.setItem(key, value).catch(console.warn)
 		// As storage APIs does not implement a "getAll", create an entry with all known keys in the cache
 		const keys = [...this.keys()].filter(k => k !== 'keys') // Remove that entry's key from it's own list
 		this.db.setItem('keys', keys)

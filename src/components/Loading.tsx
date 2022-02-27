@@ -7,13 +7,14 @@ type Props = {
 	}
 }
 
-const Loading: React.FC<Props> = ({ progress }) => (
+const Loading: React.FC<Props> = ({ children, progress }) => (
 	<div className="loading">
 		<div className="spinner">
 			<i className="fa fa-spinner fa-spin fa-3x fa-fw" />
 			<span className="sr-only">Loading...</span>
 		</div>
 		{progress && <div className="percentage">{Math.floor((progress.current / progress.total) * 100)}%</div>}
+		{children}
 	</div>
 )
 

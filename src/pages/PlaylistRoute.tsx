@@ -1,30 +1,24 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import React, { useEffect } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import React from 'react'
 import { useParams } from 'react-router'
 import { Link } from 'react-router-dom'
-import { Actions } from '~/actions'
 import Loading from '~/components/Loading'
 import Tracks from '~/components/Tracks'
 import { UriLink } from '~/components/UriLink'
-import { State } from '~/types'
-import { Duration, songEntriesToSongs } from '~/utils'
+import { Duration, idToUri, songEntriesToSongs, usePlaylist } from '~/utils'
 
 const PlaylistRoute: React.FC = () => {
-	const dispatch = useDispatch()
 	const params = useParams<{ id: string }>()
+	const playlist = usePlaylist(params.id || '')
 
-	useEffect(() => {
-		if (params.id) dispatch(Actions.fetchTracks(params.id))
-	}, [dispatch, params.id])
-
-	const playlist = useSelector((s: State) => s.playlists.find(p => p.id === params.id))
-	if (playlist === undefined) return <Loading />
-	if (playlist.tracks.loaded < playlist.tracks.total || playlist.tracks.items === undefined)
+	if (!playlist || playlist.tracks.loaded == null)
+		return <Loading>Loading {idToUri(params.id || '', 'playlist')}</Loading>
+	if (playlist.tracks.loaded < playlist.tracks.total)
 		return <Loading progress={{ current: playlist.tracks.loaded, total: playlist.tracks.total }} />
 
 	const tracks = songEntriesToSongs(playlist.tracks.items)
 	const duration = tracks.reduce((a, b) => a + b.duration_ms, 0)
+
 	return (
 		<div className="manager tracks">
 			<div className="header row p-2 relative">
@@ -45,6 +39,7 @@ const PlaylistRoute: React.FC = () => {
 				</div>
 				<span className="filler" />
 				<ul className="stats right-menu">
+					<li>{playlist.followers?.total}</li>
 					<li>{tracks.length} Tracks</li>
 					<li>{new Duration(duration).toString('minutes')}</li>
 				</ul>

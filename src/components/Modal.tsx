@@ -73,7 +73,7 @@ class Modal extends React.Component<Props> {
 								)}
 							</div>
 						</div>,
-						document.getElementById('root') as HTMLElement
+						document.body
 					)}
 			</>
 		)
