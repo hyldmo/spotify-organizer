@@ -36,6 +36,10 @@ const PlaylistRoute: React.FC = () => {
 					<p>
 						Created by: <UriLink className="font-bold" object={playlist.owner} />
 					</p>
+					<p className="text-sm">
+						<span className="text-gray-200 select-none">URI: </span>
+						<code className="text-white bg-gray-700 rounded">{playlist.uri}</code>
+					</p>
 				</div>
 				<span className="filler" />
 				<ul className="stats right-menu">

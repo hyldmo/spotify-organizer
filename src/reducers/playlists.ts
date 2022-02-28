@@ -1,6 +1,6 @@
 import { Action, MetaAction } from '~/actions'
-import { Playlist } from '~/types'
-import { toPlaylist } from '~/utils'
+import { Playlist, URI } from '~/types'
+import { PlaylistCache, toPlaylist } from '~/utils'
 
 function playlist (state: Playlist, action: MetaAction): Playlist {
 	if (state.id !== action.meta) return state
@@ -27,7 +27,8 @@ export default function playlists (state: Playlist[] = [], action: Action): Play
 	switch (action.type) {
 		case 'FETCH_PLAYLISTS_SUCCESS':
 			return action.payload.map(p => {
-				const existing = state.find(s => s.id == p.id)
+				const cached = PlaylistCache.get(p.uri as URI<'playlist'>)
+				const existing = cached?.tracks.lastFetched ? cached : state.find(s => s.id == p.id)
 				return toPlaylist(p, existing)
 			})
 		case 'PLAYLISTS_SELECT':

@@ -1,3 +1,4 @@
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import React from 'react'
 import { Actions } from '~/actions'
 import Highlight from '~/components/Highlight'
@@ -68,10 +69,13 @@ const Playlists: React.FC<Props> = ({ playlists, select, selectAll, changeSortMo
 								<img src={p.images.slice().sort(i => i.height as number)[0].url} />
 							) : null}
 						</td>
-						<td className="name">
+						<td className="name space-x-2">
 							<UriLink object={p}>
 								<Highlight text={p.name} term={filters.text} />
 							</UriLink>
+							{p.tracks.loaded === p.tracks.total && (
+								<FontAwesomeIcon icon="save" size="xs" alignmentBaseline="middle" color="green" />
+							)}
 						</td>
 						<td className="owner">
 							<Highlight text={p.owner.display_name || p.owner.id} term={filters.text} />

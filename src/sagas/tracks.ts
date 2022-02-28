@@ -1,6 +1,6 @@
 import { call, put, select, takeEvery, takeLeading } from 'typed-redux-saga'
 import { Action, Actions } from '~/actions'
-import { FirebaseGet, Playlist, SongEntries, State, Track, URI } from '~/types'
+import { FirebaseGet, Nullable, Playlist, SongEntries, State, Track, URI } from '~/types'
 import { firebaseGet, idToUri, PlaylistCache, SongCache, toTrack } from '~/utils'
 import { sleep } from '~/utils/sleep'
 import { spotifyFetch } from './spotifyFetch'
@@ -49,10 +49,13 @@ export function* getTracks (action: Action<'FETCH_TRACKS'>, delay?: number) {
 	let index = 0
 	let loaded = 0
 	const user = yield* select((s: State) => s.user)
-	const plays: FirebaseGet<`users/${string}/plays/spotify:playlist:${string}/`> | null = yield* call(
-		firebaseGet,
-		`users/${user?.id}/plays/spotify:playlist:${id}/`
-	) as any
+	let plays: Nullable<FirebaseGet<`users/${string}/plays/spotify:playlist:${string}/`>> = null
+	try {
+		plays = yield* call(firebaseGet, `users/${user?.id}/plays/spotify:playlist:${id}/`) as any
+	} catch (e) {
+		console.warn('Error fetching plays', e)
+	}
+
 	do {
 		try {
 			response = yield* call(spotifyFetch, `playlists/${id}/tracks?offset=${offset}&limit=${limit}`)
@@ -87,7 +90,7 @@ function* updateProgress (id: Playlist['id'], tracks: SongEntries, loaded: numbe
 	if (!playlist) playlist = yield* call(spotifyFetch, `playlists/${id}`)
 
 	if (playlist) {
-		const item = {
+		const item: Playlist = {
 			...playlist,
 			tracks: {
 				...playlist.tracks,
@@ -101,7 +104,7 @@ function* updateProgress (id: Playlist['id'], tracks: SongEntries, loaded: numbe
 			console.info(`Tracks for '${playlist.name}' (${playlist.id}) loaded`)
 			yield* put(Actions.tracksFetched(item, id))
 		} else {
-			yield* put(Actions.fetchTracksProgress(Object.keys(tracks).length, id))
+			yield* put(Actions.fetchTracksProgress(loaded, id))
 		}
 	}
 }
