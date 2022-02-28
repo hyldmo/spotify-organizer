@@ -12,7 +12,6 @@ export class PersistentCache<T, K extends string = string> extends Map<K, Readon
 		super()
 		this.id = id
 		this.db = localforage.createInstance({
-			driver: localforage.INDEXEDDB,
 			name: startCase(process.env.PACKAGE_NAME),
 			storeName: this.id,
 			version: 1
