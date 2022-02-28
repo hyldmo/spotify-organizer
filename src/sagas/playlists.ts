@@ -1,7 +1,7 @@
 import { all, call, put, select, takeEvery, takeLatest } from 'typed-redux-saga'
 import { Action, Actions } from '~/actions'
-import { Playlist, State, Track, URI } from '~/types'
-import { deduplicate, partition, PlaylistCache, pullTracks, songEntriesToSongs } from '~/utils'
+import { Playlist, State, Track } from '~/types'
+import { deduplicate, partition, pullTracks, songEntriesToSongs } from '~/utils'
 import { spotifyFetch } from './spotifyFetch'
 import { getTracks } from './tracks'
 
@@ -19,10 +19,6 @@ function* getPlaylists () {
 	do {
 		response = yield* call(spotifyFetch, `me/playlists?offset=${offset}&limit=${limit}`)
 		if (response === null) break
-		response.items.forEach(pl => {
-			const uri = pl.uri as URI<'playlist'>
-			if (PlaylistCache.get(uri) === undefined) PlaylistCache.set(uri, pl as Playlist)
-		})
 		playlists = playlists.concat(response.items)
 		offset += limit
 	} while (response.next !== null)
