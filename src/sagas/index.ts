@@ -1,6 +1,6 @@
 import { Store } from 'redux'
 import { SagaMiddleware } from 'redux-saga'
-import { cancel, fork, take } from 'typed-redux-saga'
+import { call, cancel, delay, fork, take } from 'typed-redux-saga'
 import { State } from '~/types'
 import loginSaga from './login'
 import notificationsSaga from './notifications'
@@ -12,6 +12,20 @@ import tracksSaga from './tracks'
 const sagas = [loginSaga, nowPlayingSaga, notificationsSaga, tracksSaga, playlistsSaga, timer]
 
 export const CANCEL_SAGAS_HMR = 'CANCEL_SAGAS_HMR'
+
+function makeRestartable (saga: any) {
+	return function* () {
+		while (true) {
+			try {
+				yield* call(saga)
+				break
+			} catch (e) {
+				console.warn(`Saga '${saga.name}' failed.`, e)
+			}
+			yield* delay(1000)
+		}
+	}
+}
 
 // TODO: Add proper typing
 function createAbortableSaga (saga: any) {
@@ -29,7 +43,10 @@ function createAbortableSaga (saga: any) {
 
 const SagaManager = {
 	startSagas (sagaMiddleware: SagaMiddleware<any>) {
-		sagas.map(createAbortableSaga).forEach(saga => sagaMiddleware.run(saga))
+		sagas
+			.map(makeRestartable)
+			.map(createAbortableSaga)
+			.forEach(saga => sagaMiddleware.run(saga))
 	},
 
 	cancelSagas (store: Store<State>) {
