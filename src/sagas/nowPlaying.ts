@@ -24,8 +24,8 @@ function* watchPlayback () {
 			const body = yield* call(() => spotifyFetch<SpotifyApi.CurrentPlaybackResponse>('me/player'))
 			if (body) {
 				const action = Actions.updatePlayback(body as Playback)
-				yield* put(action)
 				yield* call(onPlaybackUpdated, action)
+				yield* put(action)
 				timeout = initialTimeout
 			}
 		} catch (e) {
