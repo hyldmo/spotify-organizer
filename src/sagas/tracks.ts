@@ -1,6 +1,6 @@
 import { call, put, select, takeEvery, takeLeading } from 'typed-redux-saga'
 import { Action, Actions } from '~/actions'
-import { FirebaseGet, Nullable, Playlist, SongEntries, State, Track, URI } from '~/types'
+import { Nullable, Playlist, SongEntries, State, Track, URI } from '~/types'
 import { firebaseGet, idToUri, PlaylistCache, SongCache, toTrack } from '~/utils'
 import { sleep } from '~/utils/sleep'
 import { spotifyFetch } from './spotifyFetch'
@@ -30,14 +30,18 @@ function* getAllTracks (action: Action<'FETCH_PLAYLISTS_SUCCESS'>) {
 
 export function* getTrack (action: Action<'FETCH_TRACK'>) {
 	const id = action.meta
-	const track: SpotifyApi.SingleTrackResponse = yield* call(spotifyFetch, `tracks/${id}`)
-	yield* put(Actions.fetchTrackSuccess(track, id))
-
-	const artists: SpotifyApi.MultipleArtistsResponse = yield* call(
-		spotifyFetch,
-		`artists/?ids=${track.artists.map(a => a.id)}`
-	)
-	yield put(Actions.fetchArtistsSuccess(artists.artists, id))
+	const track = yield* call(() => spotifyFetch<SpotifyApi.SingleTrackResponse>(`tracks/${id}`))
+	if (track) {
+		yield* put(Actions.fetchTrackSuccess(track, id))
+		const artists = yield* call(() =>
+			spotifyFetch<SpotifyApi.MultipleArtistsResponse>(`artists/?ids=${track.artists.map(a => a.id)}`)
+		)
+		if (artists) {
+			yield put(Actions.fetchArtistsSuccess(artists.artists, id))
+			return
+		}
+	}
+	yield put(Actions.createNotification({ message: 'Error fetching track', type: 'error' }))
 }
 
 export function* getTracks (action: Action<'FETCH_TRACKS'>, delay?: number) {
@@ -49,16 +53,19 @@ export function* getTracks (action: Action<'FETCH_TRACKS'>, delay?: number) {
 	let index = 0
 	let loaded = 0
 	const user = yield* select((s: State) => s.user)
-	let plays: Nullable<FirebaseGet<`users/${string}/plays/spotify:playlist:${string}/`>> = null
+	let plays: Nullable<SongEntries>
 	try {
-		plays = yield* call(firebaseGet, `users/${user?.id}/plays/spotify:playlist:${id}/`) as any
+		plays = yield* call(() => firebaseGet(`users/${user?.id}/plays/spotify:playlist:${id}/`))
 	} catch (e) {
-		console.warn('Error fetching plays', e)
+		plays = null
+		console.warn('Error fetching plays from firebase', e)
 	}
 
 	do {
 		try {
-			response = yield* call(spotifyFetch, `playlists/${id}/tracks?offset=${offset}&limit=${limit}`)
+			response = yield* call(() =>
+				spotifyFetch<SpotifyApi.PlaylistTrackResponse>(`playlists/${id}/tracks?offset=${offset}&limit=${limit}`)
+			)
 		} catch (e: any) {
 			response = null
 			yield* put(Actions.createNotification({ message: e.message, type: 'error' }))
@@ -84,10 +91,10 @@ export function* getTracks (action: Action<'FETCH_TRACKS'>, delay?: number) {
 }
 
 function* updateProgress (id: Playlist['id'], tracks: SongEntries, loaded: number) {
-	let playlist = yield* select((s: State) => s.playlists.find(p => p.id === id))
+	let playlist: Nullable<Playlist> = yield* select((s: State) => s.playlists.find(p => p.id === id))
 
 	if (!playlist) playlist = PlaylistCache.get(idToUri(id, 'playlist'))
-	if (!playlist) playlist = yield* call(spotifyFetch, `playlists/${id}`)
+	if (!playlist) playlist = yield* call(() => spotifyFetch<Playlist>(`playlists/${id}`))
 
 	if (playlist) {
 		const item: Playlist = {

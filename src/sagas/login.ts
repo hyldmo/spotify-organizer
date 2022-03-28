@@ -12,15 +12,16 @@ function* getUserDetails (action: Action<typeof Actions.tokenAquired.type>) {
 	const token = action.payload
 
 	try {
-		const body: SpotifyApi.UserObjectPublic = yield* call(spotifyFetch, 'me', {}, token)
-		yield* put(
-			Actions.userLoaded({
-				...body,
-				name: body.display_name || null,
-				image: body.images ? body.images[0].url : null,
-				token
-			})
-		)
+		const body = yield* call(() => spotifyFetch<SpotifyApi.UserObjectPublic>('me', {}, token))
+		if (body)
+			yield* put(
+				Actions.userLoaded({
+					...body,
+					name: body.display_name || null,
+					image: body.images ? body.images[0].url : null,
+					token
+				})
+			)
 		localStorage.setItem('token', token)
 		yield* put(Actions.fetchPlaylists())
 		const redirect = action.meta

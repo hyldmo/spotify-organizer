@@ -17,7 +17,9 @@ function* getPlaylists () {
 	const limit = 50
 	let offset = 0
 	do {
-		response = yield* call(spotifyFetch, `me/playlists?offset=${offset}&limit=${limit}`)
+		response = yield* call(() =>
+			spotifyFetch<SpotifyApi.ListOfCurrentUsersPlaylistsResponse>(`me/playlists?offset=${offset}&limit=${limit}`)
+		)
 		if (response === null) break
 		playlists = playlists.concat(response.items)
 		offset += limit

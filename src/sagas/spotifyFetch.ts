@@ -10,7 +10,7 @@ export function* spotifyFetch<T extends unknown> (
 	url: string,
 	options: RequestInit = {},
 	apiToken?: string
-): SagaIterator<any | null> {
+): SagaIterator<T | null> {
 	const userToken = yield* select((state: State) => state.user && state.user.token)
 	const token = apiToken || userToken || localStorage.getItem('token')
 
@@ -19,7 +19,7 @@ export function* spotifyFetch<T extends unknown> (
 	}
 
 	const headers = new Headers({ Authorization: `Bearer ${token}` })
-	const response: Response = yield* call(fetch, `https://api.spotify.com/v1/${url}`, { headers, ...options })
+	const response = yield* call(fetch, `https://api.spotify.com/v1/${url}`, { headers, ...options })
 	let body = null
 	if (response.status !== 204) {
 		body = yield* call(response.json.bind(response))
