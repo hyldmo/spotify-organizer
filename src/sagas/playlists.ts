@@ -5,7 +5,7 @@ import { deduplicate, partition, pullTracks, songEntriesToSongs } from '~/utils'
 import { spotifyFetch } from './spotifyFetch'
 import { getTracks } from './tracks'
 
-export default function* () {
+export function* playlistsSaga () {
 	yield* takeLatest('FETCH_PLAYLISTS', getPlaylists)
 	yield* takeLatest('DEDUPLICATE_PLAYLISTS', deduplicatePlaylists)
 	yield* takeEvery('PLAYLIST_DELETE_TRACKS', deleteTracks)

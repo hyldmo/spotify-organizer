@@ -5,7 +5,7 @@ import { firebaseGet, idToUri, PlaylistCache, SongCache, toTrack } from '~/utils
 import { sleep } from '~/utils/sleep'
 import { spotifyFetch } from './spotifyFetch'
 
-export default function* () {
+export function* tracksSaga () {
 	yield* takeEvery(Actions.fetchTrack.type, getTrack)
 	yield* takeEvery(Actions.fetchTracks.type, getTracks)
 	yield* takeLeading(Actions.playlistsFetched.type, getAllTracks)

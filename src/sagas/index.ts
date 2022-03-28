@@ -2,14 +2,14 @@ import { Store } from 'redux'
 import { SagaMiddleware } from 'redux-saga'
 import { call, cancel, delay, fork, take } from 'typed-redux-saga'
 import { State } from '~/types'
-import loginSaga from './login'
-import notificationsSaga from './notifications'
-import nowPlayingSaga from './nowPlaying'
-import playlistsSaga from './playlists'
-import timer from './timer'
-import tracksSaga from './tracks'
+import { loginSaga } from './login'
+import { notificationsSaga } from './notifications'
+import { nowPlayingSaga } from './nowPlaying'
+import { playlistsSaga } from './playlists'
+import { timerSaga } from './timer'
+import { tracksSaga } from './tracks'
 
-const sagas = [loginSaga, nowPlayingSaga, notificationsSaga, tracksSaga, playlistsSaga, timer]
+const sagas = [loginSaga, nowPlayingSaga, notificationsSaga, tracksSaga, playlistsSaga, timerSaga]
 
 export const CANCEL_SAGAS_HMR = 'CANCEL_SAGAS_HMR'
 

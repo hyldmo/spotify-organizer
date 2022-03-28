@@ -2,7 +2,7 @@ import { call, put, takeEvery } from 'typed-redux-saga'
 import { Action, Actions } from '~/actions'
 import { sleep } from '~/utils'
 
-export default function* () {
+export function* notificationsSaga () {
 	yield* takeEvery(Actions.createNotification.type, createNotification)
 }
 

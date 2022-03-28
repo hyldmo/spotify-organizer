@@ -4,7 +4,7 @@ import { Playback, State, User } from '~/types'
 import { firebaseGet, firebaseUpdate, sleep } from '~/utils'
 import { spotifyFetch } from './spotifyFetch'
 
-export default function* () {
+export function* nowPlayingSaga () {
 	yield* takeEvery('PLAYBACK_CLEAR_SKIPS', clearSkips)
 	yield* take('TOKEN_AQUIRED')
 	yield* fork(watchPlayback)

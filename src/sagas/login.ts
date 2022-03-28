@@ -3,7 +3,7 @@ import { call, put, takeLatest } from 'typed-redux-saga'
 import { Action, Actions } from '~/actions'
 import { spotifyFetch } from './spotifyFetch'
 
-export default function* () {
+export function* loginSaga () {
 	yield* takeLatest(Actions.tokenAquired.type, getUserDetails)
 	yield* takeLatest('LOAD_USER', loadUser)
 }
