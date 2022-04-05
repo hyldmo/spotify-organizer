@@ -74,7 +74,13 @@ const Playlists: React.FC<Props> = ({ playlists, select, selectAll, changeSortMo
 								<Highlight text={p.name} term={filters.text} />
 							</UriLink>
 							{p.tracks.loaded === p.tracks.total && (
-								<FontAwesomeIcon icon="save" size="xs" alignmentBaseline="middle" color="green" />
+								<FontAwesomeIcon
+									icon="save"
+									size="xs"
+									alignmentBaseline="middle"
+									color="green"
+									title="Cached tracklist locally"
+								/>
 							)}
 						</td>
 						<td className="owner">
