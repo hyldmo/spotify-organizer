@@ -1,5 +1,6 @@
 import { Component, ErrorInfo, PropsWithChildren } from 'react'
 
+// eslint-disable-next-line @typescript-eslint/ban-types
 export interface SilentErrorBoundaryProps extends PropsWithChildren<{}> {
 	/**
 	 * The fallback component to display when the error boundary catches an error.
@@ -15,23 +16,23 @@ export interface SilentErrorBoundaryProps extends PropsWithChildren<{}> {
  * Error boundary that fails silenty and returns null if a component in its it tree fails
  */
 export class SilentErrorBoundary extends Component<SilentErrorBoundaryProps, { error: Error | null }> {
-	constructor(props: SilentErrorBoundaryProps) {
+	constructor (props: SilentErrorBoundaryProps) {
 		super(props)
 		this.state = { error: null }
 	}
 
-	static getDerivedStateFromError(error: Error) {
+	static getDerivedStateFromError (error: Error) {
 		// Update state so the next render will show the fallback UI.
 		return { error }
 	}
 
-	componentDidCatch(error: Error, errorInfo: ErrorInfo & Record<string, string>) {
+	componentDidCatch (error: Error, errorInfo: ErrorInfo & Record<string, string>) {
 		if (this.props.onError) this.props.onError(error, errorInfo)
 		else console.error(error, errorInfo)
 		this.setState({ error })
 	}
 
-	render() {
+	render () {
 		if (this.state.error) {
 			return this.props.fallback ?? null
 		}
