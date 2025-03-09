@@ -25,9 +25,10 @@ function* getUserDetails (action: Action<typeof Actions.tokenAquired.type>) {
 		localStorage.setItem('token', token)
 		yield* put(Actions.fetchPlaylists())
 		const redirect = action.meta
+		if (redirect && redirect !== location.pathname) {
 		console.info(`Redirecting to ${redirect} from ${location.pathname}`)
-		if (redirect && redirect !== location.pathname)
 			yield* put(replace({ pathname: redirect, search: '?redirected=true' }))
+		}
 	} catch (e) {
 		console.error(`${getUserDetails.name}:`, e)
 		yield put(

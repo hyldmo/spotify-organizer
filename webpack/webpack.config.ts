@@ -25,7 +25,7 @@ const config: Configuration = {
 			...Object.entries(tsConfig.compilerOptions.paths).reduce(
 				(a, [baseUrl, paths]) => ({
 					...a,
-					[baseUrl.replace('*', '')]: paths.map(p => path.resolve(context, p).replace('*', ''))
+					[baseUrl.replace('/*', '')]: paths.map(p => path.resolve(context, p).replace('*', ''))
 				}),
 				{}
 			)

@@ -65,7 +65,7 @@ const Playlists: React.FC<Props> = ({ playlists, select, selectAll, changeSortMo
 							)}
 						</td>
 						<td className="image">
-							{p.images.length > 0 ? (
+							{p.images?.length > 0 ? (
 								<img src={p.images.slice().sort(i => i.height as number)[0].url} />
 							) : null}
 						</td>

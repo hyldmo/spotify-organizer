@@ -12,7 +12,7 @@ export function* playlistsSaga () {
 }
 
 function* getPlaylists () {
-	let playlists: SpotifyApi.ListOfCurrentUsersPlaylistsResponse['items'] = []
+	const playlists: SpotifyApi.ListOfCurrentUsersPlaylistsResponse['items'] = []
 	let response: SpotifyApi.ListOfCurrentUsersPlaylistsResponse | null
 	const limit = 50
 	let offset = 0
@@ -21,7 +21,10 @@ function* getPlaylists () {
 			spotifyFetch<SpotifyApi.ListOfCurrentUsersPlaylistsResponse>(`me/playlists?offset=${offset}&limit=${limit}`)
 		)
 		if (response === null) break
-		playlists = playlists.concat(response.items)
+		for (const item of response.items) {
+			if (playlists.find(p => p.id === item.id)) continue
+			playlists.push(item)
+		}
 		offset += limit
 	} while (response.next !== null)
 	yield* put(Actions.playlistsFetched(playlists))

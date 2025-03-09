@@ -84,7 +84,7 @@ class PullPlaylist extends React.Component<Props, State> {
 									/>
 								</td>
 								<td className="images">
-									{p.images.length > 0 ? (
+									{p.images?.length > 0 ? (
 										<img src={p.images.slice().sort(i => i.height as number)[0].url} />
 									) : null}
 								</td>

@@ -22,7 +22,7 @@ const PlaylistRoute: React.FC = () => {
 	return (
 		<div className="manager tracks">
 			<div className="header row p-2 relative">
-				{playlist.images.length > 0 ? (
+				{playlist.images?.length > 0 ? (
 					<img src={playlist.images.reduce((a, b) => (a.height || 0 > (b.height || 0) ? a : b)).url} />
 				) : null}
 				<div className="info space-y-2">
