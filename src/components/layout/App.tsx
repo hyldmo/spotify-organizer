@@ -12,7 +12,7 @@ import { TrackRoute } from '~/pages/TrackRoute'
 import '~/styles/main.scss'
 import { State } from '~/types'
 import Alerts from '../Alerts'
-import { ErrorBoundary } from '../ErrorBoundary'
+import { SilentErrorBoundary } from '../SilentErrorBoundary'
 import Notifications from '../Notifications'
 import Auth from './Auth'
 import { Footer } from './Footer'
@@ -30,7 +30,7 @@ const App: React.FC = () => {
 			<Header user={user} />
 			<Alerts />
 			<main className="bg-inherit">
-				<ErrorBoundary>
+				<SilentErrorBoundary>
 					{user ? (
 						<Routes>
 							<Route path="/" element={<PlaylistsManager />} />
@@ -42,7 +42,7 @@ const App: React.FC = () => {
 					) : (
 						<Auth />
 					)}
-				</ErrorBoundary>
+				</SilentErrorBoundary>
 			</main>
 			<Footer />
 			<Notifications />
