@@ -26,7 +26,7 @@ export async function initializePlayer (): Promise<Spotify.Player> {
 			// Ready
 			player.addListener('ready', ({ device_id }) => {
 				console.info('Ready with Device ID', device_id)
-				resolve(player)
+				resolve(player!)
 			})
 
 			// Not Ready

@@ -1,6 +1,6 @@
 import cn from 'classnames'
 import React from 'react'
-import { HTMLElementProps } from '~types'
+import { HTMLElementProps } from '~/types'
 
 // tslint:disable-next-line:no-empty-interface
 interface Props extends HTMLElementProps<'input'> {

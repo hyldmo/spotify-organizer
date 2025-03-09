@@ -16,6 +16,7 @@ type Filters = PlaylistFilters['playlists']
 type Props = {
 	playlists: Playlist[]
 	filters?: Filters
+	onSelect?: (playlistId: string, selected: boolean) => void
 }
 
 type State = {
@@ -23,7 +24,7 @@ type State = {
 	filters: Filters
 }
 
-class PullPlaylist extends React.Component<Props, State> {
+export class PullPlaylist extends React.Component<Props, State> {
 	state = {
 		selectedPlaylists: [],
 		filters: this.props.filters || initialState.playlists
@@ -80,7 +81,7 @@ class PullPlaylist extends React.Component<Props, State> {
 									<input
 										type="checkbox"
 										checked={p.selected}
-										onChange={e => select(e.target.checked, p.id)}
+										onChange={e => this.props.onSelect?.(p.id, e.target.checked)}
 									/>
 								</td>
 								<td className="images">
@@ -103,5 +104,3 @@ class PullPlaylist extends React.Component<Props, State> {
 		)
 	}
 }
-
-export default PullPlaylist
