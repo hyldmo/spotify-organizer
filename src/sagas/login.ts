@@ -25,7 +25,9 @@ function* getUserDetails (action: Action<typeof Actions.tokenAquired.type>) {
 		localStorage.setItem('token', token)
 		yield* put(Actions.fetchPlaylists())
 		const redirect = action.meta
-		if (redirect) yield* put(replace({ pathname: redirect }))
+		const search = new URLSearchParams(location.search)
+		if (redirect && search.get('redirected') !== 'true')
+			yield* put(replace({ pathname: redirect, search: '?redirected=true' }))
 	} catch (e) {
 		console.error(`${getUserDetails.name}:`, e)
 		yield put(
