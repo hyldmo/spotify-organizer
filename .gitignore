@@ -18,3 +18,5 @@ coverage/
 .DS_Store
 
 scripts/*.json
+
+.yarn/install-state.gz
