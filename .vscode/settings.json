@@ -38,5 +38,7 @@
 	},
 	"[xml]": {
 		"editor.defaultFormatter": "DotJoshJohnson.xml"
-	}
+	},
+	"IDX.aI.enableInlineCompletion": true,
+	"IDX.aI.enableCodebaseIndexing": true
 }
