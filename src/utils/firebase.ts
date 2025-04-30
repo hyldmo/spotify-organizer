@@ -8,7 +8,7 @@ const PROJECT_ID = process.env.PACKAGE_NAME
 const REGION = 'europe-west1'
 
 const firebaseConfig: FirebaseOptions = {
-	apiKey: 'API_KEY',
+	apiKey: 'AIzaSyCBygCxYG1penqvDbxSoUzHmSXnxtgFF2k',
 	projectId: PROJECT_ID,
 	databaseURL: `https://${PROJECT_ID}-default-rtdb.${REGION}.firebasedatabase.app/`,
 	authDomain: `${PROJECT_ID}.firebaseapp.com`,
