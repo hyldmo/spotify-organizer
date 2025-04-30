@@ -1,6 +1,8 @@
+import { signInAnonymously } from 'firebase/auth'
 import { replace } from 'redux-first-history'
 import { call, put, takeLatest } from 'typed-redux-saga'
 import { Action, Actions } from '~/actions'
+import { auth } from '../utils/firebase'
 import { spotifyFetch } from './spotifyFetch'
 
 export function* loginSaga () {
@@ -13,20 +15,24 @@ function* getUserDetails (action: Action<typeof Actions.tokenAquired.type>) {
 
 	try {
 		const body = yield* call(() => spotifyFetch<SpotifyApi.UserObjectPublic>('me', {}, token))
-		if (body)
+		if (body) {
+			const firebaseUser = yield* call(signInAnonymously, auth)
+
 			yield* put(
 				Actions.userLoaded({
-					...body,
+					...firebaseUser.user,
 					name: body.display_name || null,
 					image: body.images ? body.images[0].url : null,
-					token
+					token,
+					spotify: body
 				})
 			)
+		}
 		localStorage.setItem('token', token)
 		yield* put(Actions.fetchPlaylists())
 		const redirect = action.meta
 		if (redirect && redirect !== location.pathname) {
-		console.info(`Redirecting to ${redirect} from ${location.pathname}`)
+			console.info(`Redirecting to ${redirect} from ${location.pathname}`)
 			yield* put(replace({ pathname: redirect, search: '?redirected=true' }))
 		}
 	} catch (e) {
@@ -39,5 +45,8 @@ function* getUserDetails (action: Action<typeof Actions.tokenAquired.type>) {
 
 function* loadUser (_: Action<typeof Actions.loadUser.type>) {
 	const token = localStorage.getItem('token')
-	if (token) yield* put(Actions.tokenAquired(token, null))
+	if (token) {
+		yield* call(signInAnonymously, auth)
+		yield* put(Actions.tokenAquired(token, null))
+	}
 }

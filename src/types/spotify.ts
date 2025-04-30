@@ -1,3 +1,4 @@
+import { User as FirebaseUser } from 'firebase/auth'
 import { SongEntries } from './firebase'
 import { Nullable } from './helpers'
 
@@ -13,10 +14,12 @@ export interface Playlist extends Omit<SpotifyApi.PlaylistObjectFull, 'tracks' |
 	uri: `spotify:playlist:${string}`
 }
 
-export type User = Omit<SpotifyApi.UserObjectPublic, 'display_name'> & {
+export interface User extends FirebaseUser {
 	name: string | null
 	image: string | null
 	token: string
+
+	spotify: Omit<SpotifyApi.UserObjectPublic, 'display_name'>
 
 	settings: {
 		minSkips: number

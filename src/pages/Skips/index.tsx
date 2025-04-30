@@ -19,8 +19,8 @@ export const Skips: React.FC = () => {
 	const filterIds = searchParams.get('filterId')?.split(',')
 	const groupBy = searchParams.get('groupBy') ?? 'playlist'
 	const user = useSelector((s: State) => s.user)
-	const plays = useFirebase(`users/${user?.id}/plays/`) || {}
-	const skips = useFirebase(`users/${user?.id}/skips/`) || {}
+	const plays = useFirebase(`users/${user?.uid}/plays/`) || {}
+	const skips = useFirebase(`users/${user?.uid}/skips/`) || {}
 	if (!user) return null
 
 	const playlistSkips = toEntries(mergeEntries(plays, skips))

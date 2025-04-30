@@ -36,7 +36,7 @@ export const ByTrack: React.FC<Props> = ({ filterIds, skipData, countNonPlaylist
 		.map(({ song, ...entry }, i, { length }) => {
 			const playlistsSkips = entry.playlists
 				?.slice()
-				.filter(p => (countNonPlaylists ? findPlaylist(p.uri)?.owner.id === user?.id : true))
+				.filter(p => (countNonPlaylists ? findPlaylist(p.uri)?.owner.id === user?.spotify.id : true))
 
 			if (allPlaylists)
 				playlistsSkips.push(

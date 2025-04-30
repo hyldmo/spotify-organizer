@@ -12,7 +12,7 @@ export function* nowPlayingSaga () {
 
 function* clearSkips (action: Action<'PLAYBACK_CLEAR_SKIPS'>) {
 	const user = yield* select((s: State) => s.user as User) // User will not be null when playback is active
-	yield* call(() => firebaseUpdate(`users/${user.id}/skips/${action.meta}/${action.payload}/`, 0))
+	yield* call(() => firebaseUpdate(`users/${user.uid}/skips/${action.meta}/${action.payload}/`, 0))
 }
 
 function* watchPlayback () {
@@ -54,10 +54,10 @@ function* onPlaybackUpdated (action: Action<'PLAYBACK_UPDATED'>) {
 	const progress_ms = current.progress_ms ?? 0
 	const percent = (progress_ms / song.duration_ms) * 100
 
-	const plays = yield* call(() => firebaseGet(`users/${user.id}/plays/${context?.uri || 'unknown'}/${song.id}/`))
+	const plays = yield* call(() => firebaseGet(`users/${user.uid}/plays/${context?.uri || 'unknown'}/${song.id}/`))
 
 	yield* call(() =>
-		firebaseUpdate(`users/${user.id}/plays/${context?.uri || 'unknown'}/${song.id}/`, (plays ?? 0) + 1)
+		firebaseUpdate(`users/${user.uid}/plays/${context?.uri || 'unknown'}/${song.id}/`, (plays ?? 0) + 1)
 	)
 
 	if (user.settings.watchSkips) {
@@ -66,10 +66,10 @@ function* onPlaybackUpdated (action: Action<'PLAYBACK_UPDATED'>) {
 			yield put(Actions.songSkipped(song, context))
 
 			const skips = yield* call(() =>
-				firebaseGet(`users/${user.id}/skips/${context?.uri || 'unknown'}/${song.id}/`)
+				firebaseGet(`users/${user.uid}/skips/${context?.uri || 'unknown'}/${song.id}/`)
 			)
 			yield* call(() =>
-				firebaseUpdate(`users/${user.id}/skips/${context?.uri || 'unknown'}/${song.id}/`, (skips ?? 0) + 1)
+				firebaseUpdate(`users/${user.uid}/skips/${context?.uri || 'unknown'}/${song.id}/`, (skips ?? 0) + 1)
 			)
 		}
 		if (percent < 90) {

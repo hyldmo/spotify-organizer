@@ -28,5 +28,5 @@ export function getSortIcon (isOwn: boolean, order: Sort) {
 }
 
 export function canModifyPlaylist (playlist: Playlist, user: User): boolean {
-	return playlist.collaborative || playlist.owner.id === user.id
+	return playlist.collaborative || playlist.owner.id === user.spotify.id
 }

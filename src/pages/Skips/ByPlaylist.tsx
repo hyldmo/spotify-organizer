@@ -20,7 +20,7 @@ export const ByPlaylist: React.FC<Props> = ({ filterIds, skipData, countNonPlayl
 
 	// const instead of return to reduce indentention level
 	const retval = skipData
-		.filter(pl => (allPlaylists ? pl.owner?.id === user?.id : true))
+		.filter(pl => (allPlaylists ? pl.owner?.id === user?.spotify.id : true))
 		.filter(pl => (filterIds ? filterIds.includes(pl.id || '') || filterIds.includes(pl.uri) : true))
 		.filter(pl => filterSongs(pl).length > 0)
 		.sort((a, b) => countSkips(b) - countSkips(a))
@@ -49,7 +49,7 @@ export const ByPlaylist: React.FC<Props> = ({ filterIds, skipData, countNonPlayl
 							if (!song) return null
 							return (
 								<Fragment key={id + j}>
-									{playlist.owner?.id == user?.id ? (
+									{playlist.owner?.id == user?.spotify.id ? (
 										<button
 											className="opacity-40 hover:opacity-80 mr-3"
 											onClick={_ =>

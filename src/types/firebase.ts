@@ -1,15 +1,17 @@
 import { Join, PathsToStringProps, Split, ToStringProps, Traverse, User } from '~/types'
 import { Track, URI } from './spotify'
 
+export type IDKey = 'uid'
+
 export interface FirebaseData {
-	users: Record<User['id'], FirebaseUserData>
+	users: Record<User[IDKey], FirebaseUserData>
 }
 
 export type SongEntries = {
 	[id: Track['id']]: number // number of plays
 }
 
-export type FirebaseUserData = Omit<User, 'id'> & {
+export interface FirebaseUserData extends Omit<User, IDKey> {
 	skips: {
 		[id: URI]: SongEntries
 	}

@@ -1,13 +1,13 @@
 /* eslint-disable no-restricted-imports */
-import { initializeApp } from 'firebase/app'
+import { FirebaseOptions, initializeApp } from 'firebase/app'
+import { getAuth } from 'firebase/auth'
 import { get, getDatabase, onValue, ref, update } from 'firebase/database'
 import { FirebaseGet, FirebaseUpdates, FirebaseUrls } from '~/types'
 
 const PROJECT_ID = process.env.PACKAGE_NAME
 const REGION = 'europe-west1'
 
-// TODO: Replace with your app's Firebase project configuration
-const firebaseConfig = {
+const firebaseConfig: FirebaseOptions = {
 	apiKey: 'API_KEY',
 	projectId: PROJECT_ID,
 	databaseURL: `https://${PROJECT_ID}-default-rtdb.${REGION}.firebasedatabase.app/`,
@@ -20,6 +20,7 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig)
 const db = getDatabase(app)
+export const auth = getAuth(app)
 
 export function firebaseWatch<T extends FirebaseUrls> (url: T, onUpdate: (value: FirebaseGet<T>) => void) {
 	const key = url.endsWith('/') ? url.slice(0, -1) : url

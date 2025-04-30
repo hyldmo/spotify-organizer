@@ -55,7 +55,7 @@ export function* getTracks (action: Action<'FETCH_TRACKS'>, delay?: number) {
 	const user = yield* select((s: State) => s.user)
 	let plays: Nullable<SongEntries>
 	try {
-		plays = yield* call(() => firebaseGet(`users/${user?.id}/plays/spotify:playlist:${id}/`))
+		plays = yield* call(() => firebaseGet(`users/${user?.spotify.id}/plays/spotify:playlist:${id}/`))
 	} catch (e) {
 		plays = null
 		console.warn('Error fetching plays from firebase', e)

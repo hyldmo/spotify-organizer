@@ -15,8 +15,8 @@ export const TrackRoute: React.FC = () => {
 	const playlists = useSelector((s: State) => s.playlists)
 	const user = useSelector((s: State) => s.user)
 	const params = useParams<{ id: string }>()
-	const plays = useFirebase(`users/${user?.id}/plays/`)
-	const skips = useFirebase(`users/${user?.id}/skips/`)
+	const plays = useFirebase(`users/${user?.uid}/plays/`)
+	const skips = useFirebase(`users/${user?.uid}/skips/`)
 
 	useEffect(() => {
 		if (params.id) dispatch(Actions.fetchTrack(params.id))
