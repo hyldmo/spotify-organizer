@@ -20,7 +20,7 @@ export const Header: React.FC<Props> = ({ user }) => (
 					</li>
 				</ul>
 			)}
-			{user && (
+			{user?.spotify && (
 				<>
 					<ul className="justify-self-start text-gray-300">
 						<>
@@ -35,7 +35,10 @@ export const Header: React.FC<Props> = ({ user }) => (
 					<ul className="justify-self-end">
 						<li>
 							<UriLink object={user.spotify}>
-								<img className="inline align-bottom h-6 rounded-full" src={user.image || undefined} />{' '}
+								<img
+									className="inline align-bottom h-6 rounded-full"
+									src={user.spotify.image || undefined}
+								/>{' '}
 								{user.spotify.id}
 							</UriLink>
 						</li>

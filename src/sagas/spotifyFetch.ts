@@ -11,7 +11,7 @@ export function* spotifyFetch<T extends unknown> (
 	options: RequestInit = {},
 	apiToken?: string
 ): SagaIterator<T | null> {
-	const userToken = yield* select((state: State) => state.user && state.user.token)
+	const userToken = yield* select((state: State) => state.user && state.user.spotifyToken)
 	const token = apiToken || userToken || localStorage.getItem('token')
 
 	if (!token) {

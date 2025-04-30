@@ -16,10 +16,11 @@ export interface Playlist extends Omit<SpotifyApi.PlaylistObjectFull, 'tracks' |
 
 export interface User extends FirebaseUser {
 	name: string | null
-	image: string | null
-	token: string
+	spotifyToken: string
 
-	spotify: Omit<SpotifyApi.UserObjectPublic, 'display_name'>
+	spotify: Omit<SpotifyApi.UserObjectPublic, 'display_name'> & {
+		image: string | null
+	}
 
 	settings: {
 		minSkips: number

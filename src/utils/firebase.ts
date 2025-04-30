@@ -12,7 +12,7 @@ const firebaseConfig: FirebaseOptions = {
 	projectId: PROJECT_ID,
 	databaseURL: `https://${PROJECT_ID}-default-rtdb.${REGION}.firebasedatabase.app/`,
 	authDomain: `${PROJECT_ID}.firebaseapp.com`,
-	storageBucket: `${PROJECT_ID}.appspot.com`,
+	storageBucket: `${PROJECT_ID}.firebasestorage.app`,
 	messagingSenderId: '1002656141839',
 	appId: '1:1002656141839:web:3babe394f87dea73d0897a',
 	measurementId: 'G-8MCL7KX2WV'

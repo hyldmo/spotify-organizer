@@ -22,9 +22,11 @@ function* getUserDetails (action: Action<typeof Actions.tokenAquired.type>) {
 				Actions.userLoaded({
 					...firebaseUser.user,
 					name: body.display_name || null,
-					image: body.images ? body.images[0].url : null,
-					token,
-					spotify: body
+					spotifyToken: token,
+					spotify: {
+						...body,
+						image: body.images ? body.images[0].url : null
+					}
 				})
 			)
 		}
