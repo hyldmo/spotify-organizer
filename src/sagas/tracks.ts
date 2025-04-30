@@ -71,7 +71,7 @@ export function* getTracks (action: Action<'FETCH_TRACKS'>, delay?: number) {
 			yield* put(Actions.createNotification({ message: e.message, type: 'error' }))
 		}
 		if (response === null) break
-		const mappedTracks = response.items.map<Track>(t => toTrack(t, index++))
+		const mappedTracks = response.items.filter(t => t.track).map<Track>(t => toTrack(t, index++))
 		mappedTracks.forEach(track => SongCache.set(track.id, track))
 		tracks = {
 			...tracks,

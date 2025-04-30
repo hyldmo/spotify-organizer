@@ -20,7 +20,7 @@ function makeRestartable (saga: any) {
 				yield* call(saga)
 				break
 			} catch (e) {
-				console.warn(`Saga '${saga.name}' failed.`, e)
+				console.warn(`Saga '${'name' in saga ? saga.name : JSON.stringify(saga)}' failed.`, e)
 			}
 			yield* delay(1000)
 		}
