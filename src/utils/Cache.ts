@@ -7,6 +7,7 @@ type CacheEntry<T, K = string> = Tuple<K, Readonly<T>>
 export class PersistentCache<T, K extends string = string> extends Map<K, Readonly<T>> {
 	public id = ''
 	private db: LocalForage
+	private ready: Promise<void>
 
 	constructor (id: string) {
 		super()
@@ -17,7 +18,7 @@ export class PersistentCache<T, K extends string = string> extends Map<K, Readon
 			version: 1
 		})
 		this.db.ready(err => (err ? console.warn(err) : console.info(`Cache ${id} loaded`)))
-		this.loadEntries().then(data => data.forEach(([key, value]) => super.set(key as K, value)))
+		this.ready = this.loadEntries().then(data => data.forEach(([key, value]) => super.set(key as K, value)))
 	}
 
 	public set (key: K, value: T) {
@@ -26,8 +27,11 @@ export class PersistentCache<T, K extends string = string> extends Map<K, Readon
 
 		this.db.setItem(key, value).catch(console.warn)
 		// As storage APIs does not implement a "getAll", create an entry with all known keys in the cache
-		const keys = [...this.keys()].filter(k => k !== 'keys') // Remove that entry's key from it's own list
-		this.db.setItem('keys', keys)
+		// Wait for initial load to complete before writing the keys index, otherwise we overwrite it with an incomplete list
+		this.ready.then(() => {
+			const keys = [...this.keys()].filter(k => k !== 'keys')
+			this.db.setItem('keys', keys)
+		})
 		return this
 	}
 
