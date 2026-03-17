@@ -8,6 +8,7 @@ export class PersistentCache<T, K extends string = string> extends Map<K, Readon
 	public id = ''
 	private db: LocalForage
 	private ready: Promise<void>
+	private pendingKeysWrite: Promise<void> = Promise.resolve()
 
 	constructor (id: string) {
 		super()
@@ -25,13 +26,17 @@ export class PersistentCache<T, K extends string = string> extends Map<K, Readon
 		if (key === null) return this
 		super.set(key, value)
 
-		this.db.setItem(key, value).catch(console.warn)
+		this.db.setItem(key, value).catch(err => console.warn(`Cache ${this.id}: failed to write key "${key}"`, err))
 		// As storage APIs does not implement a "getAll", create an entry with all known keys in the cache
-		// Wait for initial load to complete before writing the keys index, otherwise we overwrite it with an incomplete list
-		this.ready.then(() => {
-			const keys = [...this.keys()].filter(k => k !== 'keys')
-			this.db.setItem('keys', keys)
-		})
+		// Chain keys writes sequentially to prevent concurrent writes from clobbering each other
+		this.pendingKeysWrite = this.pendingKeysWrite
+			.then(() => this.ready)
+			.then(() => {
+				const keys = [...this.keys()].filter(k => k !== 'keys')
+				return this.db.setItem('keys', keys)
+			})
+			.then(() => undefined)
+			.catch(err => console.warn(`Cache ${this.id}: failed to write keys index`, err))
 		return this
 	}
 
