@@ -28,6 +28,12 @@ export const Header: React.FC<Props> = ({ user }) => (
 								<NavLink to="/">Playlists</NavLink>
 							</li>
 							<li>
+								<NavLink to="/dashboard">Dashboard</NavLink>
+							</li>
+							<li>
+								<NavLink to="/search">Search</NavLink>
+							</li>
+							<li>
 								<NavLink to="/skips">Skipped songs</NavLink>
 							</li>
 						</>

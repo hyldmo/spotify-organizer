@@ -6,6 +6,7 @@ import { spotifyFetch } from './spotifyFetch'
 
 export function* nowPlayingSaga () {
 	yield* takeEvery('PLAYBACK_CLEAR_SKIPS', clearSkips)
+	yield* takeEvery('PLAYBACK_CONTROL', playbackControl)
 	yield* take('TOKEN_AQUIRED')
 	yield* fork(watchPlayback)
 }
@@ -13,6 +14,40 @@ export function* nowPlayingSaga () {
 function* clearSkips (action: Action<'PLAYBACK_CLEAR_SKIPS'>) {
 	const user = yield* select((s: State) => s.user as User) // User will not be null when playback is active
 	yield* call(() => firebaseUpdate(`users/${user.uid}/skips/${action.meta}/${action.payload}/`, 0))
+}
+
+function* playbackControl (action: Action<'PLAYBACK_CONTROL'>) {
+	const playback = yield* select((s: State) => s.playback.nowPlaying)
+	if (!playback) return
+
+	try {
+		switch (action.payload) {
+			case 'play':
+				yield* call(() => spotifyFetch('me/player/play', { method: 'PUT' }))
+				break
+			case 'pause':
+				yield* call(() => spotifyFetch('me/player/pause', { method: 'PUT' }))
+				break
+			case 'next':
+				yield* call(() => spotifyFetch('me/player/next', { method: 'POST' }))
+				break
+			case 'previous':
+				yield* call(() => spotifyFetch('me/player/previous', { method: 'POST' }))
+				break
+			case 'shuffle':
+				yield* call(() => spotifyFetch(`me/player/shuffle?state=${!playback.shuffle_state}`, { method: 'PUT' }))
+				break
+			case 'repeat': {
+				const states = ['off', 'context', 'track'] as const
+				const currentIndex = states.indexOf(playback.repeat_state as typeof states[number])
+				const nextState = states[(currentIndex + 1) % states.length]
+				yield* call(() => spotifyFetch(`me/player/repeat?state=${nextState}`, { method: 'PUT' }))
+				break
+			}
+		}
+	} catch (e) {
+		yield* put(Actions.createNotification({ message: (e as Error).message, type: 'error' }))
+	}
 }
 
 function* watchPlayback () {

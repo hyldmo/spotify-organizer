@@ -28,7 +28,7 @@ export const ByPlaylist: React.FC<Props> = ({ filterIds, skipData, countNonPlayl
 			<li key={playlist.uri + i} className={cn('py-2', { 'border-b-2 border-b-gray-300': i < length - 1 })}>
 				<div
 					className={cn(
-						'grid grid-rows-2 grid-cols-[auto,3fr,1fr] grid-flow-col items-center',
+						'grid grid-rows-2 grid-cols-[auto,3fr,auto,auto] grid-flow-col items-center',
 						'space-x-2 border-b border-b-gray-600 p-2'
 					)}
 				>
@@ -40,6 +40,27 @@ export const ByPlaylist: React.FC<Props> = ({ filterIds, skipData, countNonPlayl
 					</span>
 					<UriLink object={playlist.owner} className="col-start-2 row-start-2 ellipsis opacity-60" />
 					<span className="row-span-2 justify-self-end">Total skips: {countSkips(playlist)}</span>
+					{playlist.owner?.id === user?.spotify.id && (
+						<button
+							className="row-span-2 justify-self-end opacity-60 hover:opacity-100 text-red-400 hover:text-red-300 text-sm px-2 py-1 border border-current rounded"
+							title={`Remove all tracks with ${minSkips}+ skips from this playlist`}
+							onClick={_ => {
+								const skippedSongs = filterSongs(playlist)
+								const uris = skippedSongs.map(s => idToUri(s.id, 'track'))
+								if (uris.length === 0) return
+								if (window.confirm(`Remove ${uris.length} skipped track(s) from "${playlist.name}"?`)) {
+									dispatch(
+										Actions.deleteTracks(uris, {
+											id: playlist.id as string,
+											snapshot_id: playlist.snapshot_id as string
+										})
+									)
+								}
+							}}
+						>
+							<FontAwesomeIcon icon="trash-alt" size="sm" /> Remove all skipped
+						</button>
+					)}
 				</div>
 				<div className="p-2 grid gap-x-1 grid-cols-[auto,auto,minmax(35%,1fr),repeat(7,auto)] items-baseline">
 					{filterSongs(playlist)

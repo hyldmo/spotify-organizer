@@ -26,7 +26,9 @@ export const NowPlaying: React.FC = () => {
 			}
 		}
 	}, [playback?.progress_ms, playback?.is_playing, playback?.item.duration_ms])
-	const comingSoon = Actions.createNotification({ message: 'Coming soon!', duration: 500 })
+
+	const control = (command: Parameters<typeof Actions.playbackControl>[0]) =>
+		dispatch(Actions.playbackControl(command))
 
 	return playback?.currently_playing_type == 'track' && song ? (
 		<div className="grid grid-rows-[1fr,1fr,auto] grid-cols-[auto,auto,auto,1fr,6fr,1fr,auto] px-2 py-3 gap-x-4 items-center">
@@ -35,7 +37,7 @@ export const NowPlaying: React.FC = () => {
 			</a>
 			<UriLink className="col-start-2 row-start-1 self-end ellipsis" object={song} />
 			<ArtistLinks artists={song.album.artists} className="col-start-2 row-start-2 self-start text-xs" />
-			<button onClick={_ => dispatch(comingSoon)} className="col-start-3 row-span-2" type="button" role="switch">
+			<button className="col-start-3 row-span-2" type="button" role="switch" title="Like (coming soon)">
 				<svg height="1em" viewBox="0 0 16 16" className="text-transparent hover:text-white">
 					<path fill="none" d="M0 0h16v16H0z"></path>
 					<path
@@ -45,17 +47,17 @@ export const NowPlaying: React.FC = () => {
 				</svg>
 			</button>
 			<div className="col-start-5 row-start-1 text-white flex justify-center items-center space-x-4 min-w-[20rem]">
-				<button onClick={_ => dispatch(comingSoon)} className={playback.shuffle_state ? 'text-green-500' : ''}>
+				<button onClick={_ => control('shuffle')} className={playback.shuffle_state ? 'text-green-500' : ''}>
 					<svg height="1em" viewBox="0 0 16 16">
 						<path d="M4.5 6.8l.7-.8C4.1 4.7 2.5 4 .9 4v1c1.3 0 2.6.6 3.5 1.6l.1.2zm7.5 4.7c-1.2 0-2.3-.5-3.2-1.3l-.6.8c1 1 2.4 1.5 3.8 1.5V14l3.5-2-3.5-2v1.5zm0-6V7l3.5-2L12 3v1.5c-1.6 0-3.2.7-4.2 2l-3.4 3.9c-.9 1-2.2 1.6-3.5 1.6v1c1.6 0 3.2-.7 4.2-2l3.4-3.9c.9-1 2.2-1.6 3.5-1.6z"></path>
 					</svg>
 				</button>
-				<button onClick={_ => dispatch(comingSoon)}>
+				<button onClick={_ => control('previous')}>
 					<svg height="1em" viewBox="0 0 16 16">
 						<path d="M13 2.5L5 7.119V3H3v10h2V8.881l8 4.619z"></path>
 					</svg>
 				</button>
-				<button onClick={_ => dispatch(comingSoon)} className="p-2 rounded-full">
+				<button onClick={_ => control(playback.is_playing ? 'pause' : 'play')} className="p-2 rounded-full">
 					{playback.is_playing ? (
 						<svg height="1em" viewBox="0 0 16 16">
 							<path fill="none" d="M0 0h16v16H0z"></path>
@@ -67,12 +69,12 @@ export const NowPlaying: React.FC = () => {
 						</svg>
 					)}
 				</button>
-				<button onClick={_ => dispatch(comingSoon)}>
+				<button onClick={_ => control('next')}>
 					<svg height="1em" viewBox="0 0 16 16">
 						<path d="M11 3v4.119L3 2.5v11l8-4.619V13h2V3z"></path>
 					</svg>
 				</button>
-				<button onClick={_ => dispatch(comingSoon)} className={playback.repeat_state ? 'text-green-500' : ''}>
+				<button onClick={_ => control('repeat')} className={playback.repeat_state !== 'off' ? 'text-green-500' : ''}>
 					<svg height="1em" viewBox="0 0 16 16">
 						<path d="M5.5 5H10v1.5l3.5-2-3.5-2V4H5.5C3 4 1 6 1 8.5c0 .6.1 1.2.4 1.8l.9-.5C2.1 9.4 2 9 2 8.5 2 6.6 3.6 5 5.5 5zm9.1 1.7l-.9.5c.2.4.3.8.3 1.3 0 1.9-1.6 3.5-3.5 3.5H6v-1.5l-3.5 2 3.5 2V13h4.5C13 13 15 11 15 8.5c0-.6-.1-1.2-.4-1.8z" />
 					</svg>
