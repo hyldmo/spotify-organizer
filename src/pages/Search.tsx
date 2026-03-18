@@ -1,6 +1,5 @@
 import React, { useMemo, useState } from 'react'
 import { useSelector } from 'react-redux'
-import { Link } from 'react-router-dom'
 import { ArtistLinks, UriLink } from '~/components/UriLink'
 import { State, Track } from '~/types'
 import { Duration, SongCache } from '~/utils'
@@ -44,7 +43,11 @@ export const Search: React.FC = () => {
 				<h2 className="text-2xl">Search Tracks</h2>
 				<input
 					type="text"
-					className="w-full max-w-lg px-3 py-2 rounded bg-gray-800 border-2 border-gray-600 hover:border-gray-400 focus:border-gray-300 outline-none"
+					className={[
+						'w-full max-w-lg px-3 py-2 rounded bg-gray-800',
+						'border-2 border-gray-600 hover:border-gray-400',
+						'focus:border-gray-300 outline-none'
+					].join(' ')}
 					placeholder="&#xF002; Search by track, artist, or album..."
 					value={query}
 					onChange={e => setQuery(e.target.value)}

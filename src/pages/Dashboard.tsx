@@ -7,10 +7,12 @@ import { Duration, SongCache, songEntriesToSongs, useFirebase } from '~/utils'
 export const Dashboard: React.FC = () => {
 	const playlists = useSelector((s: State) => s.playlists)
 	const user = useSelector((s: State) => s.user)
-	const plays = useFirebase(`users/${user?.uid}/plays/`) || {}
-	const skips = useFirebase(`users/${user?.uid}/skips/`) || {}
+	const rawPlays = useFirebase(`users/${user?.uid}/plays/`)
+	const rawSkips = useFirebase(`users/${user?.uid}/skips/`)
 
 	const stats = useMemo(() => {
+		const plays = rawPlays || {}
+		const skips = rawSkips || {}
 		const totalTracks = playlists.reduce((a, b) => a + b.tracks.total, 0)
 		const loadedPlaylists = playlists.filter(pl => pl.tracks.loaded === pl.tracks.total)
 		const tracks = loadedPlaylists.flatMap(pl => songEntriesToSongs(pl.tracks.items))
@@ -64,7 +66,7 @@ export const Dashboard: React.FC = () => {
 			playlistSkipRates,
 			mostSkipped
 		}
-	}, [playlists, plays, skips])
+	}, [playlists, rawPlays, rawSkips])
 
 	if (!user) return null
 

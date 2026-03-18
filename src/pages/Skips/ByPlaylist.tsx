@@ -42,7 +42,11 @@ export const ByPlaylist: React.FC<Props> = ({ filterIds, skipData, countNonPlayl
 					<span className="row-span-2 justify-self-end">Total skips: {countSkips(playlist)}</span>
 					{playlist.owner?.id === user?.spotify.id && (
 						<button
-							className="row-span-2 justify-self-end opacity-60 hover:opacity-100 text-red-400 hover:text-red-300 text-sm px-2 py-1 border border-current rounded"
+							className={cn(
+								'row-span-2 justify-self-end text-sm px-2 py-1',
+								'opacity-60 hover:opacity-100 text-red-400',
+								'hover:text-red-300 border border-current rounded'
+							)}
 							title={`Remove all tracks with ${minSkips}+ skips from this playlist`}
 							onClick={_ => {
 								const skippedSongs = filterSongs(playlist)
