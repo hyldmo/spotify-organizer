@@ -12,6 +12,7 @@ import '~/styles/main.scss'
 import { State } from '~/types'
 import Alerts from '../Alerts'
 import { SilentErrorBoundary } from '../ErrorBoundary'
+import Loading from '../Loading'
 import Notifications from '../Notifications'
 import { ReloadPrompt } from '../ReloadPrompt'
 import Auth from './Auth'
@@ -20,6 +21,7 @@ import { Header } from './Header'
 
 const App: React.FC = () => {
 	const user = useSelector((s: State) => s.user)
+	const authChecking = useSelector((s: State) => s.auth.checking)
 
 	return (
 		<>
@@ -37,6 +39,8 @@ const App: React.FC = () => {
 							<Route path="/tracks/:id" element={<TrackRoute />} />
 							<Route path="*" element={<NotFound />} />
 						</Routes>
+					) : authChecking ? (
+						<Loading />
 					) : (
 						<Auth />
 					)}

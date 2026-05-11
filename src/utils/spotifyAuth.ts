@@ -83,6 +83,12 @@ export async function exchangeCodeForToken (code: string): Promise<TokenResponse
 	return res.json()
 }
 
+export class RefreshTokenRejected extends Error {
+	constructor (public status: number, body: string) {
+		super(`Refresh token rejected (${status}): ${body}`)
+	}
+}
+
 export async function refreshAccessToken (refreshToken: string): Promise<TokenResponse> {
 	const body = new URLSearchParams({
 		grant_type: 'refresh_token',
@@ -90,12 +96,15 @@ export async function refreshAccessToken (refreshToken: string): Promise<TokenRe
 		client_id: CLIENT_ID
 	})
 
+	// Network errors (fetch rejects) bubble as-is; HTTP errors map to
+	// RefreshTokenRejected so callers can distinguish "Spotify said no" from
+	// "we couldn't reach Spotify".
 	const res = await fetch(TOKEN_ENDPOINT, {
 		method: 'POST',
 		headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
 		body
 	})
-	if (!res.ok) throw new Error(`Token refresh failed: ${res.status}`)
+	if (!res.ok) throw new RefreshTokenRejected(res.status, await res.text())
 	return res.json()
 }
 

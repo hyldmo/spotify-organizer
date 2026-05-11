@@ -47,12 +47,13 @@ export function* getTracks (action: Action<'FETCH_TRACKS'>) {
 	const id = action.meta
 	const limit = 100
 	const user = yield* select((s: State) => s.user)
-	let plays: Nullable<SongEntries>
-	try {
-		plays = yield* call(() => firebaseGet(`users/${user?.uid}/plays/spotify:playlist:${id}/`))
-	} catch (e) {
-		plays = null
-		console.warn(`Error fetching plays from firebase 'users/${user?.uid}/plays/spotify:playlist:${id}/'`, e)
+	let plays: Nullable<SongEntries> = null
+	if (user?.uid) {
+		try {
+			plays = yield* call(() => firebaseGet(`users/${user.uid}/plays/spotify:playlist:${id}/`))
+		} catch (e) {
+			console.warn(`Error fetching plays from firebase 'users/${user.uid}/plays/spotify:playlist:${id}/'`, e)
+		}
 	}
 
 	const fetchPage = (offset: number) =>

@@ -8,5 +8,7 @@ export default {
 	loadUser: makeActionCreator()('LOAD_USER'),
 	userLoaded: makeActionCreator<Optional<User, 'settings'>>()('USER_LOADED'),
 	logout: makeActionCreator()('USER_LOGOUT'),
-	updateSettings: makeActionCreator<any, keyof User['settings']>()('USER_SETTINGS_UPDATE')
+	updateSettings: makeActionCreator<any, keyof User['settings']>()('USER_SETTINGS_UPDATE'),
+	authCheckStart: makeActionCreator()('AUTH_CHECK_START'),
+	authCheckDone: makeActionCreator()('AUTH_CHECK_DONE')
 }

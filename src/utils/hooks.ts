@@ -20,8 +20,12 @@ export function useMapDispatch<T extends Record<string, ActionCreator>> (actions
 export function useFirebase<T extends FirebaseUrls> (url: T) {
 	const [data, setData] = useState<FirebaseGet<T> | null>(null)
 	useEffect(() => {
+		// Skip until the URL has a real uid — callers commonly pass
+		// `users/${user?.uid}/...` which produces "users/undefined/..." or
+		// "users//..." during the brief window before Firebase anon-auth lands.
+		if (url.includes('/undefined/') || url.includes('//')) return
 		firebaseGet(url).then(setData)
-		firebaseWatch(url, setData)
+		return firebaseWatch(url, setData)
 	}, [url])
 	return data
 }
