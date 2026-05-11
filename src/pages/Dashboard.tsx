@@ -1,14 +1,18 @@
-import React, { useMemo } from 'react'
+import React, { useMemo, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
-import { State } from '~/types'
-import { Duration, SongCache, songEntriesToSongs, useFirebase } from '~/utils'
+import { Sort, State } from '~/types'
+import { Duration, getNextSortMode, getSortIcon, SongCache, songEntriesToSongs, useFirebase } from '~/utils'
+
+type SkipRateRow = { name: string; id: string; skipRate: number; totalSkips: number; totalPlays: number }
+type SkipSortKey = 'name' | 'skipRate' | 'totalSkips' | 'totalPlays'
 
 export const Dashboard: React.FC = () => {
 	const playlists = useSelector((s: State) => s.playlists)
 	const user = useSelector((s: State) => s.user)
 	const rawPlays = useFirebase(`users/${user?.uid}/plays/`)
 	const rawSkips = useFirebase(`users/${user?.uid}/skips/`)
+	const [skipSort, setSkipSort] = useState<{ key: SkipSortKey; mode: Sort }>({ key: 'skipRate', mode: Sort.Desc })
 
 	const stats = useMemo(() => {
 		const plays = rawPlays || {}
@@ -31,7 +35,7 @@ export const Dashboard: React.FC = () => {
 		const uniqueTracks = trackCounts.size
 
 		// Skip stats per playlist
-		const playlistSkipRates = loadedPlaylists
+		const playlistSkipRates: SkipRateRow[] = loadedPlaylists
 			.map(pl => {
 				const contextUri = pl.uri
 				const playlistSkips = skips[contextUri] || {}
@@ -42,7 +46,6 @@ export const Dashboard: React.FC = () => {
 				return { name: pl.name, id: pl.id, skipRate, totalSkips, totalPlays }
 			})
 			.filter(pl => pl.totalPlays > 0)
-			.sort((a, b) => b.skipRate - a.skipRate)
 
 		// Most skipped tracks (aggregate across all playlists)
 		const trackSkips = new Map<string, number>()
@@ -67,6 +70,43 @@ export const Dashboard: React.FC = () => {
 			mostSkipped
 		}
 	}, [playlists, rawPlays, rawSkips])
+
+	const sortedSkipRates = useMemo(() => {
+		const rows = stats.playlistSkipRates
+		if (skipSort.mode === Sort.None) return rows
+		const direction = skipSort.mode === Sort.Asc ? 1 : -1
+		const value = (r: SkipRateRow): string | number => {
+			switch (skipSort.key) {
+				case 'name':
+					return r.name.toLocaleLowerCase()
+				case 'skipRate':
+					return r.skipRate
+				case 'totalSkips':
+					return r.totalSkips
+				case 'totalPlays':
+					return r.totalPlays
+			}
+		}
+		return rows.slice().sort((a, b) => {
+			const va = value(a)
+			const vb = value(b)
+			if (va < vb) return -1 * direction
+			if (va > vb) return 1 * direction
+			return 0
+		})
+	}, [stats.playlistSkipRates, skipSort])
+
+	const onSkipSort = (key: SkipSortKey) =>
+		setSkipSort(prev => ({ key, mode: getNextSortMode(prev.key === key, prev.mode) }))
+
+	const skipHeader = (label: string, key: SkipSortKey, align: 'left' | 'right' = 'left') => (
+		<th className={align === 'right' ? 'text-right' : undefined}>
+			<a onClick={() => onSkipSort(key)} className="cursor-pointer">
+				{label}
+			</a>
+			&nbsp;{getSortIcon(skipSort.key === key, skipSort.mode)}
+		</th>
+	)
 
 	if (!user) return null
 
@@ -103,14 +143,14 @@ export const Dashboard: React.FC = () => {
 						<table className="w-full max-w-2xl">
 							<thead>
 								<tr className="text-left text-gray-400 text-sm">
-									<th>Playlist</th>
-									<th className="text-right">Skip Rate</th>
-									<th className="text-right">Skips</th>
-									<th className="text-right">Plays</th>
+									{skipHeader('Playlist', 'name')}
+									{skipHeader('Skip Rate', 'skipRate', 'right')}
+									{skipHeader('Skips', 'totalSkips', 'right')}
+									{skipHeader('Plays', 'totalPlays', 'right')}
 								</tr>
 							</thead>
 							<tbody>
-								{stats.playlistSkipRates.slice(0, 10).map(pl => (
+								{sortedSkipRates.slice(0, 10).map(pl => (
 									<tr key={pl.id}>
 										<td>
 											<Link to={`/playlists/${pl.id}`} className="hover:underline">

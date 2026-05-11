@@ -56,7 +56,7 @@ const PlaylistRoute: React.FC = () => {
 				</Link>
 			</div>
 			<hr />
-			<Tracks tracks={tracks} currentPlaylistId={playlist.id} />
+			<Tracks tracks={tracks} playlist={playlist} />
 		</div>
 	)
 }
