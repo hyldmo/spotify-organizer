@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react'
 import { Playlist, Track } from '~/types'
-import { Duration, useAppSelector } from '~/utils'
+import { Duration, idToUri, useAppSelector, useFirebase } from '~/utils'
 import { ArtistLinks, UriLink } from './UriLink'
 
 type Props = {
@@ -9,8 +9,13 @@ type Props = {
 }
 const Tracks: React.FC<Props> = ({ tracks, currentPlaylistId }) => {
 	const playlists = useAppSelector(s => s.playlists)
+	const user = useAppSelector(s => s.user)
+	const playlistUri = currentPlaylistId ? idToUri(currentPlaylistId, 'playlist') : null
+	// Per-playlist skip counts, keyed by track id. Mirrors how Skips pages load skip data.
+	const skipEntries = useFirebase(`users/${user?.uid}/skips/${playlistUri}/`) || {}
 	const contributors = new Set(tracks.map(t => t.meta.added_by.id))
 	const plays = tracks.reduce((a, t) => a + (t.meta.plays || 0), 0)
+	const skips = tracks.reduce((a, t) => a + (skipEntries[t.id] || 0), 0)
 
 	const otherPlaylistsByTrack = useMemo(() => {
 		const map: Record<Track['id'], Playlist[]> = {}
@@ -33,6 +38,7 @@ const Tracks: React.FC<Props> = ({ tracks, currentPlaylistId }) => {
 					<th>Duration</th>
 					<th title="Number of other loaded playlists this track appears in">In playlists</th>
 					<th title={plays > 0 ? undefined : 'Plays are tracked only while "Watch skips" is enabled in settings'}>Plays</th>
+					<th title={skips > 0 ? undefined : 'Skips are tracked only while "Watch skips" is enabled in settings'}>Skips</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -60,6 +66,7 @@ const Tracks: React.FC<Props> = ({ tracks, currentPlaylistId }) => {
 							<td>{new Duration(track.duration_ms).toMinutesString()}</td>
 							<td title={others.map(pl => pl.name).join('\n')}>{others.length}</td>
 							<td>{track.meta.plays ?? 0}</td>
+							<td>{skipEntries[track.id] ?? 0}</td>
 						</tr>
 					)
 				})}
