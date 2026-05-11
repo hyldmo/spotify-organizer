@@ -6,26 +6,23 @@
 		"allowJs": true,
 		"checkJs": false,
 		"resolveJsonModule": true,
-		"downlevelIteration": true,
-		"skipLibCheck": true,
+		"isolatedModules": true,
 		"module": "ESNext",
-		"moduleResolution": "node",
+		"moduleResolution": "bundler",
 		"target": "ES2020",
 		"esModuleInterop": true,
 		"jsx": "react-jsx",
 		"baseUrl": ".",
 		"paths": {
 			"~/*": ["./src/*"]
-		}
+		},
+		"skipLibCheck": true
 	},
-	"files": ["./src/types/globals.ts", "./node_modules/@types/spotify-api/index.d.ts"],
-	"include": ["src/**/*"],
-	"ts-node": {
-		"comment": "Needed to support .ts on webpack config",
-		"compilerOptions": {
-			"module": "CommonJS",
-			"strict": false,
-			"esModuleInterop": true
-		}
-	}
+	"files": [
+		"./src/types/globals.ts",
+		"./src/vite-env.d.ts",
+		"./node_modules/@types/spotify-api/index.d.ts",
+		"./node_modules/@types/spotify-web-playback-sdk/index.d.ts"
+	],
+	"include": ["src/**/*", "vite.config.ts"]
 }

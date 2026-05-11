@@ -1,9 +1,6 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
 import { Route, Routes } from 'react-router'
-import 'static/app.svg'
-import 'static/app.webmanifest'
-import { __DEV__ } from '~/consts'
 import { Dashboard } from '~/pages/Dashboard'
 import PlaylistsManager from '~/pages/Home'
 import NotFound from '~/pages/NotFound'
@@ -16,13 +13,10 @@ import { State } from '~/types'
 import Alerts from '../Alerts'
 import { SilentErrorBoundary } from '../ErrorBoundary'
 import Notifications from '../Notifications'
+import { ReloadPrompt } from '../ReloadPrompt'
 import Auth from './Auth'
 import { Footer } from './Footer'
 import { Header } from './Header'
-
-if ('serviceWorker' in navigator && !__DEV__) {
-	navigator.serviceWorker.register('/service-worker.js')
-}
 
 const App: React.FC = () => {
 	const user = useSelector((s: State) => s.user)
@@ -50,6 +44,7 @@ const App: React.FC = () => {
 			</main>
 			<Footer />
 			<Notifications />
+			<ReloadPrompt />
 		</>
 	)
 }
