@@ -1,6 +1,6 @@
 /* eslint-disable no-restricted-imports */
 import { FirebaseOptions, initializeApp } from 'firebase/app'
-import { inMemoryPersistence, initializeAuth } from 'firebase/auth'
+import { initializeAuth, inMemoryPersistence } from 'firebase/auth'
 import { get, getDatabase, onValue, ref, update } from 'firebase/database'
 import { FirebaseGet, FirebaseUpdates, FirebaseUrls } from '~/types'
 
