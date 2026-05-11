@@ -45,16 +45,15 @@ export type State = ReturnType<RootReducer>
 // run sagas
 SagaManager.startSagas(sagaMiddleware)
 
-if (__DEV__ && module.hot) {
-	// Hot reload reducers (requires Webpack or Browserify HMR to be enabled)
-	module.hot.accept('./reducers', async () => {
-		const newReducers = await import('./reducers')
-		store.replaceReducer(makeReducers(newReducers))
+if (__DEV__ && import.meta.hot) {
+	import.meta.hot.accept('./reducers', newReducers => {
+		if (newReducers) store.replaceReducer(makeReducers(newReducers as unknown as typeof rootReducers))
 	})
 
-	module.hot.accept('./sagas', async () => {
-		const newSagaManager = await import('./sagas')
-		SagaManager.cancelSagas(store as any)
-		newSagaManager.default.startSagas(sagaMiddleware)
+	import.meta.hot.accept('./sagas', newSagaModule => {
+		if (newSagaModule) {
+			SagaManager.cancelSagas(store as any)
+			;(newSagaModule as unknown as { default: typeof SagaManager }).default.startSagas(sagaMiddleware)
+		}
 	})
 }

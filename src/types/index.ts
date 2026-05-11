@@ -8,4 +8,4 @@ export * from './playback'
 export * from './spotify'
 export * from './ui'
 
-export { State } from '../configureStore'
+export type { State } from '../configureStore'
