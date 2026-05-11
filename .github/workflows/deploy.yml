@@ -48,9 +48,14 @@ jobs:
         env:
           PACKAGE_VERSION: '${{ steps.semver.outputs.VERSION }}'
 
-      - run: yarn firebase deploy --only database
+      - name: Write Firebase service account
         env:
-          GOOGLE_APPLICATION_CREDENTIALS: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_SPOTIFY_ORGANISER }}'
+          SA_KEY: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_SPOTIFY_ORGANISER }}
+        run: |
+          printf '%s' "$SA_KEY" > "$RUNNER_TEMP/firebase-key.json"
+          echo "GOOGLE_APPLICATION_CREDENTIALS=$RUNNER_TEMP/firebase-key.json" >> "$GITHUB_ENV"
+
+      - run: yarn firebase deploy --only database --project spotify-organiser
 
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
