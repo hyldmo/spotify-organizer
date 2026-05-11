@@ -4,6 +4,12 @@ import { Nullable, Playlist, SongEntries, State, Track, URI } from '~/types'
 import { firebaseGet, idToUri, PlaylistCache, SongCache, toTrack } from '~/utils'
 import { spotifyFetch } from './spotifyFetch'
 
+// Dedupes concurrent `getTracks` invocations for the same playlist id. Several
+// call sites can race here — `usePlaylist` on the route, `getAllTracks` on the
+// playlists-fetched fan-out, `deleteTracks` after a mutation — and `takeEvery`
+// gives no in-flight protection on its own.
+const inFlight = new Set<Playlist['id']>()
+
 export function* tracksSaga () {
 	yield* takeEvery(Actions.fetchTrack.type, getTrack)
 	yield* takeEvery(Actions.fetchTracks.type, getTracks)
@@ -11,6 +17,11 @@ export function* tracksSaga () {
 }
 
 function* getAllTracks (action: Action<'FETCH_PLAYLISTS_SUCCESS'>) {
+	// PlaylistCache hydration is async — without this wait, the very first
+	// session after a reload reads an empty Map and refetches every playlist
+	// from Spotify, even when fully cached locally.
+	yield* call(() => PlaylistCache.ready)
+
 	for (const playlist of action.payload) {
 		const existing = PlaylistCache.get(playlist.uri as URI<'playlist'>)
 		if (existing) {
@@ -43,97 +54,104 @@ export function* getTrack (action: Action<'FETCH_TRACK'>) {
 	yield put(Actions.createNotification({ message: 'Error fetching track', type: 'error' }))
 }
 
+function* fetchPlays (uid: string | null | undefined, id: Playlist['id']): Generator<unknown, Nullable<SongEntries>> {
+	if (!uid) return null
+	try {
+		return yield* call(() => firebaseGet(`users/${uid}/plays/spotify:playlist:${id}/`))
+	} catch (e) {
+		console.warn(`Error fetching plays from firebase 'users/${uid}/plays/spotify:playlist:${id}/'`, e)
+		return null
+	}
+}
+
 export function* getTracks (action: Action<'FETCH_TRACKS'>) {
 	const id = action.meta
-	const limit = 100
-	const user = yield* select((s: State) => s.user)
-	let plays: Nullable<SongEntries> = null
-	if (user?.uid) {
-		try {
-			plays = yield* call(() => firebaseGet(`users/${user.uid}/plays/spotify:playlist:${id}/`))
-		} catch (e) {
-			console.warn(`Error fetching plays from firebase 'users/${user.uid}/plays/spotify:playlist:${id}/'`, e)
-		}
-	}
-
-	const fetchPage = (offset: number) =>
-		spotifyFetch<SpotifyApi.PlaylistTrackResponse>(`playlists/${id}/tracks?offset=${offset}&limit=${limit}`)
-
-	let first: SpotifyApi.PlaylistTrackResponse | null
+	if (inFlight.has(id)) return
+	inFlight.add(id)
 	try {
-		first = yield* call(fetchPage, 0)
-	} catch (e: any) {
-		yield* put(Actions.createNotification({ message: e.message, type: 'error' }))
-		return
-	}
-	if (first === null) return
-	const total = first.total
+		const limit = 100
+		const user = yield* select((s: State) => s.user)
 
-	const remainingOffsets: number[] = []
-	for (let o = limit; o < total; o += limit) remainingOffsets.push(o)
+		const fetchPage = (offset: number) =>
+			spotifyFetch<SpotifyApi.PlaylistTrackResponse>(`playlists/${id}/tracks?offset=${offset}&limit=${limit}`)
 
-	let completed = first.items.length
-	yield* put(Actions.fetchTracksProgress(completed, id))
-
-	function* fetchPageReport (offset: number) {
-		const page = yield* call(fetchPage, offset)
-		if (page) {
-			completed = Math.min(completed + page.items.length, total)
-			yield* put(Actions.fetchTracksProgress(completed, id))
-		}
-		return page
-	}
-
-	let rest: Array<SpotifyApi.PlaylistTrackResponse | null> = []
-	if (remainingOffsets.length > 0) {
+		// Page 0 and the plays lookup are independent — running them in parallel
+		// saves up to ~16s on cold starts where Firebase anon-auth is retrying.
+		let first: SpotifyApi.PlaylistTrackResponse | null
+		let plays: Nullable<SongEntries>
 		try {
-			rest = yield* all(remainingOffsets.map(o => call(fetchPageReport, o)))
+			const result = yield* all({
+				first: call(fetchPage, 0),
+				plays: call(fetchPlays, user?.uid, id)
+			})
+			first = result.first
+			plays = result.plays
 		} catch (e: any) {
 			yield* put(Actions.createNotification({ message: e.message, type: 'error' }))
 			return
 		}
-	}
+		if (first === null) return
+		const total = first.total
 
-	const pages = [first, ...rest].filter((p): p is SpotifyApi.PlaylistTrackResponse => p !== null)
-	const tracks: SongEntries = {}
-	let loaded = 0
-	pages.forEach((page, pageIdx) => {
-		const pageOffset = pageIdx * limit
-		const mapped = page.items
-			.filter(t => t.track)
-			.map<Track>((t, i) => toTrack(t, pageOffset + i))
-		mapped.forEach(track => SongCache.set(track.id, track))
-		for (const t of mapped) {
-			tracks[t.id] = plays?.[t.id] || 0
+		const tracks: SongEntries = {}
+		let loaded = 0
+
+		function* processPage (page: SpotifyApi.PlaylistTrackResponse, offset: number) {
+			const mapped = page.items
+				.filter(t => t.track)
+				.map<Track>((t, i) => toTrack(t, offset + i))
+			mapped.forEach(track => SongCache.set(track.id, track))
+			for (const t of mapped) tracks[t.id] = plays?.[t.id] || 0
+			loaded += mapped.length
+			yield* call(updateProgress, id, tracks, loaded, loaded === total)
 		}
-		loaded += mapped.length
-	})
 
-	yield* call(updateProgress, id, tracks, loaded)
+		yield* call(processPage, first, 0)
+
+		const remainingOffsets: number[] = []
+		for (let o = limit; o < total; o += limit) remainingOffsets.push(o)
+
+		if (remainingOffsets.length === 0) return
+
+		function* fetchAndProcess (offset: number) {
+			const page = yield* call(fetchPage, offset)
+			if (page) yield* call(processPage, page, offset)
+		}
+
+		try {
+			yield* all(remainingOffsets.map(o => call(fetchAndProcess, o)))
+		} catch (e: any) {
+			yield* put(Actions.createNotification({ message: e.message, type: 'error' }))
+		}
+	} finally {
+		inFlight.delete(id)
+	}
 }
 
-function* updateProgress (id: Playlist['id'], tracks: SongEntries, loaded: number) {
+function* updateProgress (id: Playlist['id'], tracks: SongEntries, loaded: number, complete: boolean) {
 	let playlist: Nullable<Playlist> = yield* select((s: State) => s.playlists.find(p => p.id === id))
 
 	if (!playlist) playlist = PlaylistCache.get(idToUri(id, 'playlist'))
 	if (!playlist) playlist = yield* call(() => spotifyFetch<Playlist>(`playlists/${id}`))
 
-	if (playlist) {
-		const item: Playlist = {
-			...playlist,
-			tracks: {
-				...playlist.tracks,
-				lastFetched: new Date(),
-				items: tracks,
-				loaded
-			}
+	if (!playlist) return
+
+	const item: Playlist = {
+		...playlist,
+		tracks: {
+			...playlist.tracks,
+			// Only stamp lastFetched on the final write — partial writes must not
+			// look "complete" to consumers like `usePlaylist`'s watch effect.
+			lastFetched: complete ? new Date() : playlist.tracks.lastFetched ?? null,
+			items: tracks,
+			loaded
 		}
-		PlaylistCache.set(playlist.uri, item)
-		if (loaded == item.tracks.total) {
-			console.info(`Tracks for '${playlist.name}' (${playlist.id}) loaded`)
-			yield* put(Actions.tracksFetched(item, id))
-		} else {
-			yield* put(Actions.fetchTracksProgress(loaded, id))
-		}
+	}
+	PlaylistCache.set(playlist.uri, item)
+	if (complete) {
+		console.info(`Tracks for '${playlist.name}' (${playlist.id}) loaded`)
+		yield* put(Actions.tracksFetched(item, id))
+	} else {
+		yield* put(Actions.fetchTracksProgress(loaded, id))
 	}
 }

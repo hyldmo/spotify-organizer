@@ -32,14 +32,24 @@ export function useFirebase<T extends FirebaseUrls> (url: T) {
 
 export function usePlaylist (id: string): Playlist | undefined {
 	const dispatch = useDispatch()
-	const playlists = useAppSelector(s => s.playlists)
-	const [playlist, setPlaylist] = useState(findPlaylist(id) ?? playlists?.find(pl => pl.id == id))
+	// Subscribe to just this playlist's slice so the hook re-renders only when
+	// _this_ playlist changes, not on every progress event for any playlist.
+	const existing = useAppSelector(s => s.playlists?.find(pl => pl.id == id))
+	const [playlist, setPlaylist] = useState(() => findPlaylist(id) ?? existing)
+
+	// Dispatch is keyed on id only — every other dep would risk re-dispatching
+	// during the load (each FETCH_TRACKS_PROGRESS mutates the playlists ref).
+	// The saga dedupes concurrent loads for the same id as defence-in-depth.
 	useEffect(() => {
-		const existing = playlists?.find(pl => pl.id == id)
-		const cached = findPlaylist(id)
-		if (cached === undefined || cached.tracks.loaded == null) {
+		if (findPlaylist(id) === undefined) {
 			dispatch(Actions.fetchTracks(id))
-		} else if (existing?.tracks.lastFetched) {
+		}
+	}, [dispatch, id])
+
+	// Watch for the load to complete. lastFetched flips from null → Date exactly
+	// once, so this effect runs at most twice per id (mount + completion).
+	useEffect(() => {
+		if (existing?.tracks.lastFetched) {
 			setPlaylist(existing)
 			return
 		}
@@ -50,10 +60,8 @@ export function usePlaylist (id: string): Playlist | undefined {
 				setPlaylist(data)
 			}
 		}, 300)
+		return () => window.clearInterval(interval)
+	}, [id, existing?.tracks.lastFetched, existing])
 
-		return () => {
-			window.clearInterval(interval)
-		}
-	}, [dispatch, id, playlists])
 	return playlist
 }
