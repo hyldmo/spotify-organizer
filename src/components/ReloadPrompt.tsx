@@ -3,15 +3,17 @@ import { useRegisterSW } from 'virtual:pwa-register/react'
 
 const POLL_INTERVAL = 60_000
 
+let pollHandle: ReturnType<typeof setInterval> | null = null
+
 export const ReloadPrompt: React.FC = () => {
 	const {
 		needRefresh: [needRefresh, setNeedRefresh],
 		updateServiceWorker
 	} = useRegisterSW({
 		onRegisteredSW (_url, registration) {
-			if (registration) {
-				setInterval(() => registration.update(), POLL_INTERVAL)
-			}
+			if (!registration) return
+			if (pollHandle) clearInterval(pollHandle)
+			pollHandle = setInterval(() => registration.update(), POLL_INTERVAL)
 		}
 	})
 
