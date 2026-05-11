@@ -25,7 +25,7 @@ export const ByTrack: React.FC<Props> = ({ filterIds, skipData, countNonPlaylist
 				playlists: skips
 			}
 		})
-		// eslint-disable-next-line react-hooks/exhaustive-deps
+
 	}, [skipData])
 	const totalSkips = (e: SkipEntryPlaylist[]) => e.reduce((a, b) => a + b.skips, 0)
 	// const instead of return to reduce indentention level

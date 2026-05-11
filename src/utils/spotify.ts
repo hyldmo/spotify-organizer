@@ -48,24 +48,24 @@ export function toTrack<T extends TrackMeta | SpotifyApi.TrackObjectFull> (
 	const isPl = (obj: TrackMeta | SpotifyApi.TrackObjectFull): obj is TrackMeta =>
 		(obj as TrackMeta).added_at !== undefined
 
-	const p = isPl(t) ? t : { track: t as SpotifyApi.TrackObjectFull }
+	const track: SpotifyApi.TrackObjectFull = (isPl(t) ? t.track : (t as SpotifyApi.TrackObjectFull))!
 
 	return {
-		id: p.track.id,
-		name: p.track.name,
-		uri: p.track.uri as Track['uri'],
-		artists: p.track.artists.map(artist => ({
+		id: track.id,
+		name: track.name,
+		uri: track.uri as Track['uri'],
+		artists: track.artists.map(artist => ({
 			id: artist.id,
 			name: artist.name,
 			uri: artist.uri as Artist['uri']
 		})),
 		album: {
-			id: p.track.album.id,
-			name: p.track.album.name,
-			uri: p.track.album.uri as Album['uri'],
-			images: p.track.album.images
+			id: track.album.id,
+			name: track.album.name,
+			uri: track.album.uri as Album['uri'],
+			images: track.album.images
 		},
-		duration_ms: p.track.duration_ms,
+		duration_ms: track.duration_ms,
 		meta: isPl(t)
 			? {
 					added_at: t.added_at,

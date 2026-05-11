@@ -8,6 +8,7 @@ type Props = {
 	icon?: FaProps['icon']
 	onClick?: React.MouseEventHandler<HTMLButtonElement>
 	title?: HTMLButtonElement['title']
+	children?: React.ReactNode
 }
 
 const Button: React.FC<Props> = ({ primary, disabled, icon, children, onClick, title }) => (

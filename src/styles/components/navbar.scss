@@ -8,6 +8,7 @@
 		ul {
 			li {
 				display: inline-block;
+
 				&:not(:last-child)::after {
 					content: '|';
 					margin: 0.3rem;

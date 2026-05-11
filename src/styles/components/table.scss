@@ -1,5 +1,6 @@
 table {
 	$size: 3rem;
+
 	width: 100%;
 	border-collapse: collapse;
 
@@ -25,10 +26,12 @@ table {
 
 	thead.sticky {
 		z-index: 1;
+
 		th {
 			// Make border stay visible with sticky and border-collapse: collapse
 			top: -1px;
-			&:after {
+
+			&::after {
 				content: '';
 				position: absolute;
 				left: 0;
@@ -42,6 +45,7 @@ table {
 	tbody {
 		tr {
 			border-bottom: 1px solid $background-highlight;
+
 			&:hover {
 				background-color: $background-highlight;
 			}

@@ -1,3 +1,5 @@
+import type React from 'react'
+
 export type Primitive = string | number | symbol | null | undefined
 
 export interface Tuple<T1, T2> extends Array<any> {
@@ -54,6 +56,6 @@ export type ExcludeEmpty<T> = T extends AtLeastOne<T> ? T : never
  * Like React.DetailedHTMLProps, except T will replace props found DetailedHTMLProps's props
  */
 export type HTMLElementProps<
-	E extends keyof JSX.IntrinsicElements = 'main',
+	E extends keyof React.JSX.IntrinsicElements = 'main',
 	T extends Obj = Record<never, never>
-> = Augment<JSX.IntrinsicElements[E], T>
+> = Augment<React.JSX.IntrinsicElements[E], T>

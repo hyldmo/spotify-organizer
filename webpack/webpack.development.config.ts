@@ -1,4 +1,4 @@
-﻿// eslint-disable-next-line spaced-comment
+﻿
 import baseConfig from './webpack.config'
 import ReactRefreshWebpackPlugin from '@pmmmwh/react-refresh-webpack-plugin'
 import ReactRefreshTypeScript from 'react-refresh-typescript'

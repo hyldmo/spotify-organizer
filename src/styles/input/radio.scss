@@ -19,6 +19,7 @@ input[type='radio'] {
 		transition: 0.2s all linear;
 		background-color: transparent;
 	}
+
 	&:checked::after {
 		background-color: $text-color;
 	}

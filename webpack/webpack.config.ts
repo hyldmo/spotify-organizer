@@ -30,7 +30,7 @@ const config: Configuration = {
 				{}
 			)
 		},
-		extensions: packageJSON.jest.moduleFileExtensions.map(ext => `.${ext}`)
+		extensions: ['.ts', '.tsx', '.js', '.json']
 	},
 
 	module: {

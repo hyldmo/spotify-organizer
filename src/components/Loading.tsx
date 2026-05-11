@@ -5,6 +5,7 @@ type Props = {
 		current: number
 		total: number
 	}
+	children?: React.ReactNode
 }
 
 const Loading: React.FC<Props> = ({ children, progress }) => (

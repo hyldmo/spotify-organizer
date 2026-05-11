@@ -1,9 +1,7 @@
-/* eslint-disable @typescript-eslint/member-delimiter-style */
-/* eslint-disable max-len */
 
 // TODO: C type parameters doesn't work with unions, making them all unknown
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-type EmptyAction<T, C extends Record<string, any>> = { type: T; '@CONTEXT'?: Record<string, any> }
+type EmptyAction<T, _C = never> = { 'type': T; '@CONTEXT'?: Record<string, any> }
 type EmptyActionCreator<T, C = never> = () => EmptyAction<T, C>
 type ActionPayloadCreator<T, P, C = never> = (payload: P) => EmptyAction<T, C> & { payload: P }
 type ActionMetaCreator<T, P, M, C = never> = (payload: P, meta: M) => EmptyAction<T, C> & { payload: P; meta: M }

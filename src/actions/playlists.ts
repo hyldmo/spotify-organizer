@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/member-delimiter-style */
+
 import { Playlist, Sort, Track } from '~/types'
 import { CompareType } from '~/utils'
 import { makeActionCreator, makeMetaActionCreator } from '~/utils/actionCreator'

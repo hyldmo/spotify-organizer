@@ -1,11 +1,11 @@
-import { Component, ErrorInfo, PropsWithChildren } from 'react'
+import { Component, ErrorInfo, ReactNode } from 'react'
 
-// eslint-disable-next-line @typescript-eslint/ban-types
-export interface SilentErrorBoundaryProps extends PropsWithChildren<{}> {
+export interface SilentErrorBoundaryProps {
+	children?: ReactNode
 	/**
 	 * The fallback component to display when the error boundary catches an error.
 	 */
-	fallback?: React.ReactNode
+	fallback?: ReactNode
 	/**
 	 * The function that is called when the error boundary catches an error.
 	 */
