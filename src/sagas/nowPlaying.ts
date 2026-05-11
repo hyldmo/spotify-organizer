@@ -13,6 +13,7 @@ export function* nowPlayingSaga () {
 
 function* clearSkips (action: Action<'PLAYBACK_CLEAR_SKIPS'>) {
 	const user = yield* select((s: State) => s.user as User) // User will not be null when playback is active
+	if (!user.uid) return // Firebase anon-auth hasn't landed yet; skip the RTDB write
 	yield* call(() => firebaseUpdate(`users/${user.uid}/skips/${action.meta}/${action.payload}/`, 0))
 }
 
@@ -89,23 +90,27 @@ function* onPlaybackUpdated (action: Action<'PLAYBACK_UPDATED'>) {
 	const progress_ms = current.progress_ms ?? 0
 	const percent = (progress_ms / song.duration_ms) * 100
 
-	const plays = yield* call(() => firebaseGet(`users/${user.uid}/plays/${context?.uri || 'unknown'}/${song.id}/`))
+	if (user.uid) {
+		const plays = yield* call(() => firebaseGet(`users/${user.uid}/plays/${context?.uri || 'unknown'}/${song.id}/`))
 
-	yield* call(() =>
-		firebaseUpdate(`users/${user.uid}/plays/${context?.uri || 'unknown'}/${song.id}/`, (plays ?? 0) + 1)
-	)
+		yield* call(() =>
+			firebaseUpdate(`users/${user.uid}/plays/${context?.uri || 'unknown'}/${song.id}/`, (plays ?? 0) + 1)
+		)
+	}
 
 	if (user.settings.watchSkips) {
 		// Detect skip based on seconds left in song and percent completed
 		if (song.duration_ms - progress_ms > 10000 && percent < 80) {
 			yield put(Actions.songSkipped(song, context))
 
-			const skips = yield* call(() =>
-				firebaseGet(`users/${user.uid}/skips/${context?.uri || 'unknown'}/${song.id}/`)
-			)
-			yield* call(() =>
-				firebaseUpdate(`users/${user.uid}/skips/${context?.uri || 'unknown'}/${song.id}/`, (skips ?? 0) + 1)
-			)
+			if (user.uid) {
+				const skips = yield* call(() =>
+					firebaseGet(`users/${user.uid}/skips/${context?.uri || 'unknown'}/${song.id}/`)
+				)
+				yield* call(() =>
+					firebaseUpdate(`users/${user.uid}/skips/${context?.uri || 'unknown'}/${song.id}/`, (skips ?? 0) + 1)
+				)
+			}
 		}
 		if (percent < 90) {
 			yield* put(

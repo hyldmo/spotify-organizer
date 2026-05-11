@@ -1,9 +1,16 @@
 {
 	"rules": {
+		"uidMap": {
+			"$firebaseUid": {
+				".read": "$firebaseUid === auth.uid",
+				".write": "$firebaseUid === auth.uid",
+				".validate": "newData.isString() && newData.val().length > 0 && newData.val().length < 256"
+			}
+		},
 		"users": {
-			"$uid": {
-				".read": "$uid === auth.uid",
-				".write": "$uid === auth.uid"
+			"$key": {
+				".read": "auth != null && ($key === auth.uid || root.child('uidMap').child(auth.uid).val() === $key)",
+				".write": "auth != null && ($key === auth.uid || root.child('uidMap').child(auth.uid).val() === $key)"
 			}
 		}
 	}

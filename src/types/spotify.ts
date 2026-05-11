@@ -1,4 +1,3 @@
-import { User as FirebaseUser } from 'firebase/auth'
 import { SongEntries } from './firebase'
 import { Nullable } from './helpers'
 
@@ -14,7 +13,10 @@ export interface Playlist extends Omit<SpotifyApi.PlaylistObjectFull, 'tracks' |
 	uri: `spotify:playlist:${string}`
 }
 
-export interface User extends FirebaseUser {
+export interface User {
+	// Firebase anonymous-auth uid. Empty string until anon-auth completes (which
+	// runs off the Spotify-login critical path). RTDB ops gate on a non-empty uid.
+	uid: string
 	name: string | null
 	spotifyToken: string
 

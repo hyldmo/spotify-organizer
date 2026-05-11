@@ -3,7 +3,7 @@ import { call, put, select } from 'typed-redux-saga'
 import { Actions } from '~/actions'
 import { State } from '~/types'
 import { sleep } from '~/utils'
-import { refreshAccessToken, storeTokens } from '~/utils/spotifyAuth'
+import { refreshAccessToken, RefreshTokenRejected, storeTokens } from '~/utils/spotifyAuth'
 
 // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-constraint
 export function* spotifyFetch<T extends unknown> (
@@ -44,6 +44,13 @@ export function* spotifyFetch<T extends unknown> (
 					return next as T | null
 				} catch (e) {
 					console.error('Token refresh failed:', e)
+					// Only nuke session when Spotify actually rejected the refresh
+					// token. Transient network errors (offline, DNS, etc.) should
+					// surface as a fetch failure — the next call can retry.
+					if (e instanceof RefreshTokenRejected) {
+						yield* put(Actions.logout())
+					}
+					throw e instanceof Error ? e : new Error(String(e))
 				}
 			}
 			yield* put(Actions.logout())

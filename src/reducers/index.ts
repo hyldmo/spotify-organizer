@@ -1,3 +1,4 @@
+import auth from './auth'
 import filters from './filters'
 import modals from './modals'
 import notifications from './notifications'
@@ -7,4 +8,4 @@ import song from './song'
 import timer from './timer'
 import user from './user'
 
-export { filters, modals, notifications, playback, playlists, timer, user, song }
+export { auth, filters, modals, notifications, playback, playlists, timer, user, song }
