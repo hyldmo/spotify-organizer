@@ -1,9 +1,12 @@
 import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { ActionCreator, Actions } from '~/actions'
-import { FirebaseGet, FirebaseUrls, Playlist } from '~/types'
+import { FirebaseGet, FirebaseUrls, Playlist, State } from '~/types'
 import { firebaseGet, firebaseWatch } from './firebase'
 import { findPlaylist } from './spotify'
+
+export const useAppSelector = useSelector.withTypes<State>()
+export const useAppDispatch = useDispatch
 
 export function useMapDispatch<T extends Record<string, ActionCreator>> (actions: T): T {
 	const dispatch = useDispatch()
@@ -25,10 +28,10 @@ export function useFirebase<T extends FirebaseUrls> (url: T) {
 
 export function usePlaylist (id: string): Playlist | undefined {
 	const dispatch = useDispatch()
-	const playlists = useSelector(s => s.playlists)
-	const [playlist, setPlaylist] = useState(findPlaylist(id) ?? playlists.find(pl => pl.id == id))
+	const playlists = useAppSelector(s => s.playlists)
+	const [playlist, setPlaylist] = useState(findPlaylist(id) ?? playlists?.find(pl => pl.id == id))
 	useEffect(() => {
-		const existing = playlists.find(pl => pl.id == id)
+		const existing = playlists?.find(pl => pl.id == id)
 		const cached = findPlaylist(id)
 		if (cached === undefined || cached.tracks.loaded == null) {
 			dispatch(Actions.fetchTracks(id))

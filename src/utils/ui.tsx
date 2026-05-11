@@ -24,7 +24,7 @@ export function getDeduplicateErrors (
 }
 
 export function getCompareTypeExplanation (compareType: CompareType): Exclude<React.ReactNode, undefined> {
-	const Mark: React.FC = props => <strong className="not-italic" {...props} />
+	const Mark: React.FC<{ children?: React.ReactNode }> = props => <strong className="not-italic" {...props} />
 	switch (compareType) {
 		case CompareType.SongId:
 			return (

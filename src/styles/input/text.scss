@@ -8,10 +8,12 @@ input[type='text'] {
 
 	&::placeholder {
 		font-family: FontAwesome, sans-serif;
+
 		&:hover {
 			color: red;
 		}
 	}
+
 	&:hover::placeholder {
 		color: $text-color;
 	}

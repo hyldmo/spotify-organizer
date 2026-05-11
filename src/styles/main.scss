@@ -1,8 +1,8 @@
-@import './vendor.scss';
-@import './variables.scss';
-@import './components/index.scss';
-@import './input/index.scss';
-@import './playlists/index.scss';
+@import './vendor';
+@import './variables';
+@import './components/index';
+@import './input/index';
+@import './playlists/index';
 
 * {
 	box-sizing: border-box;

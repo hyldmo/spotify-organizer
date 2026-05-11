@@ -1,3 +1,5 @@
+@use 'sass:color';
+
 a.button:hover {
 	text-decoration: none;
 }
@@ -8,7 +10,7 @@ a.button:hover {
 	cursor: pointer;
 	background: none;
 	outline: 0;
-	border: 1px solid transparentize($text-color, 0.2);
+	border: 1px solid color.adjust($text-color, $alpha: -0.2);
 	border-radius: 3rem;
 	line-height: 1;
 	padding: 0.5rem;
@@ -34,6 +36,7 @@ a.button:hover {
 			background-color: $primary-light;
 			padding: 0.5rem;
 		}
+
 		&:active {
 			background-color: $primary-dark;
 		}

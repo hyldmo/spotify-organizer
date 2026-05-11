@@ -7,11 +7,12 @@
 		"checkJs": false,
 		"resolveJsonModule": true,
 		"downlevelIteration": true,
+		"skipLibCheck": true,
 		"module": "ESNext",
 		"moduleResolution": "node",
-		"target": "es6",
+		"target": "ES2020",
 		"esModuleInterop": true,
-		"jsx": "react",
+		"jsx": "react-jsx",
 		"baseUrl": ".",
 		"paths": {
 			"~/*": ["./src/*"]

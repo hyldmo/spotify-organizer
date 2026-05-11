@@ -35,8 +35,7 @@ export function toEntries (entries: MergedSkipEntry) {
 	})
 }
 
-// eslint-disable-next-line @typescript-eslint/ban-types
-export function objectMap<T extends {}> (obj: T, func: (value: T[typeof key], key: keyof T) => void) {
+export function objectMap<T extends object> (obj: T, func: (value: T[typeof key], key: keyof T) => void) {
 	return Object.entries(obj).reduce(
 		(a, [key, value]) => ({
 			...a,
