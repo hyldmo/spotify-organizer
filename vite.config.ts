@@ -39,7 +39,6 @@ export default defineConfig({
 		VitePWA({
 			registerType: 'prompt',
 			injectRegister: false,
-			includeAssets: ['static/favicon.svg', 'static/favicon.png', 'static/app.svg'],
 			manifestFilename: 'static/app.webmanifest',
 			manifest: {
 				name: 'Spotify Organiser',
@@ -59,6 +58,7 @@ export default defineConfig({
 			},
 			workbox: {
 				globPatterns: ['**/*.{js,css,html,svg,png,webmanifest}'],
+				globIgnores: ['**/static/app.svg', '**/static/app.webmanifest'],
 				navigateFallback: '/index.html',
 				navigateFallbackDenylist: [/^\/static\/app\.webmanifest$/],
 				cleanupOutdatedCaches: true,
