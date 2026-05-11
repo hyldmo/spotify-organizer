@@ -48,19 +48,15 @@ jobs:
         env:
           PACKAGE_VERSION: '${{ steps.semver.outputs.VERSION }}'
 
-      - uses: FirebaseExtended/action-hosting-deploy@v0
-        with:
-          repoToken: '${{ secrets.GITHUB_TOKEN }}'
-          firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_SPOTIFY_ORGANISER }}'
-          channelId: live
-          projectId: spotify-organiser
-
       - name: Write Firebase service account
         env:
           SA_KEY: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_SPOTIFY_ORGANISER }}
         run: |
           printf '%s' "$SA_KEY" > "$RUNNER_TEMP/firebase-key.json"
           echo "GOOGLE_APPLICATION_CREDENTIALS=$RUNNER_TEMP/firebase-key.json" >> "$GITHUB_ENV"
+
+      - name: Deploy hosting
+        run: yarn firebase deploy --only hosting --project spotify-organiser
 
       - name: Deploy database rules
         continue-on-error: true
