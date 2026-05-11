@@ -1,8 +1,7 @@
-import { call, put, select, takeEvery, takeLeading } from 'typed-redux-saga'
+import { all, call, put, select, takeEvery, takeLeading } from 'typed-redux-saga'
 import { Action, Actions } from '~/actions'
 import { Nullable, Playlist, SongEntries, State, Track, URI } from '~/types'
 import { firebaseGet, idToUri, PlaylistCache, SongCache, toTrack } from '~/utils'
-import { sleep } from '~/utils/sleep'
 import { spotifyFetch } from './spotifyFetch'
 
 export function* tracksSaga () {
@@ -23,7 +22,7 @@ function* getAllTracks (action: Action<'FETCH_PLAYLISTS_SUCCESS'>) {
 			}
 		}
 
-		yield* call(getTracks, Actions.fetchTracks(playlist.id), 10000)
+		yield* call(getTracks, Actions.fetchTracks(playlist.id))
 	}
 	console.info('All playlist tracks up to date')
 }
@@ -44,14 +43,9 @@ export function* getTrack (action: Action<'FETCH_TRACK'>) {
 	yield put(Actions.createNotification({ message: 'Error fetching track', type: 'error' }))
 }
 
-export function* getTracks (action: Action<'FETCH_TRACKS'>, delay?: number) {
+export function* getTracks (action: Action<'FETCH_TRACKS'>) {
 	const id = action.meta
-	let tracks: SongEntries = {}
-	let response: SpotifyApi.PlaylistTrackResponse | null
 	const limit = 100
-	let offset = 0
-	let index = 0
-	let loaded = 0
 	const user = yield* select((s: State) => s.user)
 	let plays: Nullable<SongEntries>
 	try {
@@ -61,33 +55,60 @@ export function* getTracks (action: Action<'FETCH_TRACKS'>, delay?: number) {
 		console.warn(`Error fetching plays from firebase 'users/${user?.uid}/plays/spotify:playlist:${id}/'`, e)
 	}
 
-	do {
+	const fetchPage = (offset: number) =>
+		spotifyFetch<SpotifyApi.PlaylistTrackResponse>(`playlists/${id}/tracks?offset=${offset}&limit=${limit}`)
+
+	let first: SpotifyApi.PlaylistTrackResponse | null
+	try {
+		first = yield* call(fetchPage, 0)
+	} catch (e: any) {
+		yield* put(Actions.createNotification({ message: e.message, type: 'error' }))
+		return
+	}
+	if (first === null) return
+	const total = first.total
+
+	const remainingOffsets: number[] = []
+	for (let o = limit; o < total; o += limit) remainingOffsets.push(o)
+
+	let completed = first.items.length
+	yield* put(Actions.fetchTracksProgress(completed, id))
+
+	function* fetchPageReport (offset: number) {
+		const page = yield* call(fetchPage, offset)
+		if (page) {
+			completed = Math.min(completed + page.items.length, total)
+			yield* put(Actions.fetchTracksProgress(completed, id))
+		}
+		return page
+	}
+
+	let rest: Array<SpotifyApi.PlaylistTrackResponse | null> = []
+	if (remainingOffsets.length > 0) {
 		try {
-			response = yield* call(() =>
-				spotifyFetch<SpotifyApi.PlaylistTrackResponse>(`playlists/${id}/tracks?offset=${offset}&limit=${limit}`)
-			)
+			rest = yield* all(remainingOffsets.map(o => call(fetchPageReport, o)))
 		} catch (e: any) {
-			response = null
 			yield* put(Actions.createNotification({ message: e.message, type: 'error' }))
+			return
 		}
-		if (response === null) break
-		const mappedTracks = response.items.filter(t => t.track).map<Track>(t => toTrack(t, index++))
-		mappedTracks.forEach(track => SongCache.set(track.id, track))
-		tracks = {
-			...tracks,
-			...mappedTracks.reduce(
-				(a, b) => ({
-					...a,
-					[b.id]: plays?.[b.id] || 0
-				}),
-				{}
-			)
+	}
+
+	const pages = [first, ...rest].filter((p): p is SpotifyApi.PlaylistTrackResponse => p !== null)
+	const tracks: SongEntries = {}
+	let loaded = 0
+	pages.forEach((page, pageIdx) => {
+		const pageOffset = pageIdx * limit
+		const mapped = page.items
+			.filter(t => t.track)
+			.map<Track>((t, i) => toTrack(t, pageOffset + i))
+		mapped.forEach(track => SongCache.set(track.id, track))
+		for (const t of mapped) {
+			tracks[t.id] = plays?.[t.id] || 0
 		}
-		offset += limit
-		loaded += mappedTracks.length
-		yield* call(updateProgress, id, tracks, loaded)
-		if (delay) yield* call(sleep, delay)
-	} while (response.next !== null)
+		loaded += mapped.length
+	})
+
+	yield* call(updateProgress, id, tracks, loaded)
 }
 
 function* updateProgress (id: Playlist['id'], tracks: SongEntries, loaded: number) {
