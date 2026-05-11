@@ -6,8 +6,12 @@ type CacheEntry<T, K = string> = Tuple<K, Readonly<T>>
 
 export class PersistentCache<T, K extends string = string> extends Map<K, Readonly<T>> {
 	public id = ''
+	// Resolves when the in-memory Map has been hydrated from localforage.
+	// Callers that decide whether to refetch from network MUST await this; the
+	// Map is empty during the constructor's async load and an unguarded read
+	// looks indistinguishable from "nothing cached".
+	public readonly ready: Promise<void>
 	private db: LocalForage
-	private ready: Promise<void>
 	private pendingKeysWrite: Promise<void> = Promise.resolve()
 
 	constructor (id: string) {
