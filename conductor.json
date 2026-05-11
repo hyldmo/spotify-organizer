@@ -1,0 +1,8 @@
+{
+	"scripts": {
+		"setup": "corepack enable && yarn install --immutable",
+		"run": "yarn dev",
+		"archive": "rm -rf node_modules dist .firebase"
+	},
+	"runScriptMode": "concurrent"
+}

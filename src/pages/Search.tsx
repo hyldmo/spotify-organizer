@@ -1,15 +1,18 @@
 import React, { useMemo, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { ArtistLinks, UriLink } from '~/components/UriLink'
-import { State, Track } from '~/types'
-import { Duration, SongCache } from '~/utils'
+import { Sort, State, Track } from '~/types'
+import { Duration, getNextSortMode, getSortIcon, SongCache } from '~/utils'
 
 type SearchResult = Track & {
 	playlistNames: string[]
 }
 
+type SortKey = 'name' | 'artist' | 'album' | 'duration' | 'in_playlists'
+
 export const Search: React.FC = () => {
 	const [query, setQuery] = useState('')
+	const [sort, setSort] = useState<{ key: SortKey; mode: Sort }>({ key: 'name', mode: Sort.None })
 	const playlists = useSelector((s: State) => s.playlists)
 
 	const results = useMemo(() => {
@@ -36,6 +39,42 @@ export const Search: React.FC = () => {
 
 		return matches
 	}, [query, playlists])
+
+	const sortedResults = useMemo(() => {
+		if (sort.mode === Sort.None) return results
+		const direction = sort.mode === Sort.Asc ? 1 : -1
+		const value = (r: SearchResult): string | number => {
+			switch (sort.key) {
+				case 'name':
+					return r.name.toLocaleLowerCase()
+				case 'artist':
+					return r.artists[0]?.name.toLocaleLowerCase() ?? ''
+				case 'album':
+					return r.album.name.toLocaleLowerCase()
+				case 'duration':
+					return r.duration_ms
+				case 'in_playlists':
+					return r.playlistNames.length
+			}
+		}
+		return results.slice().sort((a, b) => {
+			const va = value(a)
+			const vb = value(b)
+			if (va < vb) return -1 * direction
+			if (va > vb) return 1 * direction
+			return 0
+		})
+	}, [results, sort])
+
+	const onSort = (key: SortKey) =>
+		setSort(prev => ({ key, mode: getNextSortMode(prev.key === key, prev.mode) }))
+
+	const sortHeader = (label: string, key: SortKey) => (
+		<th>
+			<a onClick={() => onSort(key)}>{label}</a>
+			&nbsp;{getSortIcon(sort.key === key, sort.mode)}
+		</th>
+	)
 
 	return (
 		<div className="max-h-full grid grid-rows-[auto,1fr] grid-cols-1">
@@ -71,15 +110,15 @@ export const Search: React.FC = () => {
 					<table className="playlists w-full">
 						<thead className="sticky top-0 bg-black">
 							<tr>
-								<th>Name</th>
-								<th>Artist</th>
-								<th>Album</th>
-								<th>Duration</th>
-								<th>In Playlists</th>
+								{sortHeader('Name', 'name')}
+								{sortHeader('Artist', 'artist')}
+								{sortHeader('Album', 'album')}
+								{sortHeader('Duration', 'duration')}
+								{sortHeader('In Playlists', 'in_playlists')}
 							</tr>
 						</thead>
 						<tbody>
-							{results.map((track, index) => (
+							{sortedResults.map((track, index) => (
 								<tr key={track.id + index}>
 									<td>
 										<UriLink object={track} />

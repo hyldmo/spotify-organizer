@@ -27,6 +27,10 @@ Spotify Organiser — a React SPA that helps users clean up and organise their S
 - **Releases:** `semantic-release` on `master`. The deploy workflow runs `scripts/semver.sh` first to compute the next version, injects it as `PACKAGE_VERSION` env var into the Vite build, deploys, then runs `yarn release` to publish the GitHub release. Skipping `feat:`/`fix:` commits means no version bump and no release.
 - **Pre-push hook:** runs `yarn lint` and `yarn stylelint`. Do not bypass with `--no-verify`.
 
+## Conductor
+
+`conductor.json` defines `setup` (`corepack enable && yarn install --immutable`), `run` (`yarn dev`), and `archive` (rm `node_modules dist .firebase`). No env files to copy — Firebase/Spotify config is baked in via `package.json` env vars at build time, so new workspaces should `yarn dev` cleanly after setup.
+
 ## Gotchas
 
 - **Husky hooks need `node_modules`.** Fresh clones / worktrees must `yarn --immutable` before the first commit/push, or commit-msg/pre-push will fail with "Couldn't find the node_modules state file".
