@@ -4,9 +4,11 @@ import { Route, Routes } from 'react-router'
 import 'static/app.svg'
 import 'static/app.webmanifest'
 import { __DEV__ } from '~/consts'
+import { Dashboard } from '~/pages/Dashboard'
 import PlaylistsManager from '~/pages/Home'
 import NotFound from '~/pages/NotFound'
 import PlaylistRoute from '~/pages/PlaylistRoute'
+import { Search } from '~/pages/Search'
 import { Skips } from '~/pages/Skips'
 import { TrackRoute } from '~/pages/TrackRoute'
 import '~/styles/main.scss'
@@ -34,6 +36,8 @@ const App: React.FC = () => {
 					{user ? (
 						<Routes>
 							<Route path="/" element={<PlaylistsManager />} />
+							<Route path="/dashboard" element={<Dashboard />} />
+							<Route path="/search" element={<Search />} />
 							<Route path="/skips" element={<Skips />} />
 							<Route path="/playlists/:id" element={<PlaylistRoute />} />
 							<Route path="/tracks/:id" element={<TrackRoute />} />
