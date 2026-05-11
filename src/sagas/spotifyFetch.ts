@@ -1,9 +1,9 @@
 import { SagaIterator } from 'redux-saga'
 import { call, put, select } from 'typed-redux-saga'
 import { Actions } from '~/actions'
-import { loginLink } from '~/consts'
 import { State } from '~/types'
 import { sleep } from '~/utils'
+import { refreshAccessToken, storeTokens } from '~/utils/spotifyAuth'
 
 // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-constraint
 export function* spotifyFetch<T extends unknown> (
@@ -33,10 +33,22 @@ export function* spotifyFetch<T extends unknown> (
 		case 204:
 			return null
 
-		case 401:
+		case 401: {
+			const refreshToken = localStorage.getItem('refresh_token')
+			if (refreshToken) {
+				try {
+					const tokens = yield* call(refreshAccessToken, refreshToken)
+					storeTokens(tokens)
+					yield* put(Actions.tokenRefreshed(tokens.access_token))
+					const next = yield* call(spotifyFetch, url, options, tokens.access_token)
+					return next as T | null
+				} catch (e) {
+					console.error('Token refresh failed:', e)
+				}
+			}
 			yield* put(Actions.logout())
-			setTimeout(() => window.open(loginLink(), '_self'), 5000)
 			break
+		}
 		case 429: {
 			const waitTime = Number.parseInt(response.headers.get('Retry-After') || '10', 10)
 			yield* put(Actions.startTimer(waitTime))

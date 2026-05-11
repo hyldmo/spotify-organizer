@@ -22,6 +22,9 @@ export default function user (state: User | null = null, action: Action): User |
 			}
 		case 'USER_LOGOUT':
 			return null
+		case 'TOKEN_REFRESHED':
+			if (!state) return state
+			return { ...state, spotifyToken: action.payload }
 		case 'USER_SETTINGS_UPDATE':
 			if (!state) return state
 			return {
