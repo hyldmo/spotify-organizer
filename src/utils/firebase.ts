@@ -1,6 +1,6 @@
 /* eslint-disable no-restricted-imports */
 import { FirebaseOptions, initializeApp } from 'firebase/app'
-import { getAuth } from 'firebase/auth'
+import { inMemoryPersistence, initializeAuth } from 'firebase/auth'
 import { get, getDatabase, onValue, ref, update } from 'firebase/database'
 import { FirebaseGet, FirebaseUpdates, FirebaseUrls } from '~/types'
 
@@ -20,7 +20,10 @@ const firebaseConfig: FirebaseOptions = {
 
 const app = initializeApp(firebaseConfig)
 const db = getDatabase(app)
-export const auth = getAuth(app)
+// IndexedDB-backed auth persistence can deadlock when the firebaseLocalStorageDb
+// is held open elsewhere — signInAnonymously then never fires its network
+// request. We re-auth anonymously on every load anyway, so in-memory works.
+export const auth = initializeAuth(app, { persistence: inMemoryPersistence })
 
 export function firebaseWatch<T extends FirebaseUrls> (url: T, onUpdate: (value: FirebaseGet<T>) => void) {
 	const key = url.endsWith('/') ? url.slice(0, -1) : url
