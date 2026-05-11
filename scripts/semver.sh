@@ -9,7 +9,7 @@ VERSION=$(cat .version)
 
 if [ -s .version ]; then
 	echo "Next version: $VERSION"
-	echo "::set-output name=VERSION::$VERSION"
+	echo "VERSION=$VERSION" >> "$GITHUB_OUTPUT"
 else
 	echo "No new version. Canceling deploy."
 fi
