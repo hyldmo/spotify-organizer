@@ -38,8 +38,25 @@ jobs:
         env:
           PACKAGE_VERSION: '-beta'
 
-      - uses: FirebaseExtended/action-hosting-deploy@v0
+      - name: Write Firebase service account
+        env:
+          SA_KEY: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_SPOTIFY_ORGANISER }}
+        run: |
+          printf '%s' "$SA_KEY" > "$RUNNER_TEMP/firebase-key.json"
+          echo "GOOGLE_APPLICATION_CREDENTIALS=$RUNNER_TEMP/firebase-key.json" >> "$GITHUB_ENV"
+
+      - name: Deploy preview channel
+        id: deploy
+        run: |
+          OUT=$(yarn firebase hosting:channel:deploy "pr-${{ github.event.pull_request.number }}" \
+            --project spotify-organiser --expires 7d --json)
+          URL=$(echo "$OUT" | jq -r '.result["spotify-organiser"].url')
+          echo "url=$URL" >> "$GITHUB_OUTPUT"
+
+      - name: Comment preview URL
+        uses: marocchino/sticky-pull-request-comment@v2
         with:
-          repoToken: '${{ secrets.GITHUB_TOKEN }}'
-          firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_SPOTIFY_ORGANISER }}'
-          projectId: spotify-organiser
+          header: firebase-preview
+          message: |
+            Preview deployed: ${{ steps.deploy.outputs.url }}
+            (expires in 7 days)

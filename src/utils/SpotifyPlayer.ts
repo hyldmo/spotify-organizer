@@ -1,4 +1,20 @@
+import { refreshAccessToken, storeTokens } from './spotifyAuth'
+
 export let player: Spotify.Player | null = null
+
+async function getFreshToken (): Promise<string | null> {
+	const refreshToken = localStorage.getItem('refresh_token')
+	if (refreshToken) {
+		try {
+			const tokens = await refreshAccessToken(refreshToken)
+			storeTokens(tokens)
+			return tokens.access_token
+		} catch (e) {
+			console.error('Failed to refresh token for player:', e)
+		}
+	}
+	return localStorage.getItem('token')
+}
 
 export async function initializePlayer (): Promise<Spotify.Player> {
 	if (player !== null) return player
@@ -9,17 +25,18 @@ export async function initializePlayer (): Promise<Spotify.Player> {
 
 	return new Promise((resolve, reject) => {
 		window.onSpotifyWebPlaybackSDKReady = () => {
-			const token = localStorage.getItem('token')
-			if (token) {
-				console.info('Initializing Spotify Playback SDK')
-			} else {
+			if (!localStorage.getItem('token')) {
 				reject(new Error('Cannot initialize Spotify Playback SDK, missing auth token'))
 				return
 			}
+			console.info('Initializing Spotify Playback SDK')
 
 			player = new Spotify.Player({
 				name: 'Web Playback SDK Quick Start Player',
-				getOAuthToken: cb => cb(token),
+				getOAuthToken: async cb => {
+					const token = await getFreshToken()
+					if (token) cb(token)
+				},
 				volume: 0.5
 			})
 
