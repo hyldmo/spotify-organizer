@@ -54,3 +54,5 @@ Spotify Organiser — a React SPA that helps users clean up and organise their S
 - `.github/workflows/codeql-analysis.yml` — security scanning.
 
 All Node workflows pin `node-version: 24.x`, run `corepack enable`, then `yarn --immutable`. Yarn cache is wired through `actions/setup-node@v4`'s `cache: 'yarn'`.
+
+**After opening a PR, wait for checks before declaring it done.** Branch protection does *not* currently enforce required status checks on this repo, so a failing preview can be merged anyway — and the production deploy on `master` will then fail on the same step (PR #82 broke prod lint this way). Poll with `gh pr checks <N> --watch` until the preview workflow goes green. The preview runs the same `yarn lint` / `yarn stylelint` / `yarn prod` steps as the deploy workflow, so a red preview guarantees a red production deploy.
