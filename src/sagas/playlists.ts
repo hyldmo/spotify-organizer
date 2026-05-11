@@ -9,6 +9,7 @@ export function* playlistsSaga () {
 	yield* takeLatest('FETCH_PLAYLISTS', getPlaylists)
 	yield* takeLatest('DEDUPLICATE_PLAYLISTS', deduplicatePlaylists)
 	yield* takeEvery('PLAYLIST_DELETE_TRACKS', deleteTracks)
+	yield* takeEvery('PLAYLISTS_SET_VISIBILITY', setPlaylistsVisibility)
 }
 
 function* getPlaylists () {
@@ -110,5 +111,62 @@ function* deduplicatePlaylists (action: Action<'DEDUPLICATE_PLAYLISTS'>) {
 		yield* put(Actions.fetchPlaylists())
 	} catch (err) {
 		yield* put(Actions.createNotification({ message: (err as Error).message, type: 'error' }))
+	}
+}
+
+function* setPlaylistsVisibility (action: Action<'PLAYLISTS_SET_VISIBILITY'>) {
+	const { payload: isPublic, meta: ids } = action
+	const user = yield* select((state: State) => state.user)
+	if (!user) return
+
+	// Spotify only allows the playlist owner to change visibility (collaborative editors can't).
+	const targets: Playlist[] = yield* select((state: State) =>
+		state.playlists.filter(pl => ids.includes(pl.id) && pl.owner.id === user.spotify.id)
+	)
+	const skipped = ids.length - targets.length
+	if (targets.length === 0) {
+		yield* put(
+			Actions.createNotification({
+				type: 'warning',
+				message: 'No editable playlists selected — Spotify only lets you modify playlists you own.'
+			})
+		)
+		return
+	}
+
+	const label = isPublic ? 'public' : 'private'
+	let updated = 0
+	const failed: string[] = []
+	for (const pl of targets) {
+		if (pl.public === isPublic) {
+			updated += 1
+			continue
+		}
+		try {
+			yield* call(spotifyFetch, `playlists/${pl.id}`, {
+				method: 'PUT',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({ public: isPublic })
+			})
+			yield* put(Actions.playlistVisibilityUpdated(isPublic, pl.id))
+			updated += 1
+		} catch (e) {
+			failed.push(pl.name)
+			yield* put(
+				Actions.createNotification({
+					type: 'error',
+					message: `Failed to make "${pl.name}" ${label}: ${(e as Error).message}`
+				})
+			)
+		}
+	}
+
+	if (failed.length === 0) {
+		const skippedSuffix = skipped > 0 ? ` (${skipped} not owned by you skipped)` : ''
+		yield* put(
+			Actions.createNotification({
+				message: `${updated} playlist${updated === 1 ? '' : 's'} set to ${label}${skippedSuffix}`
+			})
+		)
 	}
 }

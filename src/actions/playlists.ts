@@ -1,4 +1,3 @@
-
 import { Playlist, Sort, Track } from '~/types'
 import { CompareType } from '~/utils'
 import { makeActionCreator, makeMetaActionCreator } from '~/utils/actionCreator'
@@ -26,6 +25,9 @@ export default {
 	deduplicatePlaylists: makeActionCreator<{ source: Playlist[]; target: Playlist | null }, CompareType>()(
 		'DEDUPLICATE_PLAYLISTS'
 	),
+
+	setPlaylistsVisibility: makeActionCreator<boolean, Array<Playlist['id']>>()('PLAYLISTS_SET_VISIBILITY'),
+	playlistVisibilityUpdated: makeActionCreator<boolean, Playlist['id']>()('PLAYLISTS_SET_VISIBILITY_SUCCESS'),
 
 	deleteTracks: makeActionCreator<Array<Track['uri']>, PlaylistMeta>()('PLAYLIST_DELETE_TRACKS')
 }

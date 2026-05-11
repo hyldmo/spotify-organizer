@@ -18,6 +18,8 @@ function playlist (state: Playlist, action: MetaAction): Playlist {
 			return action.payload
 		case 'PLAYLISTS_SELECT':
 			return { ...state, selected: action.payload }
+		case 'PLAYLISTS_SET_VISIBILITY_SUCCESS':
+			return { ...state, public: action.payload }
 		default:
 			return state
 	}
@@ -34,6 +36,7 @@ export default function playlists (state: Playlist[] = [], action: Action): Play
 		case 'PLAYLISTS_SELECT':
 		case 'FETCH_TRACKS_SUCCESS':
 		case 'FETCH_TRACKS_PROGRESS':
+		case 'PLAYLISTS_SET_VISIBILITY_SUCCESS':
 			return state.map(p => playlist(p, action))
 		case 'PLAYLISTS_SELECT_ALL':
 			return state.map(p => ({ ...p, selected: action.payload }))

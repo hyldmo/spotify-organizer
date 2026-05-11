@@ -29,7 +29,8 @@ const dispatchToProps = {
 	select: Actions.selectPlaylist,
 	changeSortMode: Actions.updatePlaylistsSort,
 	updateFilterText: Actions.updateFilterText,
-	deduplicate: Actions.deduplicatePlaylists
+	deduplicate: Actions.deduplicatePlaylists,
+	setVisibility: Actions.setPlaylistsVisibility
 }
 
 const PlaylistsManager: React.FC = () => {
@@ -37,9 +38,20 @@ const PlaylistsManager: React.FC = () => {
 	const [compareType, setCompareType] = useState<CompareType | null>(null)
 	const [secondPlaylist, setSecondPlaylist] = useState<Playlist | null>(null)
 	const { filters, user, playlists: allPlaylists } = useSelector(mapStateToProps)
-	const { select, selectAll, changeSortMode, updateFilterText, deduplicate } = useMapDispatch(dispatchToProps)
+	const { select, selectAll, changeSortMode, updateFilterText, deduplicate, setVisibility } =
+		useMapDispatch(dispatchToProps)
 	const playlists = applyPlaylistsFilters(allPlaylists, filters, user)
 	const selectedPlaylists = playlists.filter(p => p.selected)
+	const ownedSelected = user ? selectedPlaylists.filter(pl => pl.owner.id === user.spotify.id) : []
+	const skippedCount = selectedPlaylists.length - ownedSelected.length
+	const visibilityDisabled = ownedSelected.length === 0
+	const visibilityTitle = visibilityDisabled
+		? selectedPlaylists.length === 0
+			? 'Select at least one playlist you own'
+			: 'Spotify only allows the owner to change a playlist’s visibility'
+		: skippedCount > 0
+			? `${skippedCount} non-owned playlist${skippedCount === 1 ? '' : 's'} will be skipped`
+			: ''
 
 	const handleInputChange = (event: React.FormEvent<HTMLInputElement>) => {
 		const target = event.currentTarget
@@ -94,14 +106,42 @@ const PlaylistsManager: React.FC = () => {
 							</Button>
 						</>
 					) : (
-						<Button
-							primary
-							disabled={compareType !== null && selectedPlaylists.length === 0}
-							onClick={_ => setMode(OperationMode.Duplicates)}
-							title={error || ''}
-						>
-							Remove duplicates
-						</Button>
+						<>
+							<Button
+								primary
+								disabled={compareType !== null && selectedPlaylists.length === 0}
+								onClick={_ => setMode(OperationMode.Duplicates)}
+								title={error || ''}
+							>
+								Remove duplicates
+							</Button>
+							<Button
+								icon="lock-open"
+								disabled={visibilityDisabled}
+								title={visibilityTitle}
+								onClick={_ =>
+									setVisibility(
+										true,
+										ownedSelected.map(pl => pl.id)
+									)
+								}
+							>
+								Make public
+							</Button>
+							<Button
+								icon="lock"
+								disabled={visibilityDisabled}
+								title={visibilityTitle}
+								onClick={_ =>
+									setVisibility(
+										false,
+										ownedSelected.map(pl => pl.id)
+									)
+								}
+							>
+								Make private
+							</Button>
+						</>
 					)}
 					<span className="filler" />
 					<ul className="stats right-menu flex gap-3 max-w-sm">
