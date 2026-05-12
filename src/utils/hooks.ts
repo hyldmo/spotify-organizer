@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { ActionCreator, Actions } from '~/actions'
 import { FirebaseGet, FirebaseUrls, Playlist, State } from '~/types'
@@ -10,11 +10,17 @@ export const useAppDispatch = useDispatch
 
 export function useMapDispatch<T extends Record<string, ActionCreator>> (actions: T): T {
 	const dispatch = useDispatch()
-	const result: Partial<T> = {}
-	for (const [key, value] of Object.entries(actions)) {
-		result[key as keyof T] = ((...args: any[]) => dispatch((value as any)(...args))) as any
-	}
-	return result as T
+	// Memoised so the bound creators keep stable identities across renders —
+	// otherwise every consumer (and any `React.memo` child it forwards them to)
+	// re-renders on each parent render. Callers pass a module-constant `actions`
+	// object, so an identity check on it is a safe cache key.
+	return useMemo(() => {
+		const result: Partial<T> = {}
+		for (const [key, value] of Object.entries(actions)) {
+			result[key as keyof T] = ((...args: any[]) => dispatch((value as any)(...args))) as any
+		}
+		return result as T
+	}, [dispatch, actions])
 }
 
 export function useFirebase<T extends FirebaseUrls> (url: T) {
