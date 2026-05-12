@@ -2,7 +2,17 @@ import { replace } from 'redux-first-history'
 import { call, fork, put, takeLatest } from 'typed-redux-saga'
 import { type Action, Actions } from '~/actions'
 import { ensureFirebaseReady, migrateLegacyUidData, resetFirebaseAuth, setSpotifyId } from '~/utils/firebase'
-import { clearTokens, exchangeCodeForToken, refreshAccessToken, storeTokens } from '~/utils/spotifyAuth'
+import { parseQueryString } from '~/utils/parseQueryString'
+import {
+	clearTokens,
+	exchangeCodeForToken,
+	finishReauth,
+	RefreshTokenRejected,
+	reauthenticate,
+	reauthInProgress,
+	refreshAccessToken,
+	storeTokens
+} from '~/utils/spotifyAuth'
 import { spotifyFetch } from './spotifyFetch'
 
 export function* loginSaga() {
@@ -17,6 +27,7 @@ function* exchangeCode(action: Action<typeof Actions.codeReceived.type>) {
 	try {
 		const tokens = yield* call(exchangeCodeForToken, action.payload)
 		storeTokens(tokens)
+		finishReauth()
 		yield* put(Actions.tokenAquired(tokens.access_token, action.meta))
 	} catch (e) {
 		console.error(`${exchangeCode.name}:`, e)
@@ -76,6 +87,17 @@ function* firebaseAuthBackground(spotifyId: string) {
 }
 
 function* loadUser(_: Action<typeof Actions.loadUser.type>) {
+	// A `?code=` in the URL means we've just come back from Spotify's authorize
+	// endpoint (either a manual login or a silent re-auth bounce). Handle it here
+	// at bootstrap so it works regardless of which view is mounted — a stale
+	// persisted user can otherwise keep <Auth> from ever rendering.
+	if (location.search.includes('code=')) {
+		const query = parseQueryString(location.href, false)
+		history.replaceState({}, '', location.pathname)
+		yield* put(Actions.codeReceived(query.code, query.state || null))
+		return
+	}
+
 	const token = localStorage.getItem('token')
 	const refreshToken = localStorage.getItem('refresh_token')
 
@@ -92,7 +114,17 @@ function* loadUser(_: Action<typeof Actions.loadUser.type>) {
 			return
 		} catch (e) {
 			console.warn('Failed to refresh token on load:', e)
-			clearTokens()
+			// Transient errors (network, Spotify 5xx) keep the token so a later
+			// load retries. A real rejection means the refresh token is dead —
+			// try a silent re-auth bounce before giving up on the session.
+			if (e instanceof RefreshTokenRejected) {
+				if (reauthInProgress()) {
+					clearTokens()
+				} else {
+					yield* call(reauthenticate) // navigates away
+					return
+				}
+			}
 		}
 	}
 	yield* put(Actions.authCheckDone())

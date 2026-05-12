@@ -3,7 +3,13 @@ import { call, put, select } from 'typed-redux-saga'
 import { Actions } from '~/actions'
 import type { State } from '~/types'
 import { sleep } from '~/utils'
-import { RefreshTokenRejected, refreshAccessToken, storeTokens } from '~/utils/spotifyAuth'
+import {
+	RefreshTokenRejected,
+	reauthenticate,
+	reauthInProgress,
+	refreshAccessToken,
+	storeTokens
+} from '~/utils/spotifyAuth'
 
 // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-constraint
 export function* spotifyFetch<T>(url: string, options: RequestInit = {}, apiToken?: string): SagaIterator<T | null> {
@@ -48,11 +54,20 @@ export function* spotifyFetch<T>(url: string, options: RequestInit = {}, apiToke
 					return next as T | null
 				} catch (e) {
 					console.error('Token refresh failed:', e)
-					// Only nuke session when Spotify actually rejected the refresh
-					// token. Transient network errors (offline, DNS, etc.) should
-					// surface as a fetch failure — the next call can retry.
+					// Only act on a real rejection. Transient errors (offline, DNS,
+					// Spotify 5xx) surface as a fetch failure — the next call retries.
 					if (e instanceof RefreshTokenRejected) {
-						yield* put(Actions.logout())
+						// The refresh token is dead. Rather than dumping the user at a
+						// login button, bounce through Spotify's authorize endpoint —
+						// it redirects straight back with a fresh code when their
+						// Spotify session is alive (no consent screen). Guard against
+						// loops: if a bounce is already underway, log out for real.
+						if (reauthInProgress()) {
+							yield* put(Actions.logout())
+						} else {
+							yield* call(reauthenticate) // navigates away
+							return null
+						}
 					}
 					throw e instanceof Error ? e : new Error(String(e))
 				}
