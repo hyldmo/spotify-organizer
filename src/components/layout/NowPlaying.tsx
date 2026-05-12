@@ -10,6 +10,7 @@ import { ArtistLinks, UriLink } from '../UriLink'
 export const NowPlaying: React.FC = () => {
 	const dispatch = useDispatch()
 	const playback = useSelector((s: State) => s.playback.nowPlaying)
+	const liked = useSelector((s: State) => s.playback.liked)
 	const settings = useSelector((s: State) => s.user?.settings)
 	const context = playback?.context
 	const [progress, setProgress] = useState(playback?.progress_ms || 0)
@@ -37,11 +38,24 @@ export const NowPlaying: React.FC = () => {
 			</a>
 			<UriLink className="col-start-2 row-start-1 self-end ellipsis" object={song} />
 			<ArtistLinks artists={song.album.artists} className="col-start-2 row-start-2 self-start text-xs" />
-			<button className="col-start-3 row-span-2" type="button" role="switch" title="Like (coming soon)">
-				<svg height="1em" viewBox="0 0 16 16" className="text-transparent hover:text-white">
+			<button
+				className="col-start-3 row-span-2"
+				type="button"
+				role="switch"
+				aria-checked={liked === true}
+				disabled={liked === null}
+				onClick={_ => dispatch(Actions.toggleLike())}
+				title={liked ? 'Remove from your Liked Songs' : 'Save to your Liked Songs'}
+			>
+				<svg
+					height="1em"
+					viewBox="0 0 16 16"
+					className={liked ? 'text-green-500' : 'text-transparent hover:text-white'}
+				>
 					<path fill="none" d="M0 0h16v16H0z"></path>
 					<path
 						stroke="#fff"
+						fill={liked ? 'currentColor' : 'none'}
 						d="M13.797 2.727a4.057 4.057 0 00-5.488-.253.558.558 0 01-.31.112.531.531 0 01-.311-.112 4.054 4.054 0 00-5.487.253c-.77.77-1.194 1.794-1.194 2.883s.424 2.113 1.168 2.855l4.462 5.223a1.791 1.791 0 002.726 0l4.435-5.195a4.052 4.052 0 001.195-2.883 4.057 4.057 0 00-1.196-2.883z"
 					></path>
 				</svg>

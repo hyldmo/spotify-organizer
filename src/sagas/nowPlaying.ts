@@ -7,8 +7,24 @@ import { spotifyFetch } from './spotifyFetch'
 export function* nowPlayingSaga () {
 	yield* takeEvery('PLAYBACK_CLEAR_SKIPS', clearSkips)
 	yield* takeEvery('PLAYBACK_CONTROL', playbackControl)
+	yield* takeEvery('PLAYBACK_TOGGLE_LIKE', toggleLike)
 	yield* take('TOKEN_AQUIRED')
 	yield* fork(watchPlayback)
+}
+
+function* toggleLike () {
+	const playback = yield* select((s: State) => s.playback.nowPlaying)
+	const liked = yield* select((s: State) => s.playback.liked)
+	const id = playback?.item?.id
+	if (!id) return
+
+	const nextLiked = !liked
+	try {
+		yield* call(() => spotifyFetch(`me/tracks?ids=${id}`, { method: nextLiked ? 'PUT' : 'DELETE' }))
+		yield* put(Actions.updateLiked(nextLiked))
+	} catch (e) {
+		yield* put(Actions.createNotification({ message: (e as Error).message, type: 'error' }))
+	}
 }
 
 function* clearSkips (action: Action<'PLAYBACK_CLEAR_SKIPS'>) {
@@ -55,6 +71,7 @@ function* watchPlayback () {
 	const initialTimeout = 3000
 
 	let timeout = initialTimeout
+	let likedCheckedId: string | undefined
 	while (true) {
 		try {
 			const body = yield* call(() => spotifyFetch<SpotifyApi.CurrentPlaybackResponse>('me/player'))
@@ -65,6 +82,18 @@ function* watchPlayback () {
 					yield* call(onPlaybackUpdated, action)
 				} catch (e) {
 					console.warn(`${onPlaybackUpdated.name}:`, e)
+				}
+				const trackId = body.item?.id
+				if (trackId && trackId !== likedCheckedId) {
+					likedCheckedId = trackId
+					try {
+						const result = yield* call(() =>
+							spotifyFetch<boolean[]>(`me/tracks/contains?ids=${trackId}`)
+						)
+						yield* put(Actions.updateLiked(!!result?.[0]))
+					} catch (e) {
+						console.warn(`${watchPlayback.name} (liked check):`, e)
+					}
 				}
 				timeout = initialTimeout
 			}
