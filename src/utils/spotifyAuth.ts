@@ -1,9 +1,11 @@
 import { CLIENT_ID, REDIRECT_URI } from '~/consts'
 import { Scopes } from '~/types'
+import { sleep } from '~/utils/sleep'
 
 const TOKEN_ENDPOINT = 'https://accounts.spotify.com/api/token'
 const AUTHORIZE_ENDPOINT = 'https://accounts.spotify.com/authorize'
 const VERIFIER_KEY = 'spotify_pkce_verifier'
+const REAUTH_KEY = 'spotify_reauth_in_progress'
 
 const scopes = [
 	Scopes.PLAYLIST_READ_PRIVATE,
@@ -60,6 +62,30 @@ export async function loginLink (): Promise<string> {
 	return `${AUTHORIZE_ENDPOINT}?${params}`
 }
 
+/**
+ * Silently re-authenticate by bouncing through Spotify's authorize endpoint.
+ * When the user's Spotify session is still alive (the common case for an app
+ * that's already been granted access) this redirects straight back to us with a
+ * fresh `?code=` — no consent screen, no visible login page — so a dead refresh
+ * token can be recovered without the user clicking anything.
+ *
+ * Guarded against redirect loops: callers MUST check {@link reauthInProgress}
+ * first and fall back to a normal logout if a bounce is already underway. The
+ * flag is cleared by {@link finishReauth} once a code exchange succeeds.
+ */
+export async function reauthenticate (): Promise<void> {
+	sessionStorage.setItem(REAUTH_KEY, String(Date.now()))
+	window.location.href = await loginLink()
+}
+
+export function reauthInProgress (): boolean {
+	return sessionStorage.getItem(REAUTH_KEY) != null
+}
+
+export function finishReauth (): void {
+	sessionStorage.removeItem(REAUTH_KEY)
+}
+
 export async function exchangeCodeForToken (code: string): Promise<TokenResponse> {
 	const verifier = sessionStorage.getItem(VERIFIER_KEY)
 	if (!verifier) throw new Error('Missing PKCE verifier — restart login')
@@ -83,11 +109,20 @@ export async function exchangeCodeForToken (code: string): Promise<TokenResponse
 	return res.json()
 }
 
+/**
+ * Spotify definitively rejected the refresh token — the session is dead and
+ * callers should log out. Only thrown for 4xx responses; 5xx server hiccups
+ * (see {@link refreshAccessToken}) are retried and ultimately surface as a
+ * plain `Error` so callers treat them as transient and keep the session.
+ */
 export class RefreshTokenRejected extends Error {
 	constructor (public status: number, body: string) {
 		super(`Refresh token rejected (${status}): ${body}`)
 	}
 }
+
+const REFRESH_RETRIES = 3
+const REFRESH_BACKOFF_MS = 500
 
 export async function refreshAccessToken (refreshToken: string): Promise<TokenResponse> {
 	const body = new URLSearchParams({
@@ -96,16 +131,24 @@ export async function refreshAccessToken (refreshToken: string): Promise<TokenRe
 		client_id: CLIENT_ID
 	})
 
-	// Network errors (fetch rejects) bubble as-is; HTTP errors map to
-	// RefreshTokenRejected so callers can distinguish "Spotify said no" from
-	// "we couldn't reach Spotify".
-	const res = await fetch(TOKEN_ENDPOINT, {
-		method: 'POST',
-		headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-		body
-	})
-	if (!res.ok) throw new RefreshTokenRejected(res.status, await res.text())
-	return res.json()
+	// Network errors (fetch rejects) bubble as-is — the next call can retry.
+	// 4xx → RefreshTokenRejected (token is dead, callers should log out).
+	// 5xx → retry with backoff; Spotify's token endpoint flakes intermittently
+	//   (`500 {"error":"server_error","error_description":"Failed to remove token"}`).
+	//   If it keeps failing we throw a plain Error: transient, NOT a logout.
+	for (let attempt = 0; ; attempt++) {
+		const res = await fetch(TOKEN_ENDPOINT, {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+			body
+		})
+		if (res.ok) return res.json()
+
+		const text = await res.text()
+		if (res.status < 500) throw new RefreshTokenRejected(res.status, text)
+		if (attempt >= REFRESH_RETRIES - 1) throw new Error(`Spotify token endpoint error (${res.status}): ${text}`)
+		await sleep(REFRESH_BACKOFF_MS * 2 ** attempt)
+	}
 }
 
 export function storeTokens (tokens: TokenResponse) {
