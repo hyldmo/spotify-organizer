@@ -1,4 +1,4 @@
-import { Notification, Optional } from '~/types'
+import type { Notification, Optional } from '~/types'
 import { makeActionCreator, makeMetaActionCreator } from '~/utils/actionCreator'
 
 export default {

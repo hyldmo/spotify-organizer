@@ -20,3 +20,5 @@ coverage/
 scripts/*.json
 
 .yarn/install-state.gz
+
+.context/

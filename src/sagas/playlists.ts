@@ -1,17 +1,17 @@
 import { all, call, put, select, takeEvery, takeLatest } from 'typed-redux-saga'
-import { Action, Actions } from '~/actions'
-import { Playlist, State, Track } from '~/types'
+import { type Action, Actions } from '~/actions'
+import type { Playlist, State, Track } from '~/types'
 import { deduplicate, partition, pullTracks, songEntriesToSongs } from '~/utils'
 import { spotifyFetch } from './spotifyFetch'
 import { getTracks } from './tracks'
 
-export function* playlistsSaga () {
+export function* playlistsSaga() {
 	yield* takeLatest('FETCH_PLAYLISTS', getPlaylists)
 	yield* takeLatest('DEDUPLICATE_PLAYLISTS', deduplicatePlaylists)
 	yield* takeEvery('PLAYLIST_DELETE_TRACKS', deleteTracks)
 }
 
-function* getPlaylists () {
+function* getPlaylists() {
 	const playlists: SpotifyApi.ListOfCurrentUsersPlaylistsResponse['items'] = []
 	let response: SpotifyApi.ListOfCurrentUsersPlaylistsResponse | null
 	const limit = 50
@@ -30,7 +30,7 @@ function* getPlaylists () {
 	yield* put(Actions.playlistsFetched(playlists))
 }
 
-function* deleteTracks (action: Action<'PLAYLIST_DELETE_TRACKS'>) {
+function* deleteTracks(action: Action<'PLAYLIST_DELETE_TRACKS'>) {
 	const { payload, meta } = action
 	const id = typeof meta === 'string' ? meta : meta.id
 	const body = {
@@ -49,7 +49,7 @@ function* deleteTracks (action: Action<'PLAYLIST_DELETE_TRACKS'>) {
 	}
 }
 
-function* deduplicatePlaylists (action: Action<'DEDUPLICATE_PLAYLISTS'>) {
+function* deduplicatePlaylists(action: Action<'DEDUPLICATE_PLAYLISTS'>) {
 	const {
 		payload: { source, target },
 		meta: compareMode
@@ -59,6 +59,7 @@ function* deduplicatePlaylists (action: Action<'DEDUPLICATE_PLAYLISTS'>) {
 	const playlists: Playlist[] = yield* select((state: State) =>
 		state.playlists.filter(pl => source.map(p => p.id).includes(pl.id))
 	)
+	// biome-ignore lint/suspicious/noImplicitAnyLet: assigned in both branches of the if/else below
 	let result
 	try {
 		if (target === null) {

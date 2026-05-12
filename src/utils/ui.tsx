@@ -1,9 +1,9 @@
-import React from 'react'
-import { OperationMode, Playlist, User } from '~/types'
+import type React from 'react'
+import { OperationMode, type Playlist, type User } from '~/types'
 import { CompareType } from './deduplicate'
 import { canModifyPlaylist } from './playlist'
 
-export function getDeduplicateErrors (
+export function getDeduplicateErrors(
 	mode: OperationMode,
 	selectedPlaylists: Playlist[],
 	secondPlaylist: Playlist | null,
@@ -29,7 +29,7 @@ export function getDeduplicateErrors (
  * is resolved via `keyAt`, so the caller controls keys (and ordering). Powers
  * shift-click range selection in tables.
  */
-export function toggleSelectionRange (
+export function toggleSelectionRange(
 	selected: ReadonlySet<string>,
 	fromIndex: number,
 	toIndex: number,
@@ -46,7 +46,7 @@ export function toggleSelectionRange (
 	return next
 }
 
-export function getCompareTypeExplanation (compareType: CompareType): Exclude<React.ReactNode, undefined> {
+export function getCompareTypeExplanation(compareType: CompareType): Exclude<React.ReactNode, undefined> {
 	const Mark: React.FC<{ children?: React.ReactNode }> = props => <strong className="not-italic" {...props} />
 	switch (compareType) {
 		case CompareType.SongId:

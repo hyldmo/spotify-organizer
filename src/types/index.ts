@@ -1,11 +1,10 @@
+export type { State } from '../configureStore'
 export * from './deepAccess'
 export * from './filters'
 export * from './firebase'
 export * from './helpers'
 export * from './modal'
-export * from './scopes'
 export * from './playback'
+export * from './scopes'
 export * from './spotify'
 export * from './ui'
-
-export type { State } from '../configureStore'

@@ -23,13 +23,13 @@
 // The script does NOT touch the live database directly — it's a pure JSON
 // transform so you can review the diff before importing.
 
-import { readFileSync, writeFileSync } from 'fs'
-import path from 'path'
+import { readFileSync, writeFileSync } from 'node:fs'
+import path from 'node:path'
 
 type Counters = Record<string, Record<string, number>> // contextUri -> songId -> count
 type UserBucket = { plays?: Counters; skips?: Counters; [k: string]: unknown }
 
-function mergeCounters (into: Counters, from: Counters | undefined) {
+function mergeCounters(into: Counters, from: Counters | undefined) {
 	if (!from) return
 	for (const [ctx, songs] of Object.entries(from)) {
 		if (!songs || typeof songs !== 'object') continue
@@ -41,7 +41,7 @@ function mergeCounters (into: Counters, from: Counters | undefined) {
 	}
 }
 
-function main () {
+function main() {
 	const target = process.argv[2]
 	if (!target) {
 		console.error('Usage: ts-node scripts/consolidate-uids.ts <spotifyUserId>')

@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { Actions } from '~/actions'
-import { State } from '~/types'
+import type { State } from '~/types'
 
 const mapStateToProps = (state: State) => ({
 	filters: state.filters.playlists
@@ -15,7 +15,7 @@ const dispatchToProps = {
 type Props = ReturnType<typeof mapStateToProps> & typeof dispatchToProps
 
 class Settings extends React.Component<Props> {
-	render () {
+	render() {
 		const { filters, hideEmpty, updateOwned } = this.props
 
 		return (

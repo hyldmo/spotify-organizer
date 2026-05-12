@@ -1,4 +1,5 @@
-import React, { useMemo, useState } from 'react'
+import type React from 'react'
+import { useMemo, useState } from 'react'
 import { connect, useSelector } from 'react-redux'
 import { Actions } from '~/actions'
 import Button from '~/components/Button'
@@ -7,7 +8,7 @@ import Modal from '~/components/Modal'
 import Playlists from '~/components/Playlists'
 import PullPlaylist from '~/components/PullPlaylist'
 import Settings from '~/components/Settings'
-import { OperationMode, Playlist, State as ReduxState } from '~/types'
+import { OperationMode, type Playlist, type State as ReduxState } from '~/types'
 import {
 	applyPlaylistsFilters,
 	CompareType,
@@ -118,7 +119,7 @@ const PlaylistsManager: React.FC = () => {
 						</div>
 						<div className="space-x-3">
 							{Object.keys(CompareType)
-								.filter(key => isNaN(Number(key)))
+								.filter(key => Number.isNaN(Number(key)))
 								.map(key => (
 									<Input
 										key={key}

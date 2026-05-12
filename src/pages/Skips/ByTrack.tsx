@@ -1,12 +1,13 @@
 import cn from 'classnames'
-import React, { useMemo } from 'react'
+import type React from 'react'
+import { useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Actions } from '~/actions'
 import { ArtistLinks, UriLink } from '~/components/UriLink'
-import { SkipEntry, SkipEntryPlaylist, State } from '~/types'
+import type { SkipEntry, SkipEntryPlaylist, State } from '~/types'
 import { findPlaylist, idToUri, recommendedPlaylistName } from '~/utils'
 import { SkipStats } from './SkipStats'
-import { findPlays, findSong, Props } from './skipUtils'
+import { findPlays, findSong, type Props } from './skipUtils'
 
 export const ByTrack: React.FC<Props> = ({ filterIds, skipData, countNonPlaylists, allPlaylists, minSkips }) => {
 	const dispatch = useDispatch()
@@ -25,7 +26,6 @@ export const ByTrack: React.FC<Props> = ({ filterIds, skipData, countNonPlaylist
 				playlists: skips
 			}
 		})
-
 	}, [skipData])
 	const totalSkips = (e: SkipEntryPlaylist[]) => e.reduce((a, b) => a + b.skips, 0)
 	// const instead of return to reduce indentention level

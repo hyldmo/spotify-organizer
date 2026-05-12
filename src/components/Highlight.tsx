@@ -1,5 +1,5 @@
 // Based on react-highlight-words by https://github.com/bvaughn
-import React from 'react'
+import type React from 'react'
 
 type Props = {
 	text: string
@@ -28,13 +28,13 @@ class Chunk {
 	highlighted: boolean
 	text: any
 
-	constructor (text: string, isHighlighed = false) {
+	constructor(text: string, isHighlighed = false) {
 		this.text = text
 		this.highlighted = isHighlighed
 	}
 }
 
-function highlightSuggestion (suggestion = '', query = ''): Chunk[] {
+function highlightSuggestion(suggestion = '', query = ''): Chunk[] {
 	const terms = query.toLowerCase().split(' ')
 	const chunks = new Array<Chunk>(terms.length)
 

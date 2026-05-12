@@ -1,13 +1,14 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import cn from 'classnames'
-import React, { Fragment } from 'react'
+import type React from 'react'
+import { Fragment } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Actions } from '~/actions'
 import { ArtistLinks, UriLink } from '~/components/UriLink'
-import { PlaylistSkipEntry, State } from '~/types'
+import type { PlaylistSkipEntry, State } from '~/types'
 import { idToUri } from '~/utils'
 import { SkipStats } from './SkipStats'
-import { countSkips, findSong, Props } from './skipUtils'
+import { countSkips, findSong, type Props } from './skipUtils'
 
 export const ByPlaylist: React.FC<Props> = ({ filterIds, skipData, countNonPlaylists, allPlaylists, minSkips }) => {
 	const dispatch = useDispatch()

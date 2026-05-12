@@ -1,5 +1,5 @@
-import { Action } from '~/actions'
-import { Filters, Sort } from '~/types'
+import type { Action } from '~/actions'
+import { type Filters, Sort } from '~/types'
 
 export const initialState: Filters = {
 	playlists: {
@@ -14,7 +14,7 @@ export const initialState: Filters = {
 }
 
 type PlaylistFilters = Filters['playlists']
-export function playlists (state: PlaylistFilters, action: Action): PlaylistFilters {
+export function playlists(state: PlaylistFilters, action: Action): PlaylistFilters {
 	switch (action.type) {
 		case 'PLAYLISTS_SORT_MODE_CHANGE':
 			return {
@@ -46,7 +46,7 @@ export function playlists (state: PlaylistFilters, action: Action): PlaylistFilt
 	}
 }
 
-export default function filters (state: Filters = initialState, action: Action): Filters {
+export default function filters(state: Filters = initialState, action: Action): Filters {
 	switch (action.type) {
 		case 'PLAYLISTS_FILTER_OWNED_CHANGE':
 		case 'PLAYLISTS_FILTER_EMPTY_CHANGE':

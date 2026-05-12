@@ -1,6 +1,6 @@
 import { all, call, put, select, takeEvery, takeLeading } from 'typed-redux-saga'
-import { Action, Actions } from '~/actions'
-import { Nullable, Playlist, SongEntries, State, Track, URI } from '~/types'
+import { type Action, Actions } from '~/actions'
+import type { Nullable, Playlist, SongEntries, State, Track, URI } from '~/types'
 import { firebaseGet, idToUri, PlaylistCache, SongCache, toTrack } from '~/utils'
 import { spotifyFetch } from './spotifyFetch'
 
@@ -17,13 +17,13 @@ const inFlight = new Set<Playlist['id']>()
 // flushes regardless.
 const PROGRESS_THROTTLE_MS = 1000
 
-export function* tracksSaga () {
+export function* tracksSaga() {
 	yield* takeEvery(Actions.fetchTrack.type, getTrack)
 	yield* takeEvery(Actions.fetchTracks.type, getTracks)
 	yield* takeLeading(Actions.playlistsFetched.type, getAllTracks)
 }
 
-function* getAllTracks (action: Action<'FETCH_PLAYLISTS_SUCCESS'>) {
+function* getAllTracks(action: Action<'FETCH_PLAYLISTS_SUCCESS'>) {
 	// PlaylistCache hydration is async — without this wait, the very first
 	// session after a reload reads an empty Map and refetches every playlist
 	// from Spotify, even when fully cached locally.
@@ -45,7 +45,7 @@ function* getAllTracks (action: Action<'FETCH_PLAYLISTS_SUCCESS'>) {
 	console.info('All playlist tracks up to date')
 }
 
-export function* getTrack (action: Action<'FETCH_TRACK'>) {
+export function* getTrack(action: Action<'FETCH_TRACK'>) {
 	const id = action.meta
 	const track = yield* call(() => spotifyFetch<SpotifyApi.SingleTrackResponse>(`tracks/${id}`))
 	if (track) {
@@ -61,7 +61,7 @@ export function* getTrack (action: Action<'FETCH_TRACK'>) {
 	yield put(Actions.createNotification({ message: 'Error fetching track', type: 'error' }))
 }
 
-function* fetchPlays (uid: string | null | undefined, id: Playlist['id']): Generator<unknown, Nullable<SongEntries>> {
+function* fetchPlays(uid: string | null | undefined, id: Playlist['id']): Generator<unknown, Nullable<SongEntries>> {
 	if (!uid) return null
 	try {
 		return yield* call(() => firebaseGet(`users/${uid}/plays/spotify:playlist:${id}/`))
@@ -71,7 +71,7 @@ function* fetchPlays (uid: string | null | undefined, id: Playlist['id']): Gener
 	}
 }
 
-export function* getTracks (action: Action<'FETCH_TRACKS'>) {
+export function* getTracks(action: Action<'FETCH_TRACKS'>) {
 	const id = action.meta
 	if (inFlight.has(id)) return
 	inFlight.add(id)
@@ -104,11 +104,11 @@ export function* getTracks (action: Action<'FETCH_TRACKS'>) {
 		let loaded = 0
 		let lastPersist = 0
 
-		function* processPage (page: SpotifyApi.PlaylistTrackResponse, offset: number) {
-			const mapped = page.items
-				.filter(t => t.track)
-				.map<Track>((t, i) => toTrack(t, offset + i))
-			mapped.forEach(track => SongCache.set(track.id, track))
+		function* processPage(page: SpotifyApi.PlaylistTrackResponse, offset: number) {
+			const mapped = page.items.filter(t => t.track).map<Track>((t, i) => toTrack(t, offset + i))
+			mapped.forEach(track => {
+				SongCache.set(track.id, track)
+			})
 			for (const t of mapped) tracks[t.id] = plays?.[t.id] || 0
 			loaded += mapped.length
 			const complete = loaded === total
@@ -126,7 +126,7 @@ export function* getTracks (action: Action<'FETCH_TRACKS'>) {
 
 		if (remainingOffsets.length === 0) return
 
-		function* fetchAndProcess (offset: number) {
+		function* fetchAndProcess(offset: number) {
 			const page = yield* call(fetchPage, offset)
 			if (page) yield* call(processPage, page, offset)
 		}
@@ -141,7 +141,7 @@ export function* getTracks (action: Action<'FETCH_TRACKS'>) {
 	}
 }
 
-function* updateProgress (id: Playlist['id'], tracks: SongEntries, loaded: number, complete: boolean) {
+function* updateProgress(id: Playlist['id'], tracks: SongEntries, loaded: number, complete: boolean) {
 	let playlist: Nullable<Playlist> = yield* select((s: State) => s.playlists.find(p => p.id === id))
 
 	if (!playlist) playlist = PlaylistCache.get(idToUri(id, 'playlist'))
@@ -155,7 +155,7 @@ function* updateProgress (id: Playlist['id'], tracks: SongEntries, loaded: numbe
 			...playlist.tracks,
 			// Only stamp lastFetched on the final write — partial writes must not
 			// look "complete" to consumers like `usePlaylist`'s watch effect.
-			lastFetched: complete ? new Date() : playlist.tracks.lastFetched ?? null,
+			lastFetched: complete ? new Date() : (playlist.tracks.lastFetched ?? null),
 			items: tracks,
 			loaded
 		}

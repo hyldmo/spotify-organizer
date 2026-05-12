@@ -1,4 +1,3 @@
-
 /** @type {import('tailwindcss/plugin').TailwindPlugin} */
 const plugin = require('tailwindcss/plugin')
 

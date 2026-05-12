@@ -1,4 +1,4 @@
-import { Optional, User } from '~/types'
+import type { Optional, User } from '~/types'
 import { makeActionCreator } from '~/utils/actionCreator'
 
 export default {

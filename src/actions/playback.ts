@@ -1,4 +1,4 @@
-import { Playback, Track, URI } from '~/types'
+import type { Playback, Track, URI } from '~/types'
 import { makeActionCreator } from '~/utils/actionCreator'
 
 export type PlaybackCommand = 'play' | 'pause' | 'next' | 'previous' | 'shuffle' | 'repeat'

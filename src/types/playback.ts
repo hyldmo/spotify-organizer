@@ -1,4 +1,4 @@
-import { Playlist, Track, URI } from './spotify'
+import type { Playlist, Track, URI } from './spotify'
 
 export type SkipEntry = {
 	song: Partial<Track> & { uri: Track['uri'] }

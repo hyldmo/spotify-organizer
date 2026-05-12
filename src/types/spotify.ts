@@ -1,5 +1,5 @@
-import { SongEntries } from './firebase'
-import { Nullable } from './helpers'
+import type { SongEntries } from './firebase'
+import type { Nullable } from './helpers'
 
 export interface Playlist extends Omit<SpotifyApi.PlaylistObjectFull, 'tracks' | 'followers'> {
 	selected: boolean

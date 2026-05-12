@@ -26,24 +26,24 @@ export interface TokenResponse {
 	scope: string
 }
 
-function base64urlEncode (buffer: ArrayBuffer): string {
+function base64urlEncode(buffer: ArrayBuffer): string {
 	return btoa(String.fromCharCode(...new Uint8Array(buffer)))
 		.replace(/\+/g, '-')
 		.replace(/\//g, '_')
 		.replace(/=+$/, '')
 }
 
-function randomVerifier (): string {
+function randomVerifier(): string {
 	const bytes = new Uint8Array(64)
 	crypto.getRandomValues(bytes)
 	return base64urlEncode(bytes.buffer)
 }
 
-async function sha256 (input: string): Promise<ArrayBuffer> {
+async function sha256(input: string): Promise<ArrayBuffer> {
 	return crypto.subtle.digest('SHA-256', new TextEncoder().encode(input))
 }
 
-export async function loginLink (): Promise<string> {
+export async function loginLink(): Promise<string> {
 	const verifier = randomVerifier()
 	sessionStorage.setItem(VERIFIER_KEY, verifier)
 	const challenge = base64urlEncode(await sha256(verifier))
@@ -60,7 +60,7 @@ export async function loginLink (): Promise<string> {
 	return `${AUTHORIZE_ENDPOINT}?${params}`
 }
 
-export async function exchangeCodeForToken (code: string): Promise<TokenResponse> {
+export async function exchangeCodeForToken(code: string): Promise<TokenResponse> {
 	const verifier = sessionStorage.getItem(VERIFIER_KEY)
 	if (!verifier) throw new Error('Missing PKCE verifier — restart login')
 
@@ -84,12 +84,15 @@ export async function exchangeCodeForToken (code: string): Promise<TokenResponse
 }
 
 export class RefreshTokenRejected extends Error {
-	constructor (public status: number, body: string) {
+	constructor(
+		public status: number,
+		body: string
+	) {
 		super(`Refresh token rejected (${status}): ${body}`)
 	}
 }
 
-export async function refreshAccessToken (refreshToken: string): Promise<TokenResponse> {
+export async function refreshAccessToken(refreshToken: string): Promise<TokenResponse> {
 	const body = new URLSearchParams({
 		grant_type: 'refresh_token',
 		refresh_token: refreshToken,
@@ -108,12 +111,12 @@ export async function refreshAccessToken (refreshToken: string): Promise<TokenRe
 	return res.json()
 }
 
-export function storeTokens (tokens: TokenResponse) {
+export function storeTokens(tokens: TokenResponse) {
 	localStorage.setItem('token', tokens.access_token)
 	localStorage.setItem('refresh_token', tokens.refresh_token)
 }
 
-export function clearTokens () {
+export function clearTokens() {
 	localStorage.removeItem('token')
 	localStorage.removeItem('refresh_token')
 }

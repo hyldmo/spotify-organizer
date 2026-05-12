@@ -33,10 +33,7 @@ const makeReducers = (r: typeof rootReducers) =>
 		}) as any
 	)
 
-export const store = createStore(
-	makeReducers(rootReducers),
-	composeEnhancers(applyMiddleware(...middlewares))
-)
+export const store = createStore(makeReducers(rootReducers), composeEnhancers(applyMiddleware(...middlewares)))
 export const presistedStore = persistStore(store)
 
 export const history = createReduxHistory(store)

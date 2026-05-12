@@ -1,6 +1,6 @@
 import { merge as _merge } from 'lodash/fp'
 import memoizee from 'memoizee'
-import { FirebaseUserData, PlaylistSkipEntry, SkipStats as SkipStatsProps, Track, URI } from '~/types'
+import type { FirebaseUserData, PlaylistSkipEntry, SkipStats as SkipStatsProps, Track, URI } from '~/types'
 import { findPlaylist, SongCache } from '~/utils'
 
 // TODO: Load track from API when not found in cache
@@ -20,7 +20,7 @@ type MergedSkipEntry = {
 	}
 }
 
-export function toEntries (entries: MergedSkipEntry) {
+export function toEntries(entries: MergedSkipEntry) {
 	return Object.entries(entries).map(([playlistUri, songs]) => {
 		const playlist = findPlaylist(playlistUri) || {
 			uri: playlistUri as PlaylistSkipEntry['uri']
@@ -35,17 +35,12 @@ export function toEntries (entries: MergedSkipEntry) {
 	})
 }
 
-export function objectMap<T extends object> (obj: T, func: (value: T[typeof key], key: keyof T) => void) {
-	return Object.entries(obj).reduce(
-		(a, [key, value]) => ({
-			...a,
-			[key]: func(value as any, key as keyof T)
-		}),
-		{}
-	)
+export function objectMap<T extends object>(obj: T, func: (value: T[typeof key], key: keyof T) => void) {
+	// biome-ignore lint/performance/noAccumulatingSpread: tiny fixed-size objects; callers rely on the inferred `{}` return type
+	return Object.entries(obj).reduce((a, [key, value]) => ({ ...a, [key]: func(value as any, key as keyof T) }), {})
 }
 
-export function merge (a: FirebaseUserData['plays'], b: FirebaseUserData['skips']) {
+export function merge(a: FirebaseUserData['plays'], b: FirebaseUserData['skips']) {
 	const plays = objectMap(a, value => objectMap(value, entry => ({ plays: entry })))
 	const skips = objectMap(b, value => objectMap(value, entry => ({ skips: entry })))
 	return _merge(plays, skips)

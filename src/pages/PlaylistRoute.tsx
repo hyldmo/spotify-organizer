@@ -1,5 +1,5 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import React from 'react'
+import type React from 'react'
 import { useParams } from 'react-router'
 import { Link } from 'react-router-dom'
 import Loading from '~/components/Loading'

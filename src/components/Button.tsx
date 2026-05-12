@@ -1,6 +1,6 @@
-import { Props as FaProps, FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { type Props as FaProps, FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import classnames from 'classnames'
-import React from 'react'
+import type React from 'react'
 
 type Props = {
 	primary?: boolean

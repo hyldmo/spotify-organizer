@@ -1,6 +1,7 @@
-import React, { useMemo, useState } from 'react'
+import type React from 'react'
+import { useMemo, useState } from 'react'
 import { Actions } from '~/actions'
-import { Playlist, Sort, Track } from '~/types'
+import { type Playlist, Sort, type Track } from '~/types'
 import {
 	canModifyPlaylist,
 	Duration,
@@ -90,9 +91,7 @@ const Tracks: React.FC<Props> = ({ tracks, playlist }) => {
 	}
 
 	const onDelete = () => {
-		const uris = Array.from(
-			new Set(tracks.filter(t => selected.has(rowKey(t))).map(t => t.uri))
-		)
+		const uris = Array.from(new Set(tracks.filter(t => selected.has(rowKey(t))).map(t => t.uri)))
 		if (uris.length === 0) return
 		const confirm = window.confirm(
 			`Remove ${selected.size} track${selected.size !== 1 ? 's' : ''} from ${playlist.name}?`
@@ -104,8 +103,7 @@ const Tracks: React.FC<Props> = ({ tracks, playlist }) => {
 
 	if (tracks.length === 0) return <div>No tracks.</div>
 
-	const onSort = (key: SortKey) =>
-		setSort(prev => ({ key, mode: getNextSortMode(prev.key === key, prev.mode) }))
+	const onSort = (key: SortKey) => setSort(prev => ({ key, mode: getNextSortMode(prev.key === key, prev.mode) }))
 
 	const sortHeader = (label: string, key: SortKey, title?: string) => (
 		<th title={title}>
@@ -149,7 +147,11 @@ const Tracks: React.FC<Props> = ({ tracks, playlist }) => {
 						{showAddedBy && sortHeader('Added by', 'added_by')}
 						{sortHeader('Added at', 'added_at')}
 						{sortHeader('Duration', 'duration')}
-						{sortHeader('In playlists', 'in_playlists', 'Number of other loaded playlists this track appears in')}
+						{sortHeader(
+							'In playlists',
+							'in_playlists',
+							'Number of other loaded playlists this track appears in'
+						)}
 						{sortHeader(
 							'Plays',
 							'plays',
@@ -168,10 +170,8 @@ const Tracks: React.FC<Props> = ({ tracks, playlist }) => {
 										<input
 											type="checkbox"
 											checked={selected.has(key)}
-											onChange={() => {}}
-											onClick={e =>
-												toggleRow(index, e.currentTarget.checked, e.shiftKey)
-											}
+											onChange={() => undefined}
+											onClick={e => toggleRow(index, e.currentTarget.checked, e.shiftKey)}
 										/>
 									</td>
 								)}
@@ -204,7 +204,7 @@ const Tracks: React.FC<Props> = ({ tracks, playlist }) => {
 	)
 }
 
-function getDisplayName (addedBy: Track['meta']['added_by']): string {
+function getDisplayName(addedBy: Track['meta']['added_by']): string {
 	return addedBy === null ? 'Spotify' : addedBy.display_name || addedBy.id
 }
 

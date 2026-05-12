@@ -1,14 +1,14 @@
 import { call, put, takeEvery } from 'typed-redux-saga'
-import { Action, Actions } from '~/actions'
+import { type Action, Actions } from '~/actions'
 import { sleep } from '~/utils'
 
-export function* notificationsSaga () {
+export function* notificationsSaga() {
 	yield* takeEvery(Actions.createNotification.type, createNotification)
 }
 
 let ID = 0
 
-function* createNotification (action: Action<typeof Actions.createNotification.type>) {
+function* createNotification(action: Action<typeof Actions.createNotification.type>) {
 	const { id = ID++, duration = 5000, type = 'success', ...payload } = action.payload
 
 	const notification = { ...payload, id, duration, type }

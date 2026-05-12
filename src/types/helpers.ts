@@ -3,8 +3,8 @@ import type React from 'react'
 export type Primitive = string | number | symbol | null | undefined
 
 export interface Tuple<T1, T2> extends Array<any> {
-	[0]: T1
-	[1]: T2
+	0: T1
+	1: T2
 }
 
 export type Optional<T, P extends keyof T> = Omit<T, P> & {

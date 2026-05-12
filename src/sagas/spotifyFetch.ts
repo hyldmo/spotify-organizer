@@ -1,17 +1,13 @@
-import { SagaIterator } from 'redux-saga'
+import type { SagaIterator } from 'redux-saga'
 import { call, put, select } from 'typed-redux-saga'
 import { Actions } from '~/actions'
-import { State } from '~/types'
+import type { State } from '~/types'
 import { sleep } from '~/utils'
-import { refreshAccessToken, RefreshTokenRejected, storeTokens } from '~/utils/spotifyAuth'
+import { RefreshTokenRejected, refreshAccessToken, storeTokens } from '~/utils/spotifyAuth'
 
 // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-constraint
-export function* spotifyFetch<T extends unknown> (
-	url: string,
-	options: RequestInit = {},
-	apiToken?: string
-): SagaIterator<T | null> {
-	const userToken = yield* select((state: State) => state.user && state.user.spotifyToken)
+export function* spotifyFetch<T>(url: string, options: RequestInit = {}, apiToken?: string): SagaIterator<T | null> {
+	const userToken = yield* select((state: State) => state.user?.spotifyToken)
 	const token = apiToken || userToken || localStorage.getItem('token')
 
 	if (!token) {

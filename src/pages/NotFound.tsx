@@ -1,4 +1,4 @@
-import React from 'react'
+import type React from 'react'
 import { useLocation } from 'react-router'
 
 const NotFound: React.FC = () => {

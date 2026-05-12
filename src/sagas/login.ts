@@ -1,18 +1,18 @@
 import { replace } from 'redux-first-history'
 import { call, fork, put, takeLatest } from 'typed-redux-saga'
-import { Action, Actions } from '~/actions'
+import { type Action, Actions } from '~/actions'
 import { ensureFirebaseReady, migrateLegacyUidData, resetFirebaseAuth, setSpotifyId } from '~/utils/firebase'
 import { clearTokens, exchangeCodeForToken, refreshAccessToken, storeTokens } from '~/utils/spotifyAuth'
 import { spotifyFetch } from './spotifyFetch'
 
-export function* loginSaga () {
+export function* loginSaga() {
 	yield* takeLatest(Actions.codeReceived.type, exchangeCode)
 	yield* takeLatest(Actions.tokenAquired.type, getUserDetails)
 	yield* takeLatest('LOAD_USER', loadUser)
 	yield* takeLatest(Actions.logout.type, onLogout)
 }
 
-function* exchangeCode (action: Action<typeof Actions.codeReceived.type>) {
+function* exchangeCode(action: Action<typeof Actions.codeReceived.type>) {
 	yield* put(Actions.authCheckStart())
 	try {
 		const tokens = yield* call(exchangeCodeForToken, action.payload)
@@ -25,7 +25,7 @@ function* exchangeCode (action: Action<typeof Actions.codeReceived.type>) {
 	}
 }
 
-function* getUserDetails (action: Action<typeof Actions.tokenAquired.type>) {
+function* getUserDetails(action: Action<typeof Actions.tokenAquired.type>) {
 	const token = action.payload
 
 	try {
@@ -68,14 +68,14 @@ function* getUserDetails (action: Action<typeof Actions.tokenAquired.type>) {
 	}
 }
 
-function* firebaseAuthBackground (spotifyId: string) {
+function* firebaseAuthBackground(spotifyId: string) {
 	const fbUid = yield* call(ensureFirebaseReady)
 	if (!fbUid) return
 	// Salvage anything this anon uid previously wrote at users/<fbUid>/...
 	yield* call(migrateLegacyUidData, spotifyId)
 }
 
-function* loadUser (_: Action<typeof Actions.loadUser.type>) {
+function* loadUser(_: Action<typeof Actions.loadUser.type>) {
 	const token = localStorage.getItem('token')
 	const refreshToken = localStorage.getItem('refresh_token')
 
@@ -98,7 +98,7 @@ function* loadUser (_: Action<typeof Actions.loadUser.type>) {
 	yield* put(Actions.authCheckDone())
 }
 
-function* onLogout (_: Action<typeof Actions.logout.type>) {
+function* onLogout(_: Action<typeof Actions.logout.type>) {
 	yield* call(clearTokens)
 	yield* call(resetFirebaseAuth)
 }

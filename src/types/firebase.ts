@@ -1,5 +1,5 @@
-import { Join, PathsToStringProps, Split, ToStringProps, Traverse, User } from '~/types'
-import { Track, URI } from './spotify'
+import type { Join, PathsToStringProps, Split, ToStringProps, Traverse, User } from '~/types'
+import type { Track, URI } from './spotify'
 
 export type IDKey = 'uid'
 

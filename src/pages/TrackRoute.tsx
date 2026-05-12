@@ -1,12 +1,13 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { startCase, uniq } from 'lodash/fp'
-import React, { useEffect } from 'react'
+import type React from 'react'
+import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router'
 import { Link } from 'react-router-dom'
 import { Actions } from '~/actions'
 import { ArtistLinks, UriLink } from '~/components/UriLink'
-import { State } from '~/types'
+import type { State } from '~/types'
 import { Duration, useFirebase } from '~/utils'
 
 export const TrackRoute: React.FC = () => {
@@ -22,7 +23,7 @@ export const TrackRoute: React.FC = () => {
 		if (params.id) dispatch(Actions.fetchTrack(params.id))
 	}, [dispatch, params.id])
 
-	if (!track || !artists) return <div className="m-auto p-8 text-center text-2xl">Loading track...</div>
+	if (!(track && artists)) return <div className="m-auto p-8 text-center text-2xl">Loading track...</div>
 
 	const genres = uniq(artists.flatMap(a => a.genres).map(startCase)).join(', ')
 	return (

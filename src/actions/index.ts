@@ -1,4 +1,4 @@
-import { FilterActions, GetMetaActions } from '~/utils'
+import type { FilterActions, GetMetaActions } from '~/utils'
 import modals from './modals'
 import notifications from './notifications'
 import playback from './playback'
@@ -15,7 +15,7 @@ export const Actions = {
 	...user
 }
 
-export type ActionCreator = typeof Actions[keyof typeof Actions]
+export type ActionCreator = (typeof Actions)[keyof typeof Actions]
 type A = ReturnType<ActionCreator>
 
 export type Action<TKey extends ActionTypes = any, TAction extends A = A> = TAction extends { type: TKey }

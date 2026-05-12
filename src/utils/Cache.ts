@@ -1,6 +1,6 @@
 import localforage from 'localforage'
 import { startCase } from 'lodash/fp'
-import { Tuple } from '~/types'
+import type { Tuple } from '~/types'
 
 type CacheEntry<T, K = string> = Tuple<K, Readonly<T>>
 
@@ -15,7 +15,7 @@ export class PersistentCache<T, K extends string = string> extends Map<K, Readon
 	private pendingKeysWrite: Promise<void> = Promise.resolve()
 	private keysWriteScheduled = false
 
-	constructor (id: string) {
+	constructor(id: string) {
 		super()
 		this.id = id
 		this.db = localforage.createInstance({
@@ -24,10 +24,14 @@ export class PersistentCache<T, K extends string = string> extends Map<K, Readon
 			version: 1
 		})
 		this.db.ready(err => (err ? console.warn(err) : console.info(`Cache ${id} loaded`)))
-		this.ready = this.loadEntries().then(data => data.forEach(([key, value]) => super.set(key as K, value)))
+		this.ready = this.loadEntries().then(data =>
+			data.forEach(([key, value]) => {
+				super.set(key as K, value)
+			})
+		)
 	}
 
-	public set (key: K, value: T) {
+	public set(key: K, value: T) {
 		if (key === null) return this
 		const isNewKey = !super.has(key)
 		super.set(key, value)
@@ -41,7 +45,7 @@ export class PersistentCache<T, K extends string = string> extends Map<K, Readon
 		return this
 	}
 
-	public getAll (): Array<CacheEntry<T, K>> {
+	public getAll(): Array<CacheEntry<T, K>> {
 		return [...this.entries()]
 	}
 
@@ -49,7 +53,7 @@ export class PersistentCache<T, K extends string = string> extends Map<K, Readon
 	// all known keys. Writes are chained sequentially to prevent concurrent
 	// writes from clobbering each other, and debounced so a flood of inserts
 	// produces a handful of writes rather than one per key.
-	private scheduleKeysWrite () {
+	private scheduleKeysWrite() {
 		if (this.keysWriteScheduled) return
 		this.keysWriteScheduled = true
 		this.pendingKeysWrite = this.pendingKeysWrite
@@ -66,7 +70,7 @@ export class PersistentCache<T, K extends string = string> extends Map<K, Readon
 			})
 	}
 
-	private async loadEntries () {
+	private async loadEntries() {
 		const savedKeys = await this.db.getItem<string[]>('keys')
 		if (!savedKeys) return []
 

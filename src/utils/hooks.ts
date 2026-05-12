@@ -1,14 +1,14 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { ActionCreator, Actions } from '~/actions'
-import { FirebaseGet, FirebaseUrls, Playlist, State } from '~/types'
+import { type ActionCreator, Actions } from '~/actions'
+import type { FirebaseGet, FirebaseUrls, Playlist, State } from '~/types'
 import { firebaseGet, firebaseWatch } from './firebase'
 import { findPlaylist } from './spotify'
 
 export const useAppSelector = useSelector.withTypes<State>()
 export const useAppDispatch = useDispatch
 
-export function useMapDispatch<T extends Record<string, ActionCreator>> (actions: T): T {
+export function useMapDispatch<T extends Record<string, ActionCreator>>(actions: T): T {
 	const dispatch = useDispatch()
 	// Memoised so the bound creators keep stable identities across renders —
 	// otherwise every consumer (and any `React.memo` child it forwards them to)
@@ -23,7 +23,7 @@ export function useMapDispatch<T extends Record<string, ActionCreator>> (actions
 	}, [dispatch, actions])
 }
 
-export function useFirebase<T extends FirebaseUrls> (url: T) {
+export function useFirebase<T extends FirebaseUrls>(url: T) {
 	const [data, setData] = useState<FirebaseGet<T> | null>(null)
 	useEffect(() => {
 		// Skip until the URL has a real uid — callers commonly pass
@@ -36,7 +36,7 @@ export function useFirebase<T extends FirebaseUrls> (url: T) {
 	return data
 }
 
-export function usePlaylist (id: string): Playlist | undefined {
+export function usePlaylist(id: string): Playlist | undefined {
 	const dispatch = useDispatch()
 	// Subscribe to just this playlist's slice so the hook re-renders only when
 	// _this_ playlist changes, not on every progress event for any playlist.

@@ -1,8 +1,8 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import React from 'react'
-import { Actions } from '~/actions'
+import type { Actions } from '~/actions'
 import Highlight from '~/components/Highlight'
-import { Filters, Playlist, Sort } from '~/types'
+import type { Filters, Playlist, Sort } from '~/types'
 import { getNextSortMode, getSortIcon } from '~/utils'
 import { UriLink } from './UriLink'
 

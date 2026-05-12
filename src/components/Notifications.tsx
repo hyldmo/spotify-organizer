@@ -1,13 +1,13 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import cn from 'classnames'
-import React from 'react'
+import type React from 'react'
 import { createPortal } from 'react-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { animated, config, useTransition } from 'react-spring'
 import { Actions } from '~/actions'
-import { Notification, State } from '~/types'
+import type { Notification, State } from '~/types'
 
-function getColor (type: Notification['type']): string {
+function getColor(type: Notification['type']): string {
 	switch (type) {
 		case 'success':
 			return 'bg-green-600'
