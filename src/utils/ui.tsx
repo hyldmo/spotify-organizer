@@ -23,6 +23,29 @@ export function getDeduplicateErrors (
 	return null
 }
 
+/**
+ * Returns a new selection set with the rows between `fromIndex` and `toIndex`
+ * (inclusive, order-independent) added (when `checked`) or removed. Row identity
+ * is resolved via `keyAt`, so the caller controls keys (and ordering). Powers
+ * shift-click range selection in tables.
+ */
+export function toggleSelectionRange (
+	selected: ReadonlySet<string>,
+	fromIndex: number,
+	toIndex: number,
+	checked: boolean,
+	keyAt: (index: number) => string
+): Set<string> {
+	const next = new Set(selected)
+	const [lo, hi] = fromIndex <= toIndex ? [fromIndex, toIndex] : [toIndex, fromIndex]
+	for (let i = lo; i <= hi; i++) {
+		const key = keyAt(i)
+		if (checked) next.add(key)
+		else next.delete(key)
+	}
+	return next
+}
+
 export function getCompareTypeExplanation (compareType: CompareType): Exclude<React.ReactNode, undefined> {
 	const Mark: React.FC<{ children?: React.ReactNode }> = props => <strong className="not-italic" {...props} />
 	switch (compareType) {

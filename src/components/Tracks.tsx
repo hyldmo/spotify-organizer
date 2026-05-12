@@ -1,7 +1,15 @@
 import React, { useMemo, useState } from 'react'
 import { Actions } from '~/actions'
 import { Playlist, Sort, Track } from '~/types'
-import { canModifyPlaylist, Duration, getNextSortMode, getSortIcon, useAppDispatch, useAppSelector } from '~/utils'
+import {
+	canModifyPlaylist,
+	Duration,
+	getNextSortMode,
+	getSortIcon,
+	toggleSelectionRange,
+	useAppDispatch,
+	useAppSelector
+} from '~/utils'
 import Button from './Button'
 import { ArtistLinks, UriLink } from './UriLink'
 
@@ -20,6 +28,7 @@ const Tracks: React.FC<Props> = ({ tracks, playlist }) => {
 
 	const [sort, setSort] = useState<{ key: SortKey; mode: Sort }>({ key: 'added_at', mode: Sort.None })
 	const [selected, setSelected] = useState<Set<string>>(new Set())
+	const [lastToggledIndex, setLastToggledIndex] = useState<number | null>(null)
 
 	const contributors = new Set(tracks.map(t => t.meta.added_by.id))
 	const plays = tracks.reduce((a, t) => a + (t.meta.plays || 0), 0)
@@ -69,14 +78,15 @@ const Tracks: React.FC<Props> = ({ tracks, playlist }) => {
 	const allSelected = selected.size > 0 && selected.size === tracks.length
 	const rowKey = (t: Track) => `${t.id}:${t.meta.index}`
 
-	const toggleAll = (checked: boolean) =>
+	const toggleAll = (checked: boolean) => {
 		setSelected(checked ? new Set(tracks.map(rowKey)) : new Set())
+		setLastToggledIndex(null)
+	}
 
-	const toggleRow = (key: string, checked: boolean) => {
-		const next = new Set(selected)
-		if (checked) next.add(key)
-		else next.delete(key)
-		setSelected(next)
+	const toggleRow = (index: number, checked: boolean, extendRange: boolean) => {
+		const from = extendRange && lastToggledIndex !== null ? lastToggledIndex : index
+		setSelected(toggleSelectionRange(selected, from, index, checked, i => rowKey(sortedTracks[i])))
+		setLastToggledIndex(index)
 	}
 
 	const onDelete = () => {
@@ -148,7 +158,7 @@ const Tracks: React.FC<Props> = ({ tracks, playlist }) => {
 					</tr>
 				</thead>
 				<tbody>
-					{sortedTracks.map(track => {
+					{sortedTracks.map((track, index) => {
 						const key = rowKey(track)
 						const others = otherPlaylistsByTrack[track.id] || []
 						return (
@@ -158,7 +168,10 @@ const Tracks: React.FC<Props> = ({ tracks, playlist }) => {
 										<input
 											type="checkbox"
 											checked={selected.has(key)}
-											onChange={e => toggleRow(key, e.target.checked)}
+											onChange={() => {}}
+											onClick={e =>
+												toggleRow(index, e.currentTarget.checked, e.shiftKey)
+											}
 										/>
 									</td>
 								)}
