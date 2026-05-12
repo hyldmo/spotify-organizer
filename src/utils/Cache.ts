@@ -13,6 +13,7 @@ export class PersistentCache<T, K extends string = string> extends Map<K, Readon
 	public readonly ready: Promise<void>
 	private db: LocalForage
 	private pendingKeysWrite: Promise<void> = Promise.resolve()
+	private keysWriteScheduled = false
 
 	constructor (id: string) {
 		super()
@@ -28,24 +29,41 @@ export class PersistentCache<T, K extends string = string> extends Map<K, Readon
 
 	public set (key: K, value: T) {
 		if (key === null) return this
+		const isNewKey = !super.has(key)
 		super.set(key, value)
 
 		this.db.setItem(key, value).catch(err => console.warn(`Cache ${this.id}: failed to write key "${key}"`, err))
-		// As storage APIs does not implement a "getAll", create an entry with all known keys in the cache
-		// Chain keys writes sequentially to prevent concurrent writes from clobbering each other
-		this.pendingKeysWrite = this.pendingKeysWrite
-			.then(() => this.ready)
-			.then(() => {
-				const keys = [...this.keys()].filter(k => k !== 'keys')
-				return this.db.setItem('keys', keys)
-			})
-			.then(() => undefined)
-			.catch(err => console.warn(`Cache ${this.id}: failed to write keys index`, err))
+		// The keys index only changes when a *new* key is added — overwrites
+		// (e.g. re-fetching a playlist's tracks) don't touch it. And a burst of
+		// inserts (the initial bulk track load can be 100k+) collapses into one
+		// debounced write instead of an O(n) serialisation per `set`.
+		if (isNewKey) this.scheduleKeysWrite()
 		return this
 	}
 
 	public getAll (): Array<CacheEntry<T, K>> {
 		return [...this.entries()]
+	}
+
+	// As storage APIs don't implement "getAll", we persist an explicit index of
+	// all known keys. Writes are chained sequentially to prevent concurrent
+	// writes from clobbering each other, and debounced so a flood of inserts
+	// produces a handful of writes rather than one per key.
+	private scheduleKeysWrite () {
+		if (this.keysWriteScheduled) return
+		this.keysWriteScheduled = true
+		this.pendingKeysWrite = this.pendingKeysWrite
+			.then(() => this.ready)
+			.then(() => new Promise<void>(resolve => setTimeout(resolve, 250)))
+			.then(() => {
+				this.keysWriteScheduled = false
+				const keys = [...this.keys()].filter(k => k !== 'keys')
+				return this.db.setItem('keys', keys).then(() => undefined)
+			})
+			.catch(err => {
+				this.keysWriteScheduled = false
+				console.warn(`Cache ${this.id}: failed to write keys index`, err)
+			})
 	}
 
 	private async loadEntries () {
