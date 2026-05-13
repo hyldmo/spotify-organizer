@@ -1,4 +1,4 @@
-import { Playlist, Track, URI } from '~/types'
+import type { Playlist, Track, URI } from '~/types'
 import { PersistentCache } from './Cache'
 
 export * from './actionCreator'

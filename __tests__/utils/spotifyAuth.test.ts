@@ -1,5 +1,11 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { finishReauth, reauthenticate, reauthInProgress, RefreshTokenRejected, refreshAccessToken } from '~/utils/spotifyAuth'
+import {
+	finishReauth,
+	RefreshTokenRejected,
+	reauthenticate,
+	reauthInProgress,
+	refreshAccessToken
+} from '~/utils/spotifyAuth'
 
 const TOKEN_ENDPOINT = 'https://accounts.spotify.com/api/token'
 
@@ -11,7 +17,7 @@ const tokenBody = {
 	scope: ''
 }
 
-function jsonResponse (status: number, body: unknown): Response {
+function jsonResponse(status: number, body: unknown): Response {
 	return {
 		ok: status >= 200 && status < 300,
 		status,
@@ -42,7 +48,9 @@ describe('refreshAccessToken', () => {
 	it('retries transient 5xx responses and succeeds', async () => {
 		const fetchMock = vi
 			.fn()
-			.mockResolvedValueOnce(jsonResponse(500, { error: 'server_error', error_description: 'Failed to remove token' }))
+			.mockResolvedValueOnce(
+				jsonResponse(500, { error: 'server_error', error_description: 'Failed to remove token' })
+			)
 			.mockResolvedValueOnce(jsonResponse(200, tokenBody))
 		vi.stubGlobal('fetch', fetchMock)
 
@@ -56,7 +64,9 @@ describe('refreshAccessToken', () => {
 	it('gives up after repeated 5xx and throws a transient Error (not RefreshTokenRejected)', async () => {
 		const fetchMock = vi
 			.fn()
-			.mockResolvedValue(jsonResponse(500, { error: 'server_error', error_description: 'Failed to remove token' }))
+			.mockResolvedValue(
+				jsonResponse(500, { error: 'server_error', error_description: 'Failed to remove token' })
+			)
 		vi.stubGlobal('fetch', fetchMock)
 
 		const promise = refreshAccessToken('refresh')

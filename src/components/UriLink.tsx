@@ -1,6 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import { Nullable, UriObject } from '~/types'
+import type { Nullable, UriObject } from '~/types'
 import { isUriType, SongCache, uriToId } from '~/utils'
 
 interface Props extends React.HTMLProps<HTMLAnchorElement> {
@@ -43,12 +43,11 @@ type ArtistLinksProps = React.HTMLProps<HTMLSpanElement> & {
 }
 export const ArtistLinks: React.FC<ArtistLinksProps> = ({ artists, ...props }) => (
 	<span {...props}>
-		{artists &&
-			artists.map((artist, i) => (
-				<React.Fragment key={artist.id}>
-					<UriLink object={artist} className="opacity-70 hover:opacity-100" href={artist.uri} />
-					{i < artists.length - 1 && <span className="opacity-70 pointer-events-none">, </span>}
-				</React.Fragment>
-			))}
+		{artists?.map((artist, i) => (
+			<React.Fragment key={artist.id}>
+				<UriLink object={artist} className="opacity-70 hover:opacity-100" href={artist.uri} />
+				{i < artists.length - 1 && <span className="opacity-70 pointer-events-none">, </span>}
+			</React.Fragment>
+		))}
 	</span>
 )

@@ -1,6 +1,5 @@
-
-import { Playlist, Sort, Track } from '~/types'
-import { CompareType } from '~/utils'
+import type { Playlist, Sort, Track } from '~/types'
+import type { CompareType } from '~/utils'
 import { makeActionCreator, makeMetaActionCreator } from '~/utils/actionCreator'
 
 type PlaylistMeta = Playlist['id'] | { id: Playlist['id']; snapshot_id: Playlist['snapshot_id'] }

@@ -2,7 +2,7 @@ import { refreshAccessToken, storeTokens } from './spotifyAuth'
 
 export let player: Spotify.Player | null = null
 
-async function getFreshToken (): Promise<string | null> {
+async function getFreshToken(): Promise<string | null> {
 	const refreshToken = localStorage.getItem('refresh_token')
 	if (refreshToken) {
 		try {
@@ -16,7 +16,7 @@ async function getFreshToken (): Promise<string | null> {
 	return localStorage.getItem('token')
 }
 
-export async function initializePlayer (): Promise<Spotify.Player> {
+export async function initializePlayer(): Promise<Spotify.Player> {
 	if (player !== null) return player
 
 	const script = document.createElement('script')

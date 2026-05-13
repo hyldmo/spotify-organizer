@@ -1,4 +1,4 @@
-import { Action } from '~/actions'
+import type { Action } from '~/actions'
 
 export type AuthState = {
 	checking: boolean
@@ -9,7 +9,7 @@ export type AuthState = {
 // to either authCheckDone or userLoaded shortly after.
 const initialState: AuthState = { checking: true }
 
-export default function auth (state: AuthState = initialState, action: Action): AuthState {
+export default function auth(state: AuthState = initialState, action: Action): AuthState {
 	switch (action.type) {
 		case 'AUTH_CHECK_START':
 			return { checking: true }

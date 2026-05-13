@@ -1,6 +1,6 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import React from 'react'
-import { SkipStats as Stats } from '~/types'
+import type React from 'react'
+import type { SkipStats as Stats } from '~/types'
 
 type Props = Stats & {
 	onRemoveClick?: React.MouseEventHandler<HTMLButtonElement>

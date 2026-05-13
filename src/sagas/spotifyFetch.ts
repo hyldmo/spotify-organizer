@@ -1,17 +1,19 @@
-import { SagaIterator } from 'redux-saga'
+import type { SagaIterator } from 'redux-saga'
 import { call, put, select } from 'typed-redux-saga'
 import { Actions } from '~/actions'
-import { State } from '~/types'
+import type { State } from '~/types'
 import { sleep } from '~/utils'
-import { reauthenticate, reauthInProgress, refreshAccessToken, RefreshTokenRejected, storeTokens } from '~/utils/spotifyAuth'
+import {
+	RefreshTokenRejected,
+	reauthenticate,
+	reauthInProgress,
+	refreshAccessToken,
+	storeTokens
+} from '~/utils/spotifyAuth'
 
 // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-constraint
-export function* spotifyFetch<T extends unknown> (
-	url: string,
-	options: RequestInit = {},
-	apiToken?: string
-): SagaIterator<T | null> {
-	const userToken = yield* select((state: State) => state.user && state.user.spotifyToken)
+export function* spotifyFetch<T>(url: string, options: RequestInit = {}, apiToken?: string): SagaIterator<T | null> {
+	const userToken = yield* select((state: State) => state.user?.spotifyToken)
 	const token = apiToken || userToken || localStorage.getItem('token')
 
 	if (!token) {
@@ -20,9 +22,17 @@ export function* spotifyFetch<T extends unknown> (
 
 	const headers = new Headers({ Authorization: `Bearer ${token}` })
 	const response = yield* call(fetch, `https://api.spotify.com/v1/${url}`, { headers, ...options })
-	let body = null
+	let body: any = null
 	if (response.status !== 204) {
-		body = yield* call(response.json.bind(response))
+		const text = yield* call(response.text.bind(response))
+		if (text) {
+			try {
+				body = JSON.parse(text)
+			} catch {
+				// Some Spotify endpoints (player controls, library writes) reply 200
+				// with an empty or non-JSON body — treat that the same as 204.
+			}
+		}
 	}
 
 	switch (response.status) {
@@ -73,7 +83,7 @@ export function* spotifyFetch<T extends unknown> (
 			return next as T | null
 		}
 		default:
-			throw new Error(body.error.message)
+			throw new Error(body?.error?.message ?? `${response.status} ${response.statusText}`)
 	}
 	return null
 }

@@ -1,7 +1,8 @@
-import React, { useMemo, useState } from 'react'
+import type React from 'react'
+import { useMemo, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
-import { Sort, State } from '~/types'
+import { Sort, type State } from '~/types'
 import { Duration, getNextSortMode, getSortIcon, SongCache, songEntriesToSongs, useFirebase } from '~/utils'
 
 type SkipRateRow = { name: string; id: string; skipRate: number; totalSkips: number; totalPlays: number }
@@ -124,8 +125,8 @@ export const Dashboard: React.FC = () => {
 
 				{stats.duplicateCount > 0 && (
 					<div className="p-3 rounded border border-yellow-600 bg-yellow-900/20 text-yellow-200">
-						<strong>{stats.duplicateCount}</strong> track{stats.duplicateCount !== 1 && 's'} appear in multiple
-						playlists.{' '}
+						<strong>{stats.duplicateCount}</strong> track{stats.duplicateCount !== 1 && 's'} appear in
+						multiple playlists.{' '}
 						<Link to="/" className="underline">
 							Go to Playlists
 						</Link>{' '}
@@ -181,10 +182,14 @@ export const Dashboard: React.FC = () => {
 										<span>
 											<span className="text-gray-500 mr-2">{i + 1}.</span>
 											<Link to={`/tracks/${trackId}`} className="hover:underline">
-												{track ? `${track.name} — ${track.artists.map(a => a.name).join(', ')}` : trackId}
+												{track
+													? `${track.name} — ${track.artists.map(a => a.name).join(', ')}`
+													: trackId}
 											</Link>
 										</span>
-										<span className="text-gray-400">{count} skip{count !== 1 && 's'}</span>
+										<span className="text-gray-400">
+											{count} skip{count !== 1 && 's'}
+										</span>
 									</li>
 								)
 							})}
@@ -194,8 +199,8 @@ export const Dashboard: React.FC = () => {
 
 				{stats.loadedPlaylists < stats.totalPlaylists && (
 					<p className="text-sm text-gray-500">
-						{stats.loadedPlaylists} of {stats.totalPlaylists} playlists fully loaded. Stats will update as more
-						playlists are cached.
+						{stats.loadedPlaylists} of {stats.totalPlaylists} playlists fully loaded. Stats will update as
+						more playlists are cached.
 					</p>
 				)}
 			</div>

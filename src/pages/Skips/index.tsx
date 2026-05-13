@@ -1,11 +1,12 @@
 /* eslint-disable radix */
 import cn from 'classnames'
-import React, { useState } from 'react'
+import type React from 'react'
+import { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useSearchParams } from 'react-router-dom'
 import { Actions } from '~/actions'
 import Input from '~/components/Input'
-import { State } from '~/types'
+import type { State } from '~/types'
 import { useFirebase } from '~/utils'
 import { ByPlaylist } from './ByPlaylist'
 import { ByTrack } from './ByTrack'
@@ -86,7 +87,7 @@ export const Skips: React.FC = () => {
 					type="number"
 					min={0}
 					value={user.settings.minSkips}
-					onChange={e => dispatch(Actions.updateSettings(Number.parseInt(e.target.value), 'minSkips'))}
+					onChange={e => dispatch(Actions.updateSettings(Number.parseInt(e.target.value, 10), 'minSkips'))}
 				/>
 				<hr className="mt-4 border-t-2 col-span-2 border-t-gray-300" />
 			</header>

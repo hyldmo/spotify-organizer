@@ -1,7 +1,8 @@
-import React, { useMemo, useState } from 'react'
+import type React from 'react'
+import { useMemo, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { ArtistLinks, UriLink } from '~/components/UriLink'
-import { Sort, State, Track } from '~/types'
+import { Sort, type State, type Track } from '~/types'
 import { Duration, getNextSortMode, getSortIcon, SongCache } from '~/utils'
 
 type SearchResult = Track & {
@@ -27,9 +28,7 @@ export const Search: React.FC = () => {
 
 			if (matchesName || matchesArtist || matchesAlbum) {
 				// Find which playlists contain this track (on-demand scan per decision 4B)
-				const playlistNames = playlists
-					.filter(pl => pl.tracks.items[track.id] !== undefined)
-					.map(pl => pl.name)
+				const playlistNames = playlists.filter(pl => pl.tracks.items[track.id] !== undefined).map(pl => pl.name)
 
 				matches.push({ ...track, playlistNames })
 			}
@@ -66,8 +65,7 @@ export const Search: React.FC = () => {
 		})
 	}, [results, sort])
 
-	const onSort = (key: SortKey) =>
-		setSort(prev => ({ key, mode: getNextSortMode(prev.key === key, prev.mode) }))
+	const onSort = (key: SortKey) => setSort(prev => ({ key, mode: getNextSortMode(prev.key === key, prev.mode) }))
 
 	const sortHeader = (label: string, key: SortKey) => (
 		<th>
@@ -103,7 +101,9 @@ export const Search: React.FC = () => {
 
 			<div className="overflow-y-scroll px-4">
 				{query.length < 2 ? (
-					<p className="py-4 text-gray-400">Type at least 2 characters to search across all your playlists.</p>
+					<p className="py-4 text-gray-400">
+						Type at least 2 characters to search across all your playlists.
+					</p>
 				) : results.length === 0 ? (
 					<p className="py-4 text-gray-400">No tracks found.</p>
 				) : (
@@ -132,8 +132,12 @@ export const Search: React.FC = () => {
 									<td>{new Duration(track.duration_ms).toMinutesString()}</td>
 									<td>
 										{track.playlistNames.length > 0 ? (
-											<span className="text-sm text-gray-300" title={track.playlistNames.join(', ')}>
-												{track.playlistNames.length} playlist{track.playlistNames.length !== 1 && 's'}
+											<span
+												className="text-sm text-gray-300"
+												title={track.playlistNames.join(', ')}
+											>
+												{track.playlistNames.length} playlist
+												{track.playlistNames.length !== 1 && 's'}
 											</span>
 										) : (
 											<span className="text-sm text-gray-500">—</span>

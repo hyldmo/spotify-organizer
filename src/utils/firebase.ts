@@ -1,8 +1,8 @@
 /* eslint-disable no-restricted-imports */
-import { FirebaseOptions, initializeApp } from 'firebase/app'
+import { type FirebaseOptions, initializeApp } from 'firebase/app'
 import { browserLocalPersistence, initializeAuth, inMemoryPersistence, signInAnonymously } from 'firebase/auth'
 import { get, getDatabase, onValue, ref, remove, update } from 'firebase/database'
-import { FirebaseGet, FirebaseUpdates, FirebaseUrls } from '~/types'
+import type { FirebaseGet, FirebaseUpdates, FirebaseUrls } from '~/types'
 
 const PROJECT_ID = process.env.PACKAGE_NAME
 const REGION = 'europe-west1'
@@ -43,7 +43,7 @@ let readyPromise: Promise<string | null> | null = null
 let cachedFirebaseUid: string | null = null
 let pendingSpotifyId: string | null = null
 
-async function attemptAnonymousAuth (): Promise<string | null> {
+async function attemptAnonymousAuth(): Promise<string | null> {
 	for (let attempt = 0; attempt <= RETRY_DELAYS_MS.length; attempt++) {
 		try {
 			const result = await signInAnonymously(auth)
@@ -62,9 +62,9 @@ async function attemptAnonymousAuth (): Promise<string | null> {
 	return null
 }
 
-async function attemptReady (): Promise<string | null> {
+async function attemptReady(): Promise<string | null> {
 	const fbUid = await attemptAnonymousAuth()
-	if (!fbUid || !pendingSpotifyId) return fbUid
+	if (!(fbUid && pendingSpotifyId)) return fbUid
 	try {
 		await update(ref(db), { [`uidMap/${fbUid}`]: pendingSpotifyId })
 	} catch (e) {
@@ -76,7 +76,7 @@ async function attemptReady (): Promise<string | null> {
 
 // Call before any RTDB user-data op so the uidMap can be written before the op
 // is gated by rules. Synchronous and idempotent.
-export function setSpotifyId (id: string) {
+export function setSpotifyId(id: string) {
 	if (pendingSpotifyId === id) return
 	pendingSpotifyId = id
 	// Force a fresh ready cycle so the new mapping is written even if anon
@@ -84,7 +84,7 @@ export function setSpotifyId (id: string) {
 	if (cachedFirebaseUid) readyPromise = null
 }
 
-export function ensureFirebaseReady (): Promise<string | null> {
+export function ensureFirebaseReady(): Promise<string | null> {
 	if (!readyPromise) {
 		readyPromise = attemptReady().finally(() => {
 			if (!cachedFirebaseUid) readyPromise = null
@@ -93,17 +93,17 @@ export function ensureFirebaseReady (): Promise<string | null> {
 	return readyPromise
 }
 
-export function getFirebaseUid (): string | null {
+export function getFirebaseUid(): string | null {
 	return cachedFirebaseUid
 }
 
-export function resetFirebaseAuth () {
+export function resetFirebaseAuth() {
 	cachedFirebaseUid = null
 	pendingSpotifyId = null
 	readyPromise = null
 }
 
-export function firebaseWatch<T extends FirebaseUrls> (url: T, onUpdate: (value: FirebaseGet<T>) => void) {
+export function firebaseWatch<T extends FirebaseUrls>(url: T, onUpdate: (value: FirebaseGet<T>) => void) {
 	const key = url.endsWith('/') ? url.slice(0, -1) : url
 	let cancelled = false
 	let unsubscribe: (() => void) | null = null
@@ -121,7 +121,7 @@ export function firebaseWatch<T extends FirebaseUrls> (url: T, onUpdate: (value:
 	}
 }
 
-export async function firebaseGet<T extends FirebaseUrls> (url: T): Promise<FirebaseGet<T> | null> {
+export async function firebaseGet<T extends FirebaseUrls>(url: T): Promise<FirebaseGet<T> | null> {
 	const uid = await ensureFirebaseReady()
 	if (!uid) return null
 	const key = url.endsWith('/') ? url.slice(0, -1) : url
@@ -129,14 +129,14 @@ export async function firebaseGet<T extends FirebaseUrls> (url: T): Promise<Fire
 	return res.val()
 }
 
-export async function firebaseUpdate<T extends FirebaseUrls> (url: T, value: unknown) {
+export async function firebaseUpdate<T extends FirebaseUrls>(url: T, value: unknown) {
 	const uid = await ensureFirebaseReady()
 	if (!uid) return
 	const key = url.endsWith('/') ? url.slice(0, -1) : url
 	return update(ref(db), { [key]: value })
 }
 
-export async function firebaseUpdateMultiple (updates: FirebaseUpdates) {
+export async function firebaseUpdateMultiple(updates: FirebaseUpdates) {
 	const uid = await ensureFirebaseReady()
 	if (!uid) return
 	return update(ref(db), updates)
@@ -147,7 +147,7 @@ export async function firebaseUpdateMultiple (updates: FirebaseUpdates) {
 // delete the old node. Only rescues data that this browser/device can
 // authenticate as — orphaned uids from past inMemoryPersistence sessions
 // require the admin script under scripts/migrate-firebase-uids.ts.
-export async function migrateLegacyUidData (spotifyId: string): Promise<void> {
+export async function migrateLegacyUidData(spotifyId: string): Promise<void> {
 	const fbUid = await ensureFirebaseReady()
 	if (!fbUid || fbUid === spotifyId) return
 

@@ -1,23 +1,39 @@
 import { call, cancelled, fork, put, select, take, takeEvery } from 'typed-redux-saga'
-import { Action, Actions } from '~/actions'
-import { Playback, State, User } from '~/types'
+import { type Action, Actions } from '~/actions'
+import type { Playback, State, User } from '~/types'
 import { firebaseGet, firebaseUpdate, sleep } from '~/utils'
 import { spotifyFetch } from './spotifyFetch'
 
-export function* nowPlayingSaga () {
+export function* nowPlayingSaga() {
 	yield* takeEvery('PLAYBACK_CLEAR_SKIPS', clearSkips)
 	yield* takeEvery('PLAYBACK_CONTROL', playbackControl)
+	yield* takeEvery('PLAYBACK_TOGGLE_LIKE', toggleLike)
 	yield* take('TOKEN_AQUIRED')
 	yield* fork(watchPlayback)
 }
 
-function* clearSkips (action: Action<'PLAYBACK_CLEAR_SKIPS'>) {
+function* toggleLike() {
+	const playback = yield* select((s: State) => s.playback.nowPlaying)
+	const liked = yield* select((s: State) => s.playback.liked)
+	const id = playback?.item?.id
+	if (!id) return
+
+	const nextLiked = !liked
+	try {
+		yield* call(() => spotifyFetch(`me/tracks?ids=${id}`, { method: nextLiked ? 'PUT' : 'DELETE' }))
+		yield* put(Actions.updateLiked(nextLiked))
+	} catch (e) {
+		yield* put(Actions.createNotification({ message: (e as Error).message, type: 'error' }))
+	}
+}
+
+function* clearSkips(action: Action<'PLAYBACK_CLEAR_SKIPS'>) {
 	const user = yield* select((s: State) => s.user as User) // User will not be null when playback is active
 	if (!user.uid) return // Firebase anon-auth hasn't landed yet; skip the RTDB write
 	yield* call(() => firebaseUpdate(`users/${user.uid}/skips/${action.meta}/${action.payload}/`, 0))
 }
 
-function* playbackControl (action: Action<'PLAYBACK_CONTROL'>) {
+function* playbackControl(action: Action<'PLAYBACK_CONTROL'>) {
 	const playback = yield* select((s: State) => s.playback.nowPlaying)
 	if (!playback) return
 
@@ -40,7 +56,7 @@ function* playbackControl (action: Action<'PLAYBACK_CONTROL'>) {
 				break
 			case 'repeat': {
 				const states = ['off', 'context', 'track'] as const
-				const currentIndex = states.indexOf(playback.repeat_state as typeof states[number])
+				const currentIndex = states.indexOf(playback.repeat_state as (typeof states)[number])
 				const nextState = states[(currentIndex + 1) % states.length]
 				yield* call(() => spotifyFetch(`me/player/repeat?state=${nextState}`, { method: 'PUT' }))
 				break
@@ -51,10 +67,11 @@ function* playbackControl (action: Action<'PLAYBACK_CONTROL'>) {
 	}
 }
 
-function* watchPlayback () {
+function* watchPlayback() {
 	const initialTimeout = 3000
 
 	let timeout = initialTimeout
+	let likedCheckedId: string | undefined
 	while (true) {
 		try {
 			const body = yield* call(() => spotifyFetch<SpotifyApi.CurrentPlaybackResponse>('me/player'))
@@ -65,6 +82,16 @@ function* watchPlayback () {
 					yield* call(onPlaybackUpdated, action)
 				} catch (e) {
 					console.warn(`${onPlaybackUpdated.name}:`, e)
+				}
+				const trackId = body.item?.id
+				if (trackId && trackId !== likedCheckedId) {
+					likedCheckedId = trackId
+					try {
+						const result = yield* call(() => spotifyFetch<boolean[]>(`me/tracks/contains?ids=${trackId}`))
+						yield* put(Actions.updateLiked(!!result?.[0]))
+					} catch (e) {
+						console.warn(`${watchPlayback.name} (liked check):`, e)
+					}
 				}
 				timeout = initialTimeout
 			}
@@ -80,7 +107,7 @@ function* watchPlayback () {
 	}
 }
 
-function* onPlaybackUpdated (action: Action<'PLAYBACK_UPDATED'>) {
+function* onPlaybackUpdated(action: Action<'PLAYBACK_UPDATED'>) {
 	const current = yield* select((s: State) => s.playback.nowPlaying)
 	const user = yield* select((s: State) => s.user as User) // User will not be null when playback is active
 

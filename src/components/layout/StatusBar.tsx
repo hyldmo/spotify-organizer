@@ -1,9 +1,9 @@
 import cn from 'classnames'
 import { startCase } from 'lodash/fp'
-import React from 'react'
+import type React from 'react'
 import { useSelector } from 'react-redux'
 import { UriLink } from '~/components/UriLink'
-import { State } from '~/types'
+import type { State } from '~/types'
 import { isPlaylist } from '~/utils'
 
 export const StatusBar: React.FC = () => {

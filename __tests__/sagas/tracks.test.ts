@@ -24,7 +24,7 @@ vi.mock('~/utils/Cache', () => {
 	class FakeCache<T> extends Map<string, T> {
 		public readonly ready = Promise.resolve()
 		public id: string
-		constructor (id: string) {
+		constructor(id: string) {
 			super()
 			this.id = id
 		}

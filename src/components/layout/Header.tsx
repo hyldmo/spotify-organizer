@@ -1,7 +1,7 @@
 import { startCase } from 'lodash/fp'
-import React from 'react'
+import type React from 'react'
 import { Link, NavLink } from 'react-router-dom'
-import { User } from '~/types'
+import type { User } from '~/types'
 import { UriLink } from '../UriLink'
 
 type Props = {
@@ -23,20 +23,18 @@ export const Header: React.FC<Props> = ({ user }) => (
 			{user?.spotify && (
 				<>
 					<ul className="justify-self-start text-gray-300">
-						<>
-							<li>
-								<NavLink to="/">Playlists</NavLink>
-							</li>
-							<li>
-								<NavLink to="/dashboard">Dashboard</NavLink>
-							</li>
-							<li>
-								<NavLink to="/search">Search</NavLink>
-							</li>
-							<li>
-								<NavLink to="/skips">Skipped songs</NavLink>
-							</li>
-						</>
+						<li>
+							<NavLink to="/">Playlists</NavLink>
+						</li>
+						<li>
+							<NavLink to="/dashboard">Dashboard</NavLink>
+						</li>
+						<li>
+							<NavLink to="/search">Search</NavLink>
+						</li>
+						<li>
+							<NavLink to="/skips">Skipped songs</NavLink>
+						</li>
 					</ul>
 					<ul className="justify-self-end">
 						<li>

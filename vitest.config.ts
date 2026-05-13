@@ -1,4 +1,4 @@
-import path from 'path'
+import path from 'node:path'
 import react from '@vitejs/plugin-react'
 import { defineConfig } from 'vitest/config'
 
@@ -13,10 +13,16 @@ export default defineConfig({
 	resolve: {
 		alias: [
 			{ find: '~', replacement: path.resolve(__dirname, 'src') },
-			{ find: 'virtual:pwa-register/react', replacement: path.resolve(__dirname, '__mocks__/pwaRegisterMock.ts') },
+			{
+				find: 'virtual:pwa-register/react',
+				replacement: path.resolve(__dirname, '__mocks__/pwaRegisterMock.ts')
+			},
 			{ find: /^static\/.*$/, replacement: path.resolve(__dirname, '__mocks__/fileMock.ts') },
 			{ find: /\.(scss|css|sass|less)$/, replacement: path.resolve(__dirname, '__mocks__/styleMock.ts') },
-			{ find: /\.(png|jpg|jpeg|svg|gif|webp|eot|ttf|woff|woff2|webmanifest)$/, replacement: path.resolve(__dirname, '__mocks__/fileMock.ts') }
+			{
+				find: /\.(png|jpg|jpeg|svg|gif|webp|eot|ttf|woff|woff2|webmanifest)$/,
+				replacement: path.resolve(__dirname, '__mocks__/fileMock.ts')
+			}
 		]
 	},
 	define: {

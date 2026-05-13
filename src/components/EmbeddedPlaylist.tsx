@@ -1,8 +1,8 @@
 import React from 'react'
-import { Action, Actions } from '~/actions'
+import { type Action, Actions } from '~/actions'
 import Highlight from '~/components/Highlight'
 import { initialState, playlists as updateFilters } from '~/reducers/filters'
-import { Playlist, Filters as PlaylistFilters } from '~/types'
+import type { Playlist, Filters as PlaylistFilters } from '~/types'
 import { applyPlaylistsFilters, getNextSortMode, getSortIcon } from '~/utils'
 
 const headers = [
@@ -29,17 +29,17 @@ export class PullPlaylist extends React.Component<Props, State> {
 		selectedPlaylists: [],
 		filters: this.props.filters || initialState.playlists
 	}
-	updateFilters (action: Action) {
+	updateFilters(action: Action) {
 		const newState = updateFilters(this.state.filters, action)
 		this.setState({ filters: newState })
 	}
 
-	selectAll (action: Action) {
+	selectAll(action: Action) {
 		const newState = updateFilters(this.state.filters, action)
 		this.setState({ filters: newState })
 	}
 
-	render () {
+	render() {
 		const { playlists: initialPlaylists } = this.props
 		const { filters } = this.state
 		const playlists = applyPlaylistsFilters(initialPlaylists, filters)

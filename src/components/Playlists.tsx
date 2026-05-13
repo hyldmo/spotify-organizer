@@ -1,8 +1,8 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import React from 'react'
-import { Actions } from '~/actions'
+import type { Actions } from '~/actions'
 import Highlight from '~/components/Highlight'
-import { Filters, Playlist, Sort } from '~/types'
+import type { Filters, Playlist, Sort } from '~/types'
 import { getNextSortMode, getSortIcon } from '~/utils'
 import { UriLink } from './UriLink'
 
@@ -19,6 +19,59 @@ type Props = {
 	changeSortMode: (payload: Sort, meta: string) => void
 	select: (checked: boolean, id: string) => void
 }
+
+type RowProps = {
+	playlist: Playlist
+	term: string
+	multi: boolean
+	select: (checked: boolean, id: string) => void
+}
+
+const PlaylistRowBase = ({ playlist: p, term, multi, select }: RowProps) => (
+	<tr>
+		<td className="select">
+			{multi ? (
+				<input type="checkbox" checked={p.selected} onChange={e => select(e.target.checked, p.id)} />
+			) : (
+				<input
+					type="radio"
+					name="playlist"
+					value={p.id}
+					checked={p.selected}
+					onChange={() => select(true, p.id)}
+				/>
+			)}
+		</td>
+		<td className="image">
+			{p.images?.length > 0 ? (
+				<img src={p.images.slice().sort(i => i.height as number)[0].url} loading="lazy" decoding="async" />
+			) : null}
+		</td>
+		<td className="name space-x-2">
+			<UriLink object={p}>
+				<Highlight text={p.name} term={term} />
+			</UriLink>
+			{p.tracks.loaded === p.tracks.total && (
+				<FontAwesomeIcon
+					icon="save"
+					size="xs"
+					alignmentBaseline="middle"
+					color="green"
+					title="Cached tracklist locally"
+				/>
+			)}
+		</td>
+		<td className="owner">
+			<Highlight text={p.owner.display_name || p.owner.id} term={term} />
+		</td>
+		<td className="tracks">{p.tracks.total}</td>
+	</tr>
+)
+
+// Memoised: the playlist list re-renders on every track-load progress tick, but
+// unchanged playlist objects (and a stable `term`/`multi`/`select`) let those
+// rows skip rendering. Covers stay lazy so the hundreds off-screen never decode.
+const PlaylistRow = React.memo(PlaylistRowBase)
 
 const Playlists: React.FC<Props> = ({ playlists, select, selectAll, changeSortMode, filters }) => {
 	if (playlists.length == 0) return null
@@ -46,48 +99,7 @@ const Playlists: React.FC<Props> = ({ playlists, select, selectAll, changeSortMo
 			</thead>
 			<tbody>
 				{playlists.map(p => (
-					<tr key={p.id}>
-						<td className="select">
-							{selectAll ? (
-								<input
-									type="checkbox"
-									checked={p.selected}
-									onChange={e => select(e.target.checked, p.id)}
-								/>
-							) : (
-								<input
-									type="radio"
-									name="playlist"
-									value={p.id}
-									checked={p.selected}
-									onChange={() => select(true, p.id)}
-								/>
-							)}
-						</td>
-						<td className="image">
-							{p.images?.length > 0 ? (
-								<img src={p.images.slice().sort(i => i.height as number)[0].url} />
-							) : null}
-						</td>
-						<td className="name space-x-2">
-							<UriLink object={p}>
-								<Highlight text={p.name} term={filters.text} />
-							</UriLink>
-							{p.tracks.loaded === p.tracks.total && (
-								<FontAwesomeIcon
-									icon="save"
-									size="xs"
-									alignmentBaseline="middle"
-									color="green"
-									title="Cached tracklist locally"
-								/>
-							)}
-						</td>
-						<td className="owner">
-							<Highlight text={p.owner.display_name || p.owner.id} term={filters.text} />
-						</td>
-						<td className="tracks">{p.tracks.total}</td>
-					</tr>
+					<PlaylistRow key={p.id} playlist={p} term={filters.text} multi={!!selectAll} select={select} />
 				))}
 			</tbody>
 		</table>

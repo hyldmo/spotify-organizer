@@ -8,4 +8,4 @@ import song from './song'
 import timer from './timer'
 import user from './user'
 
-export { auth, filters, modals, notifications, playback, playlists, timer, user, song }
+export { auth, filters, modals, notifications, playback, playlists, song, timer, user }

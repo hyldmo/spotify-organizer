@@ -1,7 +1,7 @@
-import * as data from './spotify-organiser-default-rtdb-export.json'
+import { writeFileSync } from 'node:fs'
+import path from 'node:path'
 import { set } from 'lodash'
-import { writeFileSync } from 'fs'
-import path from 'path'
+import * as data from './spotify-organiser-default-rtdb-export.json'
 
 type SkipEntry = {
 	plays?: number

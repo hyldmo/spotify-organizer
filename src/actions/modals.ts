@@ -1,4 +1,4 @@
-import { Modal } from '~/types'
+import type { Modal } from '~/types'
 import { makeActionCreator } from '~/utils'
 
 export default {

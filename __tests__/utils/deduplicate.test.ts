@@ -1,5 +1,5 @@
-import { Track } from '../../src/types'
-import { compareTrack, CompareType, deduplicate, pullTracks } from '../../src/utils'
+import type { Track } from '../../src/types'
+import { CompareType, compareTrack, deduplicate, pullTracks } from '../../src/utils'
 
 // Used for originalPosition of tracks (deduplicate uses it to make sure you don't remove all duplicate version of track, keeping the original)
 let i = 0
@@ -22,7 +22,7 @@ function makeTrack(
 			id: '',
 			name: album
 		},
-		artists: artists instanceof Array ? artists.map(a => ({ id: a, name: a })) : [{ id: artists, name: artists }],
+		artists: Array.isArray(artists) ? artists.map(a => ({ id: a, name: a })) : [{ id: artists, name: artists }],
 		duration_ms: duration,
 		meta: {
 			added_at: '',

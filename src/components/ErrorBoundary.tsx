@@ -1,4 +1,4 @@
-import { Component, ErrorInfo, ReactNode } from 'react'
+import { Component, type ErrorInfo, type ReactNode } from 'react'
 
 export interface SilentErrorBoundaryProps {
 	children?: ReactNode
@@ -16,23 +16,23 @@ export interface SilentErrorBoundaryProps {
  * Error boundary that fails silenty and returns null if a component in its it tree fails
  */
 export class SilentErrorBoundary extends Component<SilentErrorBoundaryProps, { error: Error | null }> {
-	constructor (props: SilentErrorBoundaryProps) {
+	constructor(props: SilentErrorBoundaryProps) {
 		super(props)
 		this.state = { error: null }
 	}
 
-	static getDerivedStateFromError (error: Error) {
+	static getDerivedStateFromError(error: Error) {
 		// Update state so the next render will show the fallback UI.
 		return { error }
 	}
 
-	componentDidCatch (error: Error, errorInfo: ErrorInfo & Record<string, string>) {
+	componentDidCatch(error: Error, errorInfo: ErrorInfo & Record<string, string>) {
 		if (this.props.onError) this.props.onError(error, errorInfo)
 		else console.error(error, errorInfo)
 		this.setState({ error })
 	}
 
-	render () {
+	render() {
 		if (this.state.error) {
 			return this.props.fallback ?? null
 		}

@@ -1,0 +1,105 @@
+{
+	"$schema": "https://biomejs.dev/schemas/2.4.15/schema.json",
+	"vcs": {
+		"enabled": true,
+		"clientKind": "git",
+		"useIgnoreFile": true
+	},
+	"files": {
+		// Biome's CSS parser doesn't understand SCSS syntax (`@mixin`, `$vars`,
+		// nesting) — stylelint owns `.scss` (see `yarn stylelint`).
+		"includes": ["**", "!**/*.scss", "!**/*.scss.d.ts"]
+	},
+	"formatter": {
+		"enabled": true,
+		"indentStyle": "tab",
+		"indentWidth": 4,
+		"lineEnding": "lf",
+		"lineWidth": 120,
+		"attributePosition": "auto",
+		"bracketSpacing": true,
+		"includes": ["**", "!**/package.json"]
+	},
+	"linter": {
+		"enabled": true,
+		"rules": {
+			// a11y wasn't enforced under the old ESLint setup (no jsx-a11y plugin);
+			// keep it that way for now rather than block the migration on ~40 hits.
+			"a11y": "off",
+			"complexity": {
+				"noExcessiveNestedTestSuites": "error",
+				"noUselessStringRaw": "error",
+				"noUselessStringConcat": "error",
+				"useSimplifiedLogicExpression": "error",
+				"useWhile": "error"
+			},
+			"correctness": {
+				"noUndeclaredDependencies": "warn",
+				"noUnusedImports": "warn",
+				"noUnusedVariables": "warn",
+				"noUnusedFunctionParameters": "warn"
+			},
+			"style": {
+				// `import type` autofix is fine, but don't require it everywhere.
+				"useImportType": "warn",
+				// `foo!` is used in a few spots; the old config allowed it.
+				"noNonNullAssertion": "off"
+			},
+			"suspicious": {
+				// Matches the prior ESLint config: `any` is used deliberately
+				// (typed-redux-saga gaps, generic action creators), and `==` is
+				// intentional in a few spots (`id == playlist.id`).
+				"noExplicitAny": "off",
+				"noDoubleEquals": "off",
+				"noArrayIndexKey": "off",
+				"noConstantBinaryExpressions": "error",
+				"noDuplicateTestHooks": "error",
+				"noEmptyBlockStatements": "error",
+				"noExportsInTest": "error",
+				"noFocusedTests": "warn",
+				"noMisplacedAssertion": "error"
+			}
+		}
+	},
+	"javascript": {
+		"formatter": {
+			"jsxQuoteStyle": "double",
+			"quoteProperties": "preserve",
+			"trailingCommas": "none",
+			"semicolons": "asNeeded",
+			"arrowParentheses": "asNeeded",
+			"bracketSameLine": false,
+			"quoteStyle": "single",
+			"attributePosition": "auto",
+			"bracketSpacing": true
+		},
+		"linter": {
+			"enabled": true
+		}
+	},
+	"html": {
+		"formatter": {
+			"enabled": true,
+			"selfCloseVoidElements": "always",
+			"indentScriptAndStyle": false
+		},
+		"linter": {
+			"enabled": true
+		}
+	},
+	"css": {
+		"parser": {
+			"tailwindDirectives": true
+		}
+	},
+	"overrides": [
+		{
+			"includes": ["**/package.json", "**/*.yml", "**/*.yaml"],
+			"formatter": {
+				"indentStyle": "space",
+				"indentWidth": 2,
+				"lineWidth": 200
+			}
+		}
+	]
+}

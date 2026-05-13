@@ -1,15 +1,17 @@
 /* eslint-disable @stylistic/max-len */
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import React, { useEffect, useState } from 'react'
+import type React from 'react'
+import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Actions } from '~/actions'
-import { State } from '~/types'
+import type { State } from '~/types'
 import { Time } from '../Time'
 import { ArtistLinks, UriLink } from '../UriLink'
 
 export const NowPlaying: React.FC = () => {
 	const dispatch = useDispatch()
 	const playback = useSelector((s: State) => s.playback.nowPlaying)
+	const liked = useSelector((s: State) => s.playback.liked)
 	const settings = useSelector((s: State) => s.user?.settings)
 	const context = playback?.context
 	const [progress, setProgress] = useState(playback?.progress_ms || 0)
@@ -37,11 +39,24 @@ export const NowPlaying: React.FC = () => {
 			</a>
 			<UriLink className="col-start-2 row-start-1 self-end ellipsis" object={song} />
 			<ArtistLinks artists={song.album.artists} className="col-start-2 row-start-2 self-start text-xs" />
-			<button className="col-start-3 row-span-2" type="button" role="switch" title="Like (coming soon)">
-				<svg height="1em" viewBox="0 0 16 16" className="text-transparent hover:text-white">
+			<button
+				className="col-start-3 row-span-2"
+				type="button"
+				role="switch"
+				aria-checked={liked === true}
+				disabled={liked === null}
+				onClick={_ => dispatch(Actions.toggleLike())}
+				title={liked ? 'Remove from your Liked Songs' : 'Save to your Liked Songs'}
+			>
+				<svg
+					height="1em"
+					viewBox="0 0 16 16"
+					className={liked ? 'text-green-500' : 'text-transparent hover:text-white'}
+				>
 					<path fill="none" d="M0 0h16v16H0z"></path>
 					<path
 						stroke="#fff"
+						fill={liked ? 'currentColor' : 'none'}
 						d="M13.797 2.727a4.057 4.057 0 00-5.488-.253.558.558 0 01-.31.112.531.531 0 01-.311-.112 4.054 4.054 0 00-5.487.253c-.77.77-1.194 1.794-1.194 2.883s.424 2.113 1.168 2.855l4.462 5.223a1.791 1.791 0 002.726 0l4.435-5.195a4.052 4.052 0 001.195-2.883 4.057 4.057 0 00-1.196-2.883z"
 					></path>
 				</svg>
@@ -74,7 +89,10 @@ export const NowPlaying: React.FC = () => {
 						<path d="M11 3v4.119L3 2.5v11l8-4.619V13h2V3z"></path>
 					</svg>
 				</button>
-				<button onClick={_ => control('repeat')} className={playback.repeat_state !== 'off' ? 'text-green-500' : ''}>
+				<button
+					onClick={_ => control('repeat')}
+					className={playback.repeat_state !== 'off' ? 'text-green-500' : ''}
+				>
 					<svg height="1em" viewBox="0 0 16 16">
 						<path d="M5.5 5H10v1.5l3.5-2-3.5-2V4H5.5C3 4 1 6 1 8.5c0 .6.1 1.2.4 1.8l.9-.5C2.1 9.4 2 9 2 8.5 2 6.6 3.6 5 5.5 5zm9.1 1.7l-.9.5c.2.4.3.8.3 1.3 0 1.9-1.6 3.5-3.5 3.5H6v-1.5l-3.5 2 3.5 2V13h4.5C13 13 15 11 15 8.5c0-.6-.1-1.2-.4-1.8z" />
 					</svg>
