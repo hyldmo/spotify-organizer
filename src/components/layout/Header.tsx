@@ -3,6 +3,7 @@ import type React from 'react'
 import { Link, NavLink } from 'react-router-dom'
 import type { User } from '~/types'
 import { UriLink } from '../UriLink'
+import { IndexingStatus } from './IndexingStatus'
 
 type Props = {
 	user: User | null // TODO
@@ -36,7 +37,8 @@ export const Header: React.FC<Props> = ({ user }) => (
 							<NavLink to="/skips">Skipped songs</NavLink>
 						</li>
 					</ul>
-					<ul className="justify-self-end">
+					<ul className="justify-self-end flex items-center gap-4">
+						<IndexingStatus />
 						<li>
 							<UriLink object={user.spotify}>
 								<img

@@ -4,6 +4,7 @@ import { connect, useSelector } from 'react-redux'
 import { Actions } from '~/actions'
 import Button from '~/components/Button'
 import Input from '~/components/Input'
+import Loading from '~/components/Loading'
 import Modal from '~/components/Modal'
 import Playlists from '~/components/Playlists'
 import PullPlaylist from '~/components/PullPlaylist'
@@ -60,6 +61,17 @@ const PlaylistsManager: React.FC = () => {
 	)
 
 	if (!user) return null
+
+	// Bridges the gap between `authCheckDone` and the first `playlistsFetched`
+	// — for a large library `me/playlists` takes ~10s, which previously showed
+	// an empty manager screen with no signal that anything was loading.
+	if (allPlaylists.length === 0) {
+		return (
+			<Loading>
+				<span className="mt-2 text-gray-300">Fetching your library…</span>
+			</Loading>
+		)
+	}
 
 	const error = getDeduplicateErrors(mode, selectedPlaylists, secondPlaylist, user)
 
