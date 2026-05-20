@@ -47,4 +47,27 @@ a.button:hover {
 			background-color: #555;
 		}
 	}
+
+	&.pending {
+		border: none;
+		background-color: $progress;
+		cursor: wait;
+
+		&:hover:not(:active) {
+			background-color: $progress;
+			padding: 0.5rem;
+			border-width: 0;
+		}
+	}
+
+	&.failed {
+		background-color: transparent;
+		border-color: $progress;
+		color: $progress;
+
+		&:hover:not(:active) {
+			background-color: rgba($progress, 0.08);
+			border-color: $progress;
+		}
+	}
 }

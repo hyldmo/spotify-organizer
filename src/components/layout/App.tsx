@@ -40,7 +40,9 @@ const App: React.FC = () => {
 							<Route path="*" element={<NotFound />} />
 						</Routes>
 					) : authChecking ? (
-						<Loading />
+						<Loading>
+							<span className="mt-2 text-gray-300">Authenticating with Spotify…</span>
+						</Loading>
 					) : (
 						<Auth />
 					)}

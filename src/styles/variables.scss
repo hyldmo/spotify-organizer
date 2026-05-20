@@ -16,6 +16,12 @@ $primary-dark: #14833b;
 $primary: #1db954;
 $primary-light: #1ed760;
 
+// In-flight / amber. VU-meter colour, used for "working on it" states (login
+// pending, library indexing chip) so a single hue means the same thing across
+// the app.
+$progress: #f5a623;
+$progress-dark: #cc8a1c;
+
 @mixin tablet {
 	@media (max-width: $max-width) {
 		@content;
