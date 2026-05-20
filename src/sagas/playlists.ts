@@ -1,7 +1,7 @@
 import { all, call, put, select, takeEvery, takeLatest } from 'typed-redux-saga'
 import { type Action, Actions } from '~/actions'
 import type { Playlist, State, Track } from '~/types'
-import { deduplicate, partition, pullTracks, songEntriesToSongs } from '~/utils'
+import { deduplicate, PlaylistCache, partition, pullTracks, songEntriesToSongs } from '~/utils'
 import { spotifyFetch } from './spotifyFetch'
 import { getTracks } from './tracks'
 
@@ -27,6 +27,12 @@ function* getPlaylists() {
 		}
 		offset += limit
 	} while (response.next !== null)
+	// The FETCH_PLAYLISTS_SUCCESS reducer reads PlaylistCache synchronously to
+	// seed each playlist's items + lastFetched. If the API races ahead of cache
+	// hydration the reducer sees an empty Map and leaves redux with no items —
+	// the "In playlists" column then renders 0 for every track because the
+	// `tracks.lastFetched` filter excludes every other playlist.
+	yield* call(() => PlaylistCache.ready)
 	yield* put(Actions.playlistsFetched(playlists))
 }
 
