@@ -39,17 +39,20 @@ function* getPlaylists() {
 function* deleteTracks(action: Action<'PLAYLIST_DELETE_TRACKS'>) {
 	const { payload, meta } = action
 	const id = typeof meta === 'string' ? meta : meta.id
-	const body = {
-		tracks: payload.map(uri => ({ uri })),
-		snapshot_id: typeof meta !== 'string' ? meta.snapshot_id : undefined
-	}
+	const snapshot_id = typeof meta !== 'string' ? meta.snapshot_id : undefined
 	try {
-		yield* call(spotifyFetch, `playlists/${id}/tracks`, {
-			method: 'DELETE',
-			body: JSON.stringify(body)
-		})
+		// Spotify caps `playlists/{id}/tracks` DELETE at 100 URIs per request.
+		for (const chunk of partition([...payload], 100)) {
+			yield* call(spotifyFetch, `playlists/${id}/tracks`, {
+				method: 'DELETE',
+				body: JSON.stringify({
+					tracks: chunk.map(uri => ({ uri })),
+					snapshot_id
+				})
+			})
+		}
 		yield* put(Actions.fetchTracks(id))
-		yield* put(Actions.createNotification({ message: `${action.payload.length} tracks removed` }))
+		yield* put(Actions.createNotification({ message: `${payload.length} tracks removed` }))
 	} catch (e) {
 		yield* put(Actions.createNotification({ message: (e as Error).message, type: 'error' }))
 	}
