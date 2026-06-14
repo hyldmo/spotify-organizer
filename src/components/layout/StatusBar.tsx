@@ -2,6 +2,7 @@ import cn from 'classnames'
 import { startCase } from 'lodash/fp'
 import type React from 'react'
 import { useSelector } from 'react-redux'
+import { Link } from 'react-router-dom'
 import { UriLink } from '~/components/UriLink'
 import type { State } from '~/types'
 import { isPlaylist } from '~/utils'
@@ -43,6 +44,9 @@ export const StatusBar: React.FC = () => {
 				>
 					v{process.env.PACKAGE_VERSION}
 				</a>
+				<Link to="/debug" title="Diagnostics" className="opacity-70 hover:opacity-100">
+					🐞
+				</Link>
 			</span>
 
 			<span className="text-right">

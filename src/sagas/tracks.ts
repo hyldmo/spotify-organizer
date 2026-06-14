@@ -1,4 +1,4 @@
-import { all, call, put, select, takeEvery, takeLeading } from 'typed-redux-saga'
+import { all, call, put, type SagaGenerator, select, takeEvery, takeLeading } from 'typed-redux-saga'
 import { type Action, Actions } from '~/actions'
 import type { Nullable, Playlist, SongEntries, State, Track, URI } from '~/types'
 import { firebaseGet, idToUri, PlaylistCache, SongCache, toTrack } from '~/utils'
@@ -28,6 +28,7 @@ function* getAllTracks(action: Action<'FETCH_PLAYLISTS_SUCCESS'>) {
 	// session after a reload reads an empty Map and refetches every playlist
 	// from Spotify, even when fully cached locally.
 	yield* call(() => PlaylistCache.ready)
+	console.info(`getAllTracks: reconciling ${action.payload.length} playlists against cache`)
 
 	for (const playlist of action.payload) {
 		const existing = PlaylistCache.get(playlist.uri as URI<'playlist'>)
@@ -61,7 +62,7 @@ export function* getTrack(action: Action<'FETCH_TRACK'>) {
 	yield put(Actions.createNotification({ message: 'Error fetching track', type: 'error' }))
 }
 
-function* fetchPlays(uid: string | null | undefined, id: Playlist['id']): Generator<unknown, Nullable<SongEntries>> {
+function* fetchPlays(uid: string | null | undefined, id: Playlist['id']): SagaGenerator<Nullable<SongEntries>> {
 	if (!uid) return null
 	try {
 		return yield* call(() => firebaseGet(`users/${uid}/plays/spotify:playlist:${id}/`))
