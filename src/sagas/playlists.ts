@@ -12,6 +12,7 @@ export function* playlistsSaga() {
 }
 
 function* getPlaylists() {
+	console.info('getPlaylists: fetching playlist list')
 	const playlists: SpotifyApi.ListOfCurrentUsersPlaylistsResponse['items'] = []
 	let response: SpotifyApi.ListOfCurrentUsersPlaylistsResponse | null
 	const limit = 50
@@ -33,6 +34,7 @@ function* getPlaylists() {
 	// the "In playlists" column then renders 0 for every track because the
 	// `tracks.lastFetched` filter excludes every other playlist.
 	yield* call(() => PlaylistCache.ready)
+	console.info(`getPlaylists: ${playlists.length} playlists fetched, cache ready`)
 	yield* put(Actions.playlistsFetched(playlists))
 }
 

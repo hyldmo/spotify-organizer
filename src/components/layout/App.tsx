@@ -1,7 +1,8 @@
 import type React from 'react'
 import { useSelector } from 'react-redux'
-import { Route, Routes } from 'react-router'
+import { Route, Routes, useLocation } from 'react-router'
 import { Dashboard } from '~/pages/Dashboard'
+import Debug from '~/pages/Debug'
 import PlaylistsManager from '~/pages/Home'
 import NotFound from '~/pages/NotFound'
 import PlaylistRoute from '~/pages/PlaylistRoute'
@@ -22,6 +23,10 @@ import { Header } from './Header'
 const App: React.FC = () => {
 	const user = useSelector((s: State) => s.user)
 	const authChecking = useSelector((s: State) => s.auth.checking)
+	const location = useLocation()
+
+	// Reachable without auth so it can be read when the open/auth sequence hangs.
+	if (location.pathname === '/debug') return <Debug />
 
 	return (
 		<>

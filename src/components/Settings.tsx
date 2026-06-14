@@ -1,5 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
+import { Link } from 'react-router-dom'
 import { Actions } from '~/actions'
 import type { State } from '~/types'
 
@@ -39,6 +40,11 @@ class Settings extends React.Component<Props> {
 						/>{' '}
 						<span>Show only own playlists</span>
 					</label>
+				</li>
+				<li className="mt-2 border-gray-600 border-t pt-2">
+					<Link to="/debug" className="text-blue-400 hover:text-blue-300">
+						Diagnostics
+					</Link>
 				</li>
 			</ul>
 		)

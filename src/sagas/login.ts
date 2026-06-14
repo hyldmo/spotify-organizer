@@ -40,8 +40,10 @@ function* getUserDetails(action: Action<typeof Actions.tokenAquired.type>) {
 	const token = action.payload
 
 	try {
+		console.info('getUserDetails: fetching /me')
 		const body = yield* call(() => spotifyFetch<SpotifyApi.UserObjectPublic>('me', {}, token))
 		if (body) {
+			console.info(`getUserDetails: /me resolved (${body.id})`)
 			// spotifyFetch may have refreshed the access token during /me — read
 			// the freshest token back from localStorage so we don't seed the
 			// store with an already-expired one.
@@ -103,11 +105,13 @@ function* loadUser(_: Action<typeof Actions.loadUser.type>) {
 
 	if (token) {
 		// authCheckDone is dispatched by the resulting getUserDetails
+		console.info('loadUser: using stored access token')
 		yield* put(Actions.tokenAquired(token, null))
 		return
 	}
 	if (refreshToken) {
 		try {
+			console.info('loadUser: refreshing access token')
 			const tokens = yield* call(refreshAccessToken, refreshToken)
 			storeTokens(tokens)
 			yield* put(Actions.tokenAquired(tokens.access_token, null))
