@@ -16,6 +16,7 @@ Spotify Organiser — a React SPA that helps users clean up and organise their S
 - **Lint + format:** [Biome](https://biomejs.dev) (`biome.jsonc`) — one tool for both, replaced ESLint + Prettier (migrated in this branch). `yarn lint` = `biome check .` (lint + format-check + import-sort); `yarn lint:fix` = `biome check --fix .`; `yarn format` = `biome format --write .`. Biome owns `.ts`/`.tsx`/`.js`/`.jsx`/`.json`/`.jsonc`/`.html`; SCSS stays on Stylelint (Biome's CSS parser doesn't grok SCSS syntax). `a11y` rules are turned off (weren't enforced before); `noExplicitAny`/`noDoubleEquals`/`noArrayIndexKey`/`noNonNullAssertion` off to match the old config.
 - **Testing:** Vitest + Testing Library + jsdom. `__tests__/` at repo root, `__mocks__/` for module mocks. Coverage exists (`yarn test:cover`) but is commented out in CI.
 - **PWA:** `vite-plugin-pwa` with `registerType: 'prompt'` — see `src/components/ReloadPrompt.tsx`.
+- **MCP server:** `mcp/` is a Yarn workspace (`spotify-organiser-mcp`): a Cloudflare Worker serving remote MCP at `https://spotify-organiser-mcp.hyldmo.workers.dev/mcp` (adluna.no Cloudflare account). Same MCP stack as Macromaxxing (Hono, MCP SDK v1 stateless transport + `CfWorkerJsonSchemaValidator`, tools derived from a tRPC router), except OAuth: `@cloudflare/workers-oauth-provider` instead of Clerk, with Spotify sign-in through the same Spotify client ID (PKCE, no secret). No personal access tokens. See `mcp/README.md`.
 
 ## Path alias
 
@@ -40,6 +41,11 @@ Spotify Organiser — a React SPA that helps users clean up and organise their S
 - **Redux store uses `legacy_createStore`**, not Redux Toolkit. Persist whitelist is intentionally `['user']` only — playlists are refetched from Spotify.
 - **`process.env.PACKAGE_VERSION`** is replaced at build time via Vite `define`. Local dev shows `-local`; preview builds get `-beta`; prod gets the semantic-release version.
 - **Service worker:** `cleanupOutdatedCaches: true` + 10MB cache cap. `sw.js` is served with `no-cache` headers (see `firebase.json`).
+- **Workspaces:** the root package is `private: true` because Yarn requires it for `workspaces`. Root Vitest excludes `mcp/**`; the Worker has its own Vitest config.
+- **MCP tokens are bound to the origin.** The Worker builds one OAuth provider per request origin, so a new origin (custom domain, `127.0.0.1:8787` in dev) needs its own `<origin>/callback` redirect URI in the Spotify dashboard. Spotify rejects `localhost` redirect URIs, so dev runs on `127.0.0.1`.
+- **MCP tools come from tRPC.** Only procedures in `mcp/src/lib/routes/` with `.meta({ description })` become tools (`namespace_method`). Annotations are derived from the procedure type and method prefix (`mcp-tools.ts`); override with `.meta()` when the name misleads (e.g. `playlist.reorder` is a relative move, so `idempotent: false`). Keep `.input()` a bare `z.object`: a wrapped schema publishes no properties, which `unwrapInputSchema` guards against.
+- **Stateless MCP:** `GET`/`DELETE /mcp` answer 405 before the SDK runs. A stateless SSE stream never writes and trips Cloudflare's hang detector.
+- **MCP tests:** wrangler's `createTestHarness` runs the Worker in workerd. `harness.fetch()` downgrades `https` URLs to `http`; use `harness.getWorker().fetch()`. The fake Spotify gets wired in through the `SPOTIFY_ACCOUNTS_URL` / `SPOTIFY_API_URL` vars.
 
 ## Commands
 
@@ -51,11 +57,12 @@ Spotify Organiser — a React SPA that helps users clean up and organise their S
 | Lint + format    | `yarn lint` (check) / `yarn lint:fix` (Biome) |
 | Format only      | `yarn format` (Biome — write)               |
 | Lint SCSS        | `yarn stylelint`                            |
+| MCP Worker       | `yarn workspace spotify-organiser-mcp dev` / `test` / `typecheck` / `deploy` |
 
 ## CI
 
 - `.github/workflows/preview.yml` — PR preview: lint, build, deploy to a Firebase preview channel (`pr-N`, expires 7d), comment URL on the PR.
-- `.github/workflows/deploy.yml` — push to `master`: lint, compute version, build, deploy hosting + database rules, publish release.
+- `.github/workflows/deploy.yml` — push to `master`: lint, compute version, build, deploy hosting + database rules, publish release. A separate `deploy_mcp` job deploys the Worker, and skips with a notice when the `CLOUDFLARE_API_TOKEN` secret is missing. The preview workflow typechecks and tests the Worker.
 - `.github/workflows/codeql-analysis.yml` — security scanning.
 
 All Node workflows pin `node-version: 24.x`, run `corepack enable`, then `yarn --immutable`. Yarn cache is wired through `actions/setup-node@v4`'s `cache: 'yarn'`.

@@ -1,0 +1,25 @@
+{
+	"name": "spotify-organiser-mcp",
+	"private": true,
+	"type": "module",
+	"scripts": {
+		"dev": "wrangler dev",
+		"deploy": "wrangler deploy",
+		"typecheck": "tsc --noEmit && tsc --noEmit -p test",
+		"test": "vitest run"
+	},
+	"dependencies": {
+		"@cfworker/json-schema": "^4.1.1",
+		"@cloudflare/workers-oauth-provider": "^1.2.3",
+		"@modelcontextprotocol/sdk": "^1.32.1",
+		"@trpc/server": "^11.19.0",
+		"hono": "^4.13.13",
+		"zod": "^4.6.5"
+	},
+	"devDependencies": {
+		"@cloudflare/workers-types": "^5.20261010.1",
+		"typescript": "^5.9.3",
+		"vitest": "^4.1.6",
+		"wrangler": "^4.149.0"
+	}
+}

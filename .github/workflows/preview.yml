@@ -26,6 +26,12 @@ jobs:
       - name: Lint CSS
         run: yarn stylelint
 
+      - name: Typecheck MCP worker
+        run: yarn workspace spotify-organiser-mcp typecheck
+
+      - name: Test MCP worker
+        run: yarn workspace spotify-organiser-mcp test
+
       # - name: Run unit tests
       #   run: yarn test:cover
 

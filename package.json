@@ -2,6 +2,10 @@
 	"name": "spotify-organiser",
 	"repository": "https://github.com/hyldmo/spotify-organizer",
 	"version": "0.0.0-development",
+	"private": true,
+	"workspaces": [
+		"mcp"
+	],
 	"scripts": {
 		"dev": "vite",
 		"build": "vite build",

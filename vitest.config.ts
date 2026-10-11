@@ -1,6 +1,6 @@
 import path from 'node:path'
 import react from '@vitejs/plugin-react'
-import { defineConfig } from 'vitest/config'
+import { configDefaults, defineConfig } from 'vitest/config'
 
 export default defineConfig({
 	plugins: [react()],
@@ -8,7 +8,9 @@ export default defineConfig({
 		globals: true,
 		environment: 'jsdom',
 		setupFiles: ['./__mocks__/index.ts'],
-		css: false
+		css: false,
+		// The MCP Worker has its own config and runs in workerd (`yarn workspace spotify-organiser-mcp test`).
+		exclude: [...configDefaults.exclude, 'mcp/**']
 	},
 	resolve: {
 		alias: [
