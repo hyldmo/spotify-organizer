@@ -9,8 +9,8 @@ export default defineConfig({
 		environment: 'jsdom',
 		setupFiles: ['./__mocks__/index.ts'],
 		css: false,
-		// The MCP Worker has its own config and runs in workerd (`yarn workspace spotify-organiser-mcp test`).
-		exclude: [...configDefaults.exclude, 'mcp/**']
+		// The Worker has its own config and runs in workerd (`yarn workspace spotify-organiser-workers test`).
+		exclude: [...configDefaults.exclude, 'workers/**']
 	},
 	resolve: {
 		alias: [

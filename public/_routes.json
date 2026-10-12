@@ -1,0 +1,5 @@
+{
+	"version": 1,
+	"include": ["/api/*", "/mcp", "/mcp/*", "/authorize", "/callback", "/token", "/register", "/.well-known/*"],
+	"exclude": []
+}

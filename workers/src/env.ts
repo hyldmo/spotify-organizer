@@ -2,6 +2,7 @@ import type { OAuthHelpers } from '@cloudflare/workers-oauth-provider'
 
 export interface Env {
 	OAUTH_KV: KVNamespace
+	DB: D1Database
 	SPOTIFY_CLIENT_ID: string
 	/** Test override. Defaults to https://accounts.spotify.com */
 	SPOTIFY_ACCOUNTS_URL?: string

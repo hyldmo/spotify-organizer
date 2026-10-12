@@ -6,10 +6,11 @@ import { loginSaga } from './login'
 import { notificationsSaga } from './notifications'
 import { nowPlayingSaga } from './nowPlaying'
 import { playlistsSaga } from './playlists'
+import { statsSaga } from './stats'
 import { timerSaga } from './timer'
 import { tracksSaga } from './tracks'
 
-const sagas = [loginSaga, nowPlayingSaga, notificationsSaga, tracksSaga, playlistsSaga, timerSaga]
+const sagas = [loginSaga, nowPlayingSaga, notificationsSaga, tracksSaga, playlistsSaga, statsSaga, timerSaga]
 
 export const CANCEL_SAGAS_HMR = 'CANCEL_SAGAS_HMR'
 

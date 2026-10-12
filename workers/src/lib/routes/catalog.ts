@@ -1,6 +1,6 @@
 import { z } from 'zod'
 import { type SpotifyPage, type SpotifyPlaylist, type SpotifyTrack, toItem, toPage, toPlaylist } from '../shapes'
-import { procedure, router } from '../trpc'
+import { protectedProcedure, router } from '../trpc'
 
 interface SpotifyAlbum {
 	name: string
@@ -36,7 +36,7 @@ const toResult: Record<'track' | 'album' | 'artist' | 'playlist', (item: unknown
 }
 
 export const catalogRouter = router({
-	search: procedure
+	search: protectedProcedure
 		.meta({
 			description:
 				'Search Spotify for tracks, albums, artists or playlists. Results include URIs for other tools.'

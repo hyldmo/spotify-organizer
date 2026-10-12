@@ -8,7 +8,7 @@ import {
 	toPage,
 	toPlaylist
 } from '../shapes'
-import { procedure, router } from '../trpc'
+import { protectedProcedure, router } from '../trpc'
 
 interface SpotifyPlaylistEntry {
 	added_at: string
@@ -30,7 +30,7 @@ const snapshotId = z
 	.describe('snapshotId from playlist_get. Spotify rejects the change if the playlist changed since then.')
 
 export const playlistRouter = router({
-	list: procedure
+	list: protectedProcedure
 		.meta({ description: 'List the playlists the user owns or follows.' })
 		.input(
 			z.object({
@@ -42,14 +42,14 @@ export const playlistRouter = router({
 			toPage(await ctx.spotify.get<SpotifyPage<SpotifyPlaylist>>('me/playlists', input), toPlaylist)
 		),
 
-	get: procedure
+	get: protectedProcedure
 		.meta({ description: "Get a playlist's name, owner, description, visibility, item count and snapshotId." })
 		.input(z.object({ playlistId: playlist }))
 		.query(async ({ ctx, input }) =>
 			toPlaylist(await ctx.spotify.get<SpotifyPlaylist>(`playlists/${playlistId(input.playlistId)}`))
 		),
 
-	items: procedure
+	items: protectedProcedure
 		.meta({
 			description:
 				'List the tracks and episodes in a playlist with their 0-based positions. Spotify only returns items for playlists the user owns or collaborates on.'
@@ -74,7 +74,7 @@ export const playlistRouter = router({
 			}))
 		}),
 
-	create: procedure
+	create: protectedProcedure
 		.meta({ description: 'Create a playlist for the user. It starts empty; add items with playlist_addItems.' })
 		.input(
 			z.object({
@@ -87,7 +87,7 @@ export const playlistRouter = router({
 			toPlaylist(await ctx.spotify.post<SpotifyPlaylist>('me/playlists', undefined, input))
 		),
 
-	update: procedure
+	update: protectedProcedure
 		.meta({ description: "Change a playlist's name, description, visibility or collaborative setting." })
 		.input(
 			z.object({
@@ -105,7 +105,7 @@ export const playlistRouter = router({
 			await ctx.spotify.put(`playlists/${playlistId(id)}`, undefined, changes)
 		}),
 
-	addItems: procedure
+	addItems: protectedProcedure
 		.meta({ description: 'Add tracks or episodes to a playlist, at the end or at a 0-based position.' })
 		.input(z.object({ playlistId: playlist, uris: itemUris, position: z.number().int().min(0).optional() }))
 		.mutation(async ({ ctx, input }) => {
@@ -117,7 +117,7 @@ export const playlistRouter = router({
 			return { snapshotId: snapshot_id }
 		}),
 
-	removeItems: procedure
+	removeItems: protectedProcedure
 		.meta({ description: 'Remove tracks or episodes from a playlist. This removes every occurrence of each URI.' })
 		.input(z.object({ playlistId: playlist, uris: itemUris, snapshotId }))
 		.mutation(async ({ ctx, input }) => {
@@ -129,7 +129,7 @@ export const playlistRouter = router({
 			return { snapshotId: snapshot_id }
 		}),
 
-	reorder: procedure
+	reorder: protectedProcedure
 		.meta({
 			description:
 				'Move a run of consecutive items in a playlist. Positions are 0-based, as listed by playlist_items.',

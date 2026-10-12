@@ -1,10 +1,12 @@
 import { OAuthProvider, type OAuthResourceContext } from '@cloudflare/workers-oauth-provider'
+import { trpcServer } from '@hono/trpc-server'
 import { Hono } from 'hono'
 import type { Env } from './env'
 import { askConsent, authErrorResponse, decide, exchangeTokens, finishSignIn, oauthHelpers } from './lib/auth'
 import { handleMcpRequest } from './lib/mcp'
-import { landingPage } from './lib/pages'
-import { Spotify, type SpotifyAccess } from './lib/spotify'
+import { appRouter } from './lib/router'
+import { Spotify, type SpotifyAccess, spotifyUserId } from './lib/spotify'
+import type { TRPCContext } from './lib/trpc'
 
 type HonoEnv = { Bindings: Env }
 
@@ -23,12 +25,33 @@ api.on(['GET', 'DELETE'], '/mcp', c =>
 
 api.post('/mcp', c => {
 	const { props } = c.executionCtx as unknown as OAuthResourceContext<SpotifyAccess>
-	return handleMcpRequest(c.req.raw, { spotify: new Spotify(c.env, props.accessToken) })
+	return handleMcpRequest(c.req.raw, {
+		db: c.env.DB,
+		spotify: new Spotify(c.env, props.accessToken),
+		userId: props.userId
+	})
 })
 
 const app = new Hono<HonoEnv>()
 
-app.get('/', c => c.html(landingPage(new URL(c.req.url).origin)))
+// The web app's API. It sends the user's own Spotify access token, which spotifyUserId() checks with Spotify.
+app.use(
+	'/api/trpc/*',
+	trpcServer({
+		router: appRouter,
+		endpoint: '/api/trpc',
+		createContext: async (_opts, c) => {
+			const token = /^Bearer (.+)$/.exec(c.req.header('Authorization') ?? '')?.[1]
+			const env = c.env as Env
+			return {
+				db: env.DB,
+				spotify: new Spotify(env, token ?? ''),
+				userId: token ? await spotifyUserId(env, token) : null
+			} satisfies TRPCContext
+		}
+	})
+)
+
 app.get('/authorize', c => askConsent(c.req.raw, oauthHelpers(c.env)))
 app.post('/authorize', c => decide(c.req.raw, c.env, oauthHelpers(c.env)))
 app.get('/callback', c => finishSignIn(c.req.raw, c.env, oauthHelpers(c.env)))

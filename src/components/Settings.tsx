@@ -42,6 +42,11 @@ class Settings extends React.Component<Props> {
 					</label>
 				</li>
 				<li className="mt-2 border-gray-600 border-t pt-2">
+					<Link to="/connect" className="text-blue-400 hover:text-blue-300">
+						Connect an AI assistant
+					</Link>
+				</li>
+				<li>
 					<Link to="/debug" className="text-blue-400 hover:text-blue-300">
 						Diagnostics
 					</Link>

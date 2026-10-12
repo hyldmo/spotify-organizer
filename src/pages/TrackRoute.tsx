@@ -8,16 +8,15 @@ import { Link } from 'react-router-dom'
 import { Actions } from '~/actions'
 import { ArtistLinks, UriLink } from '~/components/UriLink'
 import type { State } from '~/types'
-import { Duration, useFirebase } from '~/utils'
+import { Duration } from '~/utils'
 
 export const TrackRoute: React.FC = () => {
 	const dispatch = useDispatch()
 	const { track, artists } = useSelector((s: State) => s.song)
 	const playlists = useSelector((s: State) => s.playlists)
-	const user = useSelector((s: State) => s.user)
 	const params = useParams<{ id: string }>()
-	const plays = useFirebase(`users/${user?.uid}/plays/`)
-	const skips = useFirebase(`users/${user?.uid}/skips/`)
+	const plays = useSelector((s: State) => s.stats.plays)
+	const skips = useSelector((s: State) => s.stats.skips)
 
 	useEffect(() => {
 		if (params.id) dispatch(Actions.fetchTrack(params.id))

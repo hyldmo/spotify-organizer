@@ -1,5 +1,5 @@
-import type { SongEntries } from './firebase'
 import type { Nullable } from './helpers'
+import type { SongEntries } from './stats'
 
 export interface Playlist extends Omit<SpotifyApi.PlaylistObjectFull, 'tracks' | 'followers'> {
 	selected: boolean
@@ -14,8 +14,7 @@ export interface Playlist extends Omit<SpotifyApi.PlaylistObjectFull, 'tracks' |
 }
 
 export interface User {
-	// Firebase anonymous-auth uid. Empty string until anon-auth completes (which
-	// runs off the Spotify-login critical path). RTDB ops gate on a non-empty uid.
+	// Spotify user ID.
 	uid: string
 	name: string | null
 	spotifyToken: string

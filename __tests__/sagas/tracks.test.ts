@@ -5,18 +5,6 @@ vi.mock('~/sagas/spotifyFetch', () => ({
 	spotifyFetch: vi.fn()
 }))
 
-vi.mock('~/utils/firebase', () => ({
-	firebaseGet: vi.fn().mockResolvedValue(null),
-	firebaseUpdate: vi.fn().mockResolvedValue(undefined),
-	firebaseWatch: vi.fn(() => () => undefined),
-	ensureFirebaseReady: vi.fn().mockResolvedValue(null),
-	resetFirebaseAuth: vi.fn(),
-	getFirebaseUid: vi.fn(() => null),
-	setSpotifyId: vi.fn(),
-	migrateLegacyUidData: vi.fn(),
-	auth: {}
-}))
-
 // PlaylistCache/SongCache normally back onto localforage → IndexedDB, which
 // jsdom can run but slowly. Stub them with plain Maps + a resolved ready
 // promise so the saga's `PlaylistCache.ready` await returns immediately.
@@ -63,6 +51,7 @@ const baseIo = (overrides: Record<string, unknown> = {}) => ({
 	dispatch: vi.fn(),
 	getState: () => ({
 		user: { uid: null, spotifyToken: 'tok' },
+		stats: { plays: {}, skips: {}, loaded: true },
 		playlists: [{ id: 'p1', uri: 'spotify:playlist:p1', name: 'P1', snapshot_id: 's1', tracks: { total: 250 } }],
 		...overrides
 	})

@@ -71,16 +71,3 @@ export function errorPage(message: string) {
 <p class="muted">Start again from your AI app.</p>`
 	)
 }
-
-export function landingPage(origin: string) {
-	const url = escapeHtml(`${origin}/mcp`)
-	return page(
-		'MCP server',
-		`<h1>Spotify Organiser MCP server</h1>
-<p>Connect Claude, ChatGPT, Cursor or another MCP client to your Spotify account. Add this URL as a custom connector or remote MCP server:</p>
-<code>${url}</code>
-<p>For Claude Code:</p>
-<code>claude mcp add --transport http spotify-organiser ${url}</code>
-<p class="muted">Your client opens a browser window. Allow access there, then sign in with Spotify.</p>`
-	)
-}

@@ -1,6 +1,6 @@
 import { z } from 'zod'
 import { type SpotifyPage, type SpotifyTrack, toItem, toPage } from '../shapes'
-import { procedure, router } from '../trpc'
+import { protectedProcedure, router } from '../trpc'
 
 const libraryUris = z
 	.array(z.string().regex(/^spotify:(track|album|episode|show|audiobook):[0-9A-Za-z]+$/))
@@ -9,7 +9,7 @@ const libraryUris = z
 	.describe('Spotify URIs of tracks, albums, episodes, shows or audiobooks (max 40)')
 
 export const libraryRouter = router({
-	savedTracks: procedure
+	savedTracks: protectedProcedure
 		.meta({ description: "List the user's Liked Songs, newest first." })
 		.input(
 			z.object({
@@ -25,7 +25,7 @@ export const libraryRouter = router({
 			return toPage(page, ({ added_at, track }) => ({ ...toItem(track), addedAt: added_at }))
 		}),
 
-	contains: procedure
+	contains: protectedProcedure
 		.meta({ description: "Check whether items are saved in the user's library." })
 		.input(z.object({ uris: libraryUris }))
 		.query(async ({ ctx, input }) => {
@@ -33,12 +33,12 @@ export const libraryRouter = router({
 			return Object.fromEntries(input.uris.map((uri, i) => [uri, saved[i]]))
 		}),
 
-	save: procedure
+	save: protectedProcedure
 		.meta({ description: "Save items to the user's library. Saved tracks go to Liked Songs." })
 		.input(z.object({ uris: libraryUris }))
 		.mutation(({ ctx, input }) => ctx.spotify.put<void>('me/library', { uris: input.uris.join(',') })),
 
-	remove: procedure
+	remove: protectedProcedure
 		.meta({ description: "Remove items from the user's library. Removed tracks leave Liked Songs." })
 		.input(z.object({ uris: libraryUris }))
 		.mutation(({ ctx, input }) => ctx.spotify.delete<void>('me/library', { uris: input.uris.join(',') }))

@@ -1,6 +1,6 @@
 import { merge as _merge } from 'lodash/fp'
 import memoizee from 'memoizee'
-import type { FirebaseUserData, PlaylistSkipEntry, SkipStats as SkipStatsProps, Track, URI } from '~/types'
+import type { PlaylistSkipEntry, SkipStats as SkipStatsProps, StatCounters, Track, URI } from '~/types'
 import { findPlaylist, SongCache } from '~/utils'
 
 // TODO: Load track from API when not found in cache
@@ -40,7 +40,7 @@ export function objectMap<T extends object>(obj: T, func: (value: T[typeof key],
 	return Object.entries(obj).reduce((a, [key, value]) => ({ ...a, [key]: func(value as any, key as keyof T) }), {})
 }
 
-export function merge(a: FirebaseUserData['plays'], b: FirebaseUserData['skips']) {
+export function merge(a: StatCounters, b: StatCounters) {
 	const plays = objectMap(a, value => objectMap(value, entry => ({ plays: entry })))
 	const skips = objectMap(b, value => objectMap(value, entry => ({ skips: entry })))
 	return _merge(plays, skips)

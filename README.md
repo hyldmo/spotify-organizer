@@ -8,10 +8,10 @@
 
 Clean up and organize your Spotify playlists
 
-Live version at https://spotify-organiser.web.app/
+Live version at https://spotify-organiser.pages.dev/
 
 ## Connect an AI assistant
 
 Spotify Organiser has an [MCP](https://modelcontextprotocol.io) server. Claude, ChatGPT, Cursor and other MCP clients can use it to read and organise your playlists, manage your library and control playback.
 
-Add `https://spotify-organiser-mcp.hyldmo.workers.dev/mcp` as a custom connector or remote MCP server. Your client opens a browser window: allow access, then sign in with Spotify. See [`mcp/README.md`](mcp/README.md) for how it works.
+Add `https://spotify-organiser.pages.dev/mcp` as a custom connector or remote MCP server, or open **Connect an AI assistant** in the app's settings menu. Your client opens a browser window: allow access, then sign in with Spotify. See [`workers/README.md`](workers/README.md) for how it works.

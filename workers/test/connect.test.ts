@@ -2,7 +2,7 @@ import { createHash } from 'node:crypto'
 import { createServer, type IncomingMessage, type ServerResponse } from 'node:http'
 import type { AddressInfo } from 'node:net'
 import { afterAll, beforeAll, expect, it } from 'vitest'
-import { createTestHarness } from 'wrangler'
+import { createTestHarness, type WorkerHandle } from 'wrangler'
 
 const ORIGIN = 'https://mcp.test'
 const CLIENT_REDIRECT = 'https://client.test/callback'
@@ -13,7 +13,17 @@ const fakeSpotify = {
 	challenge: '',
 	generation: 0,
 	accessToken: () => `spotify-access-${fakeSpotify.generation}`,
-	refreshToken: () => `spotify-refresh-${fakeSpotify.generation}`
+	refreshToken: () => `spotify-refresh-${fakeSpotify.generation}`,
+	/** Tokens the web app holds after its own Spotify login. */
+	webAppTokens: new Map([
+		['ada-token', 'ada'],
+		['bob-token', 'bob']
+	])
+}
+
+function spotifyUser(authorization: string | undefined) {
+	const token = authorization?.replace(/^Bearer /, '') ?? ''
+	return token === fakeSpotify.accessToken() ? 'spotify-user' : fakeSpotify.webAppTokens.get(token)
 }
 
 const s256 = (value: string) => createHash('sha256').update(value).digest('base64url')
@@ -60,17 +70,26 @@ async function handleSpotify(req: IncomingMessage, res: ServerResponse) {
 		return valid ? issueTokens(res) : send(res, 400, { error: 'invalid_grant' })
 	}
 
-	if (req.headers.authorization !== `Bearer ${fakeSpotify.accessToken()}`) {
-		return send(res, 401, { error: { status: 401, message: 'The access token expired' } })
-	}
-	if (pathname === '/v1/me') return send(res, 200, { id: 'spotify-user' })
+	const user = spotifyUser(req.headers.authorization)
+	if (!user) return send(res, 401, { error: { status: 401, message: 'The access token expired' } })
+	if (pathname === '/v1/me') return send(res, 200, { id: user })
 	if (pathname === '/v1/me/playlists') return send(res, 200, { items: [playlist], total: 1, offset: 0 })
+	const track = /^\/v1\/tracks\/(\w+)$/.exec(pathname)?.[1]
+	if (track) {
+		return send(res, 200, {
+			type: 'track',
+			name: `Song ${track}`,
+			uri: `spotify:track:${track}`,
+			duration_ms: 200_000,
+			artists: [{ name: 'Band' }]
+		})
+	}
 	send(res, 404, { error: { status: 404, message: 'Not found' } })
 }
 
 const spotifyServer = createServer((req, res) => void handleSpotify(req, res))
 let harness: ReturnType<typeof createTestHarness>
-let worker: ReturnType<typeof harness.getWorker>
+let worker: WorkerHandle
 
 beforeAll(async () => {
 	await new Promise<void>(resolve => spotifyServer.listen(0, '127.0.0.1', resolve))
@@ -78,7 +97,7 @@ beforeAll(async () => {
 	harness = createTestHarness({
 		workers: [
 			{
-				configPath: './wrangler.jsonc',
+				configPath: './test/wrangler.jsonc',
 				vars: { SPOTIFY_ACCOUNTS_URL: spotifyUrl, SPOTIFY_API_URL: `${spotifyUrl}/v1` }
 			}
 		]
@@ -86,6 +105,7 @@ beforeAll(async () => {
 	await harness.listen()
 	// `harness.fetch` downgrades https URLs to http; the Worker handle keeps the scheme.
 	worker = harness.getWorker()
+	await worker.applyD1Migrations('DB')
 })
 
 afterAll(async () => {
@@ -101,6 +121,18 @@ function cookiesFrom(response: Response) {
 		.getSetCookie()
 		.map(cookie => cookie.split(';')[0])
 		.join('; ')
+}
+
+/** The web app's tRPC API, called the way @trpc/client calls it without batching. */
+const webApi = {
+	query: (token: string, procedure: string) =>
+		worker.fetch(`${ORIGIN}/api/trpc/${procedure}`, { headers: { Authorization: `Bearer ${token}` } }),
+	mutation: (token: string, procedure: string, input: unknown) =>
+		worker.fetch(`${ORIGIN}/api/trpc/${procedure}`, {
+			method: 'POST',
+			headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+			body: JSON.stringify(input)
+		})
 }
 
 function rpc(token: string, method: string, params: Record<string, unknown> = {}) {
@@ -236,6 +268,29 @@ it('lets an MCP client connect through Spotify and call tools', async () => {
 	const refreshed = await readJson(await token({ grant_type: 'refresh_token', refresh_token: tokens.refresh_token }))
 	const afterRefresh = await rpcResult(await rpc(refreshed.access_token, 'tools/call', listPlaylists))
 	expect(JSON.parse(afterRefresh.content[0].text).items[0].name).toBe('Road trip')
+
+	// A skip the web app records for the same Spotify user shows up in the MCP tools.
+	await webApi.mutation(fakeSpotify.accessToken(), 'stats.record', {
+		kind: 'skip',
+		contextUri: 'spotify:playlist:37i9dQZF1DX0XUsuxWHRQd',
+		trackId: 'skippedtrack'
+	})
+	const mostSkipped = { name: 'stats_mostSkipped', arguments: { playlistId: '37i9dQZF1DX0XUsuxWHRQd' } }
+	const skipped = await rpcResult(await rpc(refreshed.access_token, 'tools/call', mostSkipped))
+	expect(JSON.parse(skipped.content[0].text)).toEqual([
+		expect.objectContaining({ name: 'Song skippedtrack', uri: 'spotify:track:skippedtrack', skips: 1 })
+	])
+})
+
+it("keeps each person's plays and skips to the Spotify user behind the token", async () => {
+	const skip = { kind: 'skip', contextUri: 'spotify:playlist:shared', trackId: 'adastrack' }
+	expect((await webApi.mutation('ada-token', 'stats.record', skip)).status).toBe(200)
+
+	const ada = await readJson(await webApi.query('ada-token', 'stats.all'))
+	expect(ada.result.data.skips).toEqual({ 'spotify:playlist:shared': { adastrack: 1 } })
+	const bob = await readJson(await webApi.query('bob-token', 'stats.all'))
+	expect(bob.result.data.skips).toEqual({})
+	expect((await webApi.query('made-up-token', 'stats.all')).status).toBe(401)
 })
 
 it('refuses the Spotify callback in a browser that did not approve the consent page', async () => {

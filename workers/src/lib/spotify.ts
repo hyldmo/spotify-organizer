@@ -106,6 +106,27 @@ export async function signIn(
 	}
 }
 
+const VERIFIED_TTL_MS = 5 * 60 * 1000
+const verified = new Map<string, { userId: string; until: number }>()
+
+/**
+ * The Spotify user an access token belongs to, from Spotify's /me. The web app sends its own Spotify token, and this
+ * check is what stops one user from reading or writing another user's stats. Remembered per isolate for five minutes,
+ * because the web app records a play on every track change.
+ */
+export async function spotifyUserId(env: Env, accessToken: string): Promise<string | null> {
+	const cached = verified.get(accessToken)
+	if (cached && cached.until > Date.now()) return cached.userId
+
+	const me = await fetch(`${apiUrl(env)}/me`, { headers: { Authorization: `Bearer ${accessToken}` } })
+	if (!me.ok) return null
+	const { id } = (await me.json()) as { id: string }
+
+	if (verified.size > 1000) verified.clear()
+	verified.set(accessToken, { userId: id, until: Date.now() + VERIFIED_TTL_MS })
+	return id
+}
+
 /**
  * Runs inside the token endpoint, so failures are OAuth errors. `invalid_grant` makes the provider revoke the
  * grant and the client sign in again. Network errors, 429 and 5xx are `temporarily_unavailable`, which keeps it.

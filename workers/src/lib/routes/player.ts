@@ -1,6 +1,6 @@
 import { z } from 'zod'
 import { duration, type SpotifyItem, type SpotifyTrack, toItem } from '../shapes'
-import { procedure, router } from '../trpc'
+import { protectedProcedure, router } from '../trpc'
 
 interface SpotifyDevice {
 	id: string | null
@@ -33,7 +33,7 @@ function toDevice(device: SpotifyDevice) {
 }
 
 export const playerRouter = router({
-	state: procedure
+	state: protectedProcedure
 		.meta({ description: 'Show what is playing: the item, progress, device, shuffle, repeat and context.' })
 		.query(async ({ ctx }) => {
 			const state = await ctx.spotify.get<SpotifyPlayback | undefined>('me/player')
@@ -50,7 +50,7 @@ export const playerRouter = router({
 			}
 		}),
 
-	queue: procedure
+	queue: protectedProcedure
 		.meta({ description: 'Show the current item and what plays next.' })
 		.input(z.object({ limit: z.number().int().min(1).max(50).default(10) }))
 		.query(async ({ ctx, input }) => {
@@ -64,14 +64,14 @@ export const playerRouter = router({
 			}
 		}),
 
-	devices: procedure
+	devices: protectedProcedure
 		.meta({ description: 'List the Spotify Connect devices the user can play on.' })
 		.query(async ({ ctx }) => {
 			const { devices } = await ctx.spotify.get<{ devices: SpotifyDevice[] }>('me/player/devices')
 			return devices.map(toDevice)
 		}),
 
-	recentlyPlayed: procedure
+	recentlyPlayed: protectedProcedure
 		.meta({ description: 'List tracks the user played recently, newest first.' })
 		.input(z.object({ limit: z.number().int().min(1).max(50).default(20) }))
 		.query(async ({ ctx, input }) => {
@@ -82,7 +82,7 @@ export const playerRouter = router({
 			return items.map(({ track, played_at }) => ({ ...toItem(track), playedAt: played_at }))
 		}),
 
-	play: procedure
+	play: protectedProcedure
 		.meta({
 			description:
 				'Start playback. A track or episode URI plays that item. An album, artist, playlist or show URI plays it from the start. Without a URI, playback resumes.'
@@ -105,26 +105,26 @@ export const playerRouter = router({
 			return ctx.spotify.put<void>('me/player/play', { device_id: input.deviceId }, body)
 		}),
 
-	pause: procedure
+	pause: protectedProcedure
 		.meta({ description: 'Pause playback.', idempotent: true })
 		.input(z.object({ deviceId }))
 		.mutation(({ ctx, input }) => ctx.spotify.put<void>('me/player/pause', { device_id: input.deviceId })),
 
-	skip: procedure
+	skip: protectedProcedure
 		.meta({ description: 'Skip to the next or previous item.' })
 		.input(z.object({ direction: z.enum(['next', 'previous']).default('next'), deviceId }))
 		.mutation(({ ctx, input }) =>
 			ctx.spotify.post<void>(`me/player/${input.direction}`, { device_id: input.deviceId })
 		),
 
-	addToQueue: procedure
+	addToQueue: protectedProcedure
 		.meta({ description: 'Add a track or episode to the end of the playback queue.' })
 		.input(z.object({ uri: z.string().regex(/^spotify:(track|episode):[0-9A-Za-z]+$/), deviceId }))
 		.mutation(({ ctx, input }) =>
 			ctx.spotify.post<void>('me/player/queue', { uri: input.uri, device_id: input.deviceId })
 		),
 
-	setVolume: procedure
+	setVolume: protectedProcedure
 		.meta({ description: 'Set the playback volume.' })
 		.input(z.object({ volumePercent: z.number().int().min(0).max(100), deviceId }))
 		.mutation(({ ctx, input }) =>
@@ -134,21 +134,21 @@ export const playerRouter = router({
 			})
 		),
 
-	setShuffle: procedure
+	setShuffle: protectedProcedure
 		.meta({ description: 'Turn shuffle on or off.' })
 		.input(z.object({ shuffle: z.boolean(), deviceId }))
 		.mutation(({ ctx, input }) =>
 			ctx.spotify.put<void>('me/player/shuffle', { state: input.shuffle, device_id: input.deviceId })
 		),
 
-	setRepeat: procedure
+	setRepeat: protectedProcedure
 		.meta({ description: 'Repeat the current track, repeat the current album or playlist, or turn repeat off.' })
 		.input(z.object({ mode: z.enum(['track', 'context', 'off']), deviceId }))
 		.mutation(({ ctx, input }) =>
 			ctx.spotify.put<void>('me/player/repeat', { state: input.mode, device_id: input.deviceId })
 		),
 
-	transfer: procedure
+	transfer: protectedProcedure
 		.meta({ description: 'Move playback to another device.', idempotent: true })
 		.input(
 			z.object({
