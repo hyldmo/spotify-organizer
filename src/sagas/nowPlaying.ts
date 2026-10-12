@@ -1,11 +1,10 @@
 import { call, cancelled, fork, put, select, take, takeEvery } from 'typed-redux-saga'
 import { type Action, Actions } from '~/actions'
 import type { Playback, State, User } from '~/types'
-import { firebaseGet, firebaseUpdate, sleep } from '~/utils'
+import { sleep } from '~/utils'
 import { spotifyFetch } from './spotifyFetch'
 
 export function* nowPlayingSaga() {
-	yield* takeEvery('PLAYBACK_CLEAR_SKIPS', clearSkips)
 	yield* takeEvery('PLAYBACK_CONTROL', playbackControl)
 	yield* takeEvery('PLAYBACK_TOGGLE_LIKE', toggleLike)
 	yield* take('TOKEN_AQUIRED')
@@ -25,12 +24,6 @@ function* toggleLike() {
 	} catch (e) {
 		yield* put(Actions.createNotification({ message: (e as Error).message, type: 'error' }))
 	}
-}
-
-function* clearSkips(action: Action<'PLAYBACK_CLEAR_SKIPS'>) {
-	const user = yield* select((s: State) => s.user as User) // User will not be null when playback is active
-	if (!user.uid) return // Firebase anon-auth hasn't landed yet; skip the RTDB write
-	yield* call(() => firebaseUpdate(`users/${user.uid}/skips/${action.meta}/${action.payload}/`, 0))
 }
 
 function* playbackControl(action: Action<'PLAYBACK_CONTROL'>) {
@@ -117,27 +110,14 @@ function* onPlaybackUpdated(action: Action<'PLAYBACK_UPDATED'>) {
 	const progress_ms = current.progress_ms ?? 0
 	const percent = (progress_ms / song.duration_ms) * 100
 
-	if (user.uid) {
-		const plays = yield* call(() => firebaseGet(`users/${user.uid}/plays/${context?.uri || 'unknown'}/${song.id}/`))
-
-		yield* call(() =>
-			firebaseUpdate(`users/${user.uid}/plays/${context?.uri || 'unknown'}/${song.id}/`, (plays ?? 0) + 1)
-		)
-	}
+	const contextUri = context?.uri || 'unknown'
+	yield* put(Actions.statRecorded({ kind: 'play', contextUri, trackId: song.id }))
 
 	if (user.settings.watchSkips) {
 		// Detect skip based on seconds left in song and percent completed
 		if (song.duration_ms - progress_ms > 10000 && percent < 80) {
 			yield put(Actions.songSkipped(song, context))
-
-			if (user.uid) {
-				const skips = yield* call(() =>
-					firebaseGet(`users/${user.uid}/skips/${context?.uri || 'unknown'}/${song.id}/`)
-				)
-				yield* call(() =>
-					firebaseUpdate(`users/${user.uid}/skips/${context?.uri || 'unknown'}/${song.id}/`, (skips ?? 0) + 1)
-				)
-			}
+			yield* put(Actions.statRecorded({ kind: 'skip', contextUri, trackId: song.id }))
 		}
 		if (percent < 90) {
 			yield* put(

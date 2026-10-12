@@ -1,6 +1,6 @@
 // In-PWA diagnostics. There are no devtools in an installed PWA, and a lot of
 // the app's failure paths only `console.warn`/`console.error` (refresh-token
-// transient failures, firebase retries, cache write errors, swallowed saga
+// transient failures, stats API errors, cache write errors, swallowed saga
 // errors). This tees those plus `console.info` milestones into a bounded ring
 // buffer persisted to localStorage, and catches global `error` /
 // `unhandledrejection` events. Read it at /debug — that route renders even when
