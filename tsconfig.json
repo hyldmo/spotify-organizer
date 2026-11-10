@@ -22,7 +22,8 @@
 		"./src/types/globals.ts",
 		"./src/vite-env.d.ts",
 		"./node_modules/@types/spotify-api/index.d.ts",
-		"./node_modules/@types/spotify-web-playback-sdk/index.d.ts"
+		"./node_modules/@types/spotify-web-playback-sdk/index.d.ts",
+		"./node_modules/@cloudflare/workers-types/index.d.ts"
 	],
 	"include": ["src/**/*", "vite.config.ts"]
 }

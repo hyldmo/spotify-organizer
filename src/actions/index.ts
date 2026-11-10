@@ -3,6 +3,7 @@ import modals from './modals'
 import notifications from './notifications'
 import playback from './playback'
 import playlists from './playlists'
+import stats from './stats'
 import timer from './timer'
 import user from './user'
 
@@ -11,6 +12,7 @@ export const Actions = {
 	...notifications,
 	...playback,
 	...playlists,
+	...stats,
 	...timer,
 	...user
 }

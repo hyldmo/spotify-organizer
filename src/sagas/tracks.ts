@@ -1,7 +1,7 @@
-import { all, call, put, type SagaGenerator, select, takeEvery, takeLeading } from 'typed-redux-saga'
+import { all, call, delay, put, race, type SagaGenerator, select, take, takeEvery, takeLeading } from 'typed-redux-saga'
 import { type Action, Actions } from '~/actions'
 import type { Nullable, Playlist, SongEntries, State, Track, URI } from '~/types'
-import { firebaseGet, idToUri, PlaylistCache, SongCache, toTrack } from '~/utils'
+import { idToUri, PlaylistCache, SongCache, toTrack } from '~/utils'
 import { spotifyFetch } from './spotifyFetch'
 
 // Dedupes concurrent `getTracks` invocations for the same playlist id. Several
@@ -62,14 +62,12 @@ export function* getTrack(action: Action<'FETCH_TRACK'>) {
 	yield put(Actions.createNotification({ message: 'Error fetching track', type: 'error' }))
 }
 
-function* fetchPlays(uid: string | null | undefined, id: Playlist['id']): SagaGenerator<Nullable<SongEntries>> {
-	if (!uid) return null
-	try {
-		return yield* call(() => firebaseGet(`users/${uid}/plays/spotify:playlist:${id}/`))
-	} catch (e) {
-		console.warn(`Error fetching plays from firebase 'users/${uid}/plays/spotify:playlist:${id}/'`, e)
-		return null
+// Stats load once at login. Wait a little for them rather than show every play count as 0.
+function* fetchPlays(id: Playlist['id']): SagaGenerator<Nullable<SongEntries>> {
+	if (!(yield* select((s: State) => s.stats.loaded))) {
+		yield* race({ loaded: take('STATS_LOADED'), timeout: delay(5000) })
 	}
+	return yield* select((s: State) => s.stats.plays[`spotify:playlist:${id}`] ?? null)
 }
 
 export function* getTracks(action: Action<'FETCH_TRACKS'>) {
@@ -78,19 +76,17 @@ export function* getTracks(action: Action<'FETCH_TRACKS'>) {
 	inFlight.add(id)
 	try {
 		const limit = 100
-		const user = yield* select((s: State) => s.user)
 
 		const fetchPage = (offset: number) =>
 			spotifyFetch<SpotifyApi.PlaylistTrackResponse>(`playlists/${id}/tracks?offset=${offset}&limit=${limit}`)
 
-		// Page 0 and the plays lookup are independent — running them in parallel
-		// saves up to ~16s on cold starts where Firebase anon-auth is retrying.
+		// Page 0 and the plays lookup are independent, so they run in parallel.
 		let first: SpotifyApi.PlaylistTrackResponse | null
 		let plays: Nullable<SongEntries>
 		try {
 			const result = yield* all({
 				first: call(fetchPage, 0),
-				plays: call(fetchPlays, user?.uid, id)
+				plays: call(fetchPlays, id)
 			})
 			first = result.first
 			plays = result.plays

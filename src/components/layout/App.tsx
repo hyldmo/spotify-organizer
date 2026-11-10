@@ -1,6 +1,7 @@
 import type React from 'react'
 import { useSelector } from 'react-redux'
 import { Route, Routes, useLocation } from 'react-router'
+import { Connect } from '~/pages/Connect'
 import { Dashboard } from '~/pages/Dashboard'
 import Debug from '~/pages/Debug'
 import PlaylistsManager from '~/pages/Home'
@@ -38,6 +39,7 @@ const App: React.FC = () => {
 						<Routes>
 							<Route path="/" element={<PlaylistsManager />} />
 							<Route path="/dashboard" element={<Dashboard />} />
+							<Route path="/connect" element={<Connect />} />
 							<Route path="/search" element={<Search />} />
 							<Route path="/skips" element={<Skips />} />
 							<Route path="/playlists/:id" element={<PlaylistRoute />} />

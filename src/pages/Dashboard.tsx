@@ -3,7 +3,7 @@ import { useMemo, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
 import { Sort, type State } from '~/types'
-import { Duration, getNextSortMode, getSortIcon, SongCache, songEntriesToSongs, useFirebase } from '~/utils'
+import { Duration, getNextSortMode, getSortIcon, SongCache, songEntriesToSongs } from '~/utils'
 
 type SkipRateRow = { name: string; id: string; skipRate: number; totalSkips: number; totalPlays: number }
 type SkipSortKey = 'name' | 'skipRate' | 'totalSkips' | 'totalPlays'
@@ -11,8 +11,8 @@ type SkipSortKey = 'name' | 'skipRate' | 'totalSkips' | 'totalPlays'
 export const Dashboard: React.FC = () => {
 	const playlists = useSelector((s: State) => s.playlists)
 	const user = useSelector((s: State) => s.user)
-	const rawPlays = useFirebase(`users/${user?.uid}/plays/`)
-	const rawSkips = useFirebase(`users/${user?.uid}/skips/`)
+	const rawPlays = useSelector((s: State) => s.stats.plays)
+	const rawSkips = useSelector((s: State) => s.stats.skips)
 	const [skipSort, setSkipSort] = useState<{ key: SkipSortKey; mode: Sort }>({ key: 'skipRate', mode: Sort.Desc })
 
 	const stats = useMemo(() => {

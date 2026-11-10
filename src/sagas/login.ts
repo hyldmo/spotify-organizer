@@ -1,7 +1,6 @@
 import { replace } from 'redux-first-history'
-import { call, fork, put, takeLatest } from 'typed-redux-saga'
+import { call, put, takeLatest } from 'typed-redux-saga'
 import { type Action, Actions } from '~/actions'
-import { ensureFirebaseReady, migrateLegacyUidData, resetFirebaseAuth, setSpotifyId } from '~/utils/firebase'
 import { parseQueryString } from '~/utils/parseQueryString'
 import {
 	clearTokens,
@@ -48,10 +47,6 @@ function* getUserDetails(action: Action<typeof Actions.tokenAquired.type>) {
 			// the freshest token back from localStorage so we don't seed the
 			// store with an already-expired one.
 			const spotifyToken = localStorage.getItem('token') || token
-			// Register the Spotify id with the firebase layer BEFORE the user
-			// is published — useFirebase hooks fire as soon as React re-renders
-			// with a non-null user, and they need the mapping to be in flight.
-			yield* call(setSpotifyId, body.id)
 			yield* put(
 				Actions.userLoaded({
 					uid: body.id,
@@ -63,7 +58,6 @@ function* getUserDetails(action: Action<typeof Actions.tokenAquired.type>) {
 					}
 				})
 			)
-			yield* fork(firebaseAuthBackground, body.id)
 			yield* put(Actions.fetchPlaylists())
 		}
 		const redirect = action.meta
@@ -79,13 +73,6 @@ function* getUserDetails(action: Action<typeof Actions.tokenAquired.type>) {
 	} finally {
 		yield* put(Actions.authCheckDone())
 	}
-}
-
-function* firebaseAuthBackground(spotifyId: string) {
-	const fbUid = yield* call(ensureFirebaseReady)
-	if (!fbUid) return
-	// Salvage anything this anon uid previously wrote at users/<fbUid>/...
-	yield* call(migrateLegacyUidData, spotifyId)
 }
 
 function* loadUser(_: Action<typeof Actions.loadUser.type>) {
@@ -136,5 +123,4 @@ function* loadUser(_: Action<typeof Actions.loadUser.type>) {
 
 function* onLogout(_: Action<typeof Actions.logout.type>) {
 	yield* call(clearTokens)
-	yield* call(resetFirebaseAuth)
 }

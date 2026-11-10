@@ -7,7 +7,6 @@ import { useSearchParams } from 'react-router-dom'
 import { Actions } from '~/actions'
 import Input from '~/components/Input'
 import type { State } from '~/types'
-import { useFirebase } from '~/utils'
 import { ByPlaylist } from './ByPlaylist'
 import { ByTrack } from './ByTrack'
 import { merge as mergeEntries, toEntries } from './skipUtils'
@@ -20,8 +19,8 @@ export const Skips: React.FC = () => {
 	const filterIds = searchParams.get('filterId')?.split(',')
 	const groupBy = searchParams.get('groupBy') ?? 'playlist'
 	const user = useSelector((s: State) => s.user)
-	const plays = useFirebase(`users/${user?.uid}/plays/`) || {}
-	const skips = useFirebase(`users/${user?.uid}/skips/`) || {}
+	const plays = useSelector((s: State) => s.stats.plays)
+	const skips = useSelector((s: State) => s.stats.skips)
 	if (!user) return null
 
 	const playlistSkips = toEntries(mergeEntries(plays, skips))

@@ -1,8 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { type ActionCreator, Actions } from '~/actions'
-import type { FirebaseGet, FirebaseUrls, Playlist, State } from '~/types'
-import { firebaseGet, firebaseWatch } from './firebase'
+import type { Playlist, State } from '~/types'
 import { findPlaylist } from './spotify'
 
 export const useAppSelector = useSelector.withTypes<State>()
@@ -21,19 +20,6 @@ export function useMapDispatch<T extends Record<string, ActionCreator>>(actions:
 		}
 		return result as T
 	}, [dispatch, actions])
-}
-
-export function useFirebase<T extends FirebaseUrls>(url: T) {
-	const [data, setData] = useState<FirebaseGet<T> | null>(null)
-	useEffect(() => {
-		// Skip until the URL has a real uid — callers commonly pass
-		// `users/${user?.uid}/...` which produces "users/undefined/..." or
-		// "users//..." during the brief window before Firebase anon-auth lands.
-		if (url.includes('/undefined/') || url.includes('//')) return
-		firebaseGet(url).then(setData)
-		return firebaseWatch(url, setData)
-	}, [url])
-	return data
 }
 
 export function usePlaylist(id: string): Playlist | undefined {

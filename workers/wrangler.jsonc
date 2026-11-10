@@ -1,0 +1,23 @@
+{
+	"$schema": "../node_modules/wrangler/config-schema.json",
+	// Pages project: the web app is served from `dist` (Vite builds it there), and `functions/` handles the paths
+	// listed in public/_routes.json.
+	"name": "spotify-organiser",
+	"pages_build_output_dir": "dist",
+	"compatibility_date": "2026-10-01",
+	// Client ID Metadata Documents make the Worker fetch client-supplied URLs; this keeps those fetches public.
+	"compatibility_flags": ["global_fetch_strictly_public"],
+	"kv_namespaces": [{ "binding": "OAUTH_KV", "id": "7fabb75062e449e88c23b22e09151a69" }],
+	"d1_databases": [
+		{
+			"binding": "DB",
+			"database_name": "spotify-organiser",
+			"database_id": "06d9600e-f33e-4b09-a1cd-56fcaa963e84",
+			"migrations_dir": "migrations"
+		}
+	],
+	"vars": {
+		// Spotify Organiser's Spotify app. Its dashboard must list `<origin>` and `<origin>/callback` as redirect URIs.
+		"SPOTIFY_CLIENT_ID": "4a3ae815c2a0443c824541a7aa94cfcc"
+	}
+}

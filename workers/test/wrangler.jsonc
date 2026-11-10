@@ -1,0 +1,18 @@
+{
+	"$schema": "../../node_modules/wrangler/config-schema.json",
+	// The test harness runs Workers, not Pages projects, so tests run src/index.ts directly.
+	"name": "spotify-organiser-test",
+	"main": "../src/index.ts",
+	"compatibility_date": "2026-10-01",
+	"compatibility_flags": ["global_fetch_strictly_public"],
+	"kv_namespaces": [{ "binding": "OAUTH_KV" }],
+	"d1_databases": [
+		{
+			"binding": "DB",
+			"database_name": "spotify-organiser",
+			"database_id": "local",
+			"migrations_dir": "../migrations"
+		}
+	],
+	"vars": { "SPOTIFY_CLIENT_ID": "4a3ae815c2a0443c824541a7aa94cfcc" }
+}
